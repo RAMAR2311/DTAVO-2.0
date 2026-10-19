@@ -106,6 +106,10 @@ def create_app():
     from routes.zenic import zenic_bp
     app.register_blueprint(zenic_bp, url_prefix='/zenic')
 
+    # Registro de Blueprint Compras
+    from routes.purchases import purchases_bp
+    app.register_blueprint(purchases_bp, url_prefix='/compras')
+
 
     @app.template_filter('cop')
     def cop_filter(value):

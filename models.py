@@ -617,3 +617,47 @@ class Asesor(db.Model):
 
     def __init__(self, **kwargs):
         super(Asesor, self).__init__(**kwargs)
+
+
+class PurchaseOrder(db.Model):
+    __tablename__ = 'purchase_orders'
+
+    id = db.Column(db.Integer, primary_key=True)
+    tipo_inventario = db.Column(db.String(50), nullable=False, default='accesorios') # 'celulares' o 'accesorios'
+    provider_id = db.Column(db.Integer, db.ForeignKey('providers.id'), nullable=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    numero_factura = db.Column(db.String(100), nullable=True)
+    observaciones = db.Column(db.Text, nullable=True)
+    total_costo = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
+    fecha_compra = db.Column(db.DateTime, default=obtener_hora_bogota)
+
+    # Relaciones
+    proveedor = db.relationship('Provider', backref=db.backref('compras', lazy=True))
+    usuario = db.relationship('User', foreign_keys=[usuario_id])
+    items = db.relationship('PurchaseOrderItem', backref='compra', lazy=True, cascade='all, delete-orphan')
+
+    def __init__(self, **kwargs):
+        super(PurchaseOrder, self).__init__(**kwargs)
+
+
+class PurchaseOrderItem(db.Model):
+    __tablename__ = 'purchase_order_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    purchase_order_id = db.Column(db.Integer, db.ForeignKey('purchase_orders.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    variant_id = db.Column(db.Integer, db.ForeignKey('product_variants.id'), nullable=True)
+    cantidad = db.Column(db.Integer, nullable=False, default=1)
+    costo_unitario = db.Column(db.Numeric(10, 2), nullable=False, default=0.00)
+    subtotal = db.Column(db.Numeric(12, 2), nullable=False, default=0.00)
+
+    # Para celulares con IMEI
+    imei = db.Column(db.String(50), nullable=True)
+    imei2 = db.Column(db.String(50), nullable=True)
+
+    # Relaciones
+    producto = db.relationship('Product')
+    variante = db.relationship('ProductVariant')
+
+    def __init__(self, **kwargs):
+        super(PurchaseOrderItem, self).__init__(**kwargs)
