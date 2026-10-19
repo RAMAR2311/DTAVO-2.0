@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu Tienda Tecnológica - Venta de Celulares & Tecnología</title>
     <!-- Favicon y PWA -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/redcover.png') }}?v=3">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}?v=3">
-    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=4">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}?v=4">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}?v=4">
     
     <!-- Meta tags para iOS y PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Tu Tienda Tecno">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/redcover.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=4">
     <meta name="theme-color" content="#76BC21">
 
     <!-- Google Fonts: Orbitron, Montserrat, Inter, JetBrains Mono -->
@@ -249,9 +249,7 @@
             <!-- Brand Logo (Centro) -->
             <a class="navbar-brand d-flex align-items-center fw-bold m-0 position-absolute start-50 translate-middle-x text-decoration-none" href="{{ url_for('index') }}">
                 <div class="d-flex align-items-center">
-                    <div class="d-inline-flex align-items-center justify-content-center me-2 rounded-3" style="width: 36px; height: 36px; background: rgba(118, 188, 33, 0.12); border: 1px solid var(--brand-border);">
-                        <i class="fa-solid fa-bag-shopping" style="color: var(--brand-primary); font-size: 1.15rem;"></i>
-                    </div>
+                    <img src="{{ url_for('static', filename='img/tutienda.png') }}" alt="Tu Tienda Tecnológica" style="height: 38px; width: auto; object-fit: contain;" class="me-2">
                     <div class="d-flex flex-column text-start">
                         <span class="brand-title" style="font-size: 1.15rem; line-height: 1.1;">TU TIENDA TECNOLÓGICA</span>
                         <span class="brand-subtitle d-none d-sm-inline" style="font-size: 0.6rem; line-height: 1.2;">VENTA DE CELULARES &amp; TECNOLOGÍA</span>
