@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket de Compra #{{ venta.id }} - RedCover</title>
+    <title>Ticket de Compra #{{ venta.id }} - Tu Tienda Tecnológica</title>
     <!-- Incluir solo la fuente base "Roboto Mono" (Letra de ticketera 80mm) -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #555555; /* Fondo oscuro simulando el escritorio detrás del papel */
+            background-color: #FFFFFF; /* 100% White Canvas */
             margin: 0;
             padding: 30px;
             display: flex;
@@ -21,8 +21,9 @@
             width: 100%;
             max-width: 380px; /* Ancho de impresora térmica 80mm */
             padding: 25px 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            color: #1A1A1A; /* Negro de nuestra paleta */
+            border: 1px solid #E6F4D7;
+            box-shadow: 0 4px 20px rgba(118, 188, 33, 0.08);
+            color: #1A1A1A;
             box-sizing: border-box;
         }
 
@@ -34,11 +35,12 @@
         }
 
         .logo {
-            font-size: 2.0rem;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 800;
             margin: 2px 0 1px 0;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            text-transform: uppercase;
         }
 
         .info {
@@ -79,13 +81,13 @@
         .total-row {
             display: flex;
             justify-content: space-between;
-            font-size: 1.4rem;
-            font-weight: 700;
-            /* Branding Inyectado: Resalte estricto en Azul Turquesa (#A3D8DE) */
-            background-color: #A3D8DE;
-            padding: 12px 15px;
+            font-size: 1.35rem;
+            font-weight: 800;
+            background-color: #FFFFFF;
+            padding: 10px 12px;
             border-radius: 6px;
-            border: 1px solid #1A1A1A;
+            border: 2px solid #76BC21;
+            color: #111827;
         }
 
         .footer {
@@ -98,24 +100,25 @@
             display: block;
             width: 100%;
             padding: 15px;
-            background-color: #1A1A1A;
+            background-color: #76BC21;
             color: #FFFFFF;
-            border: 2px solid #1A1A1A;
-            font-size: 1.1rem;
-            border-radius: 6px;
+            border: 2px solid #76BC21;
+            font-size: 1.05rem;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 30px;
+            margin-top: 20px;
             font-family: inherit;
             transition: 0.2s;
         }
 
         .btn-print:hover {
-            background-color: #FFFFFF;
-            color: #1A1A1A;
+            background-color: #1E5622;
+            border-color: #1E5622;
+            color: #FFFFFF;
         }
 
-        /* MEDIA QUERY DE IMPRESIÓN RIGUROSA: Las reglas CSS aquí omiten UI inútil al imprimir en papel */
+        /* MEDIA QUERY DE IMPRESIÓN RIGUROSA: 100% MONOCROMÁTICO LIMPIO (58mm/80mm) */
         @media print {
             @page {
                 size: 80mm auto;
@@ -127,23 +130,39 @@
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
-            body { background-color: #FFFFFF; padding: 0; display: block; }
+            body { 
+                background-color: #FFFFFF !important; 
+                padding: 0 !important; 
+                display: block !important; 
+                color: #000000 !important;
+            }
             .ticket { 
-                box-shadow: none; 
-                max-width: 100%; 
-                padding: 0; 
-                margin: 0 auto; 
-                width: 80mm; 
-                border: none;
+                box-shadow: none !important; 
+                max-width: 100% !important; 
+                padding: 0 !important; 
+                margin: 0 auto !important; 
+                width: 80mm !important; 
+                border: none !important;
+                color: #000000 !important;
             }
             * {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
             }
             .btn-print { display: none !important; }
             .d-print-none { display: none !important; }
-            .total-row { background-color: transparent !important; border: none !important; padding: 10px 0 !important; }
-            .total-row * { color: #1A1A1A !important; } /* Desactivar Azul para impresiones monocromas */
+            .total-row { 
+                background-color: transparent !important; 
+                border-top: 1px dashed #000000 !important;
+                border-bottom: 1px dashed #000000 !important;
+                border-left: none !important;
+                border-right: none !important;
+                padding: 8px 0 !important; 
+                border-radius: 0 !important;
+            }
         }
     </style>
 </head>
@@ -151,8 +170,8 @@
 
 <div class="ticket">
     <div class="header">
-        <img src="{{ url_for('static', filename='img/logo_ticket.png') }}?v=2" alt="Logo RC" style="max-height: 48px; width: auto; margin-bottom: 2px;">
-        <h1 class="logo">RedCover</h1>
+        <h1 class="logo">TU TIENDA TECNOLÓGICA</h1>
+        <p style="font-size: 0.72rem; font-weight: 700; margin: 0 0 6px 0; letter-spacing: 0.15em; text-transform: uppercase;">VENTA DE CELULARES &amp; TECNOLOGÍA</p>
         <p style="font-size: 0.78rem; font-weight: bold; margin: 0 0 8px 0; letter-spacing: 0.5px;">NIT: 1013679035-0</p>
         
         <div style="border-top: 1px dashed #1A1A1A; padding: 6px 0; font-size: 0.78rem; line-height: 1.4; text-align: left;">
@@ -325,8 +344,8 @@
         <p style="font-size: 0.72rem; line-height: 1.3; text-align: justify; margin: 10px 0; border-top: 1px dashed #1A1A1A; border-bottom: 1px dashed #1A1A1A; padding: 10px 0;">
             <strong>Políticas de Garantía:</strong> Equipos nuevos: garantía de 1 año. Equipos de exhibición: garantía de 8 meses. La remoción, rotura o alteración del sticker de seguridad de la tienda en el equipo anula automáticamente la garantía. No cubre equipos con garantía vencida, reportados por operador, IMEI o serial alterado, daños por golpes, caídas, humedad, líquidos, polvo, manipulación indebida, software modificado, instalaciones o actualizaciones no autorizadas, equipos intervenidos por terceros, pantallas despegadas, manchas negras, líneas en pantalla, rayones o cualquier daño físico. Para hacer efectiva la garantía es obligatorio presentar la factura original. El tiempo de revisión y diagnóstico es de 2 a 3 días hábiles. Si la garantía procede, se reemplazará la pieza defectuosa; si el equipo no puede ser reparado, se realizará el cambio del mismo. El tiempo máximo de reparación es de hasta 15 días hábiles, de conformidad con la Ley 1480 de 2011.
         </p>
-        <p style="font-size: 0.8rem; margin-top: 5px;">Soporte: ventas@redcover.com</p>
-        <p style="font-size: 0.7rem; color: #666; margin-top: 10px; font-weight: bold;">Aliado tecnológico ZENIC SAS</p>
+        <p style="font-size: 0.8rem; margin-top: 5px;">Soporte: contacto@tutiendatecnologica.com</p>
+        <p style="font-size: 0.7rem; color: #666; margin-top: 10px; font-weight: bold;">Aliado tecnológico ZENIC S.A.S.</p>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 10px;" class="d-print-none">
@@ -339,7 +358,7 @@
                 {% if not phone.startswith('57') and phone|length == 10 %}
                     {% set phone = '57' ~ phone %}
                 {% endif %}
-                {% set mensaje = "Hola " ~ venta.cliente.nombre ~ "! Aquí tienes tu factura digital de Red Cover: " ~ request.url %}
+                {% set mensaje = "Hola " ~ venta.cliente.nombre ~ "! Aquí tienes tu factura digital de Tu Tienda Tecnológica: " ~ request.url %}
                 <a href="https://wa.me/{{ phone }}?text={{ mensaje|urlencode }}" 
                    target="_blank" 
                    class="btn-print btn-wa" 
@@ -350,7 +369,7 @@
         </div>
         <a href="{{ url_for('sales_bp.caja_visual') }}" 
            class="btn-print" 
-           style="background-color: #1A1A1A; color: #FFFFFF; text-decoration: none; text-align: center; display: block; margin-top: 5px; box-sizing: border-box;">
+           style="background-color: #1A1A1A; border-color: #1A1A1A; color: #FFFFFF; text-decoration: none; text-align: center; display: block; margin-top: 5px; box-sizing: border-box;">
             [ VOLVER A LA CAJA ]
         </a>
     </div>

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Arqueo {{ fecha }} - RedCover</title>
+    <title>Ticket Arqueo {{ fecha }} - Tu Tienda Tecnológica</title>
     <!-- Fuente Roboto Mono idéntica al ticket de venta 80mm -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #555555;
+            background-color: #FFFFFF; /* 100% White Canvas */
             margin: 0;
             padding: 20px;
             display: flex;
@@ -21,7 +21,8 @@
             width: 100%;
             max-width: 380px; /* Ancho térmico 80mm */
             padding: 25px 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid #E6F4D7;
+            box-shadow: 0 4px 20px rgba(118, 188, 33, 0.08);
             color: #1A1A1A;
             box-sizing: border-box;
         }
@@ -34,19 +35,20 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.25rem;
+            font-weight: 800;
             margin: 0;
-            letter-spacing: -1.5px;
-            line-height: 1.1;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            text-transform: uppercase;
         }
 
         .subtitle {
-            font-size: 0.85rem;
+            font-size: 0.72rem;
             font-weight: 700;
             text-transform: uppercase;
-            margin: 6px 0 2px 0;
-            letter-spacing: -0.5px;
+            margin: 4px 0 6px 0;
+            letter-spacing: 0.15em;
         }
 
         .info {
@@ -59,9 +61,10 @@
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
-            border-bottom: 1px solid #1A1A1A;
+            border-bottom: 2px solid #76BC21;
             padding-bottom: 4px;
             margin: 14px 0 8px 0;
+            color: #1A1A1A;
         }
 
         .row-data {
@@ -130,22 +133,23 @@
             justify-content: space-between;
             font-size: 1.2rem;
             font-weight: 700;
-            background-color: #A3D8DE;
+            background-color: #FFFFFF;
             padding: 10px 12px;
             border-radius: 6px;
-            border: 1px solid #1A1A1A;
+            border: 2px solid #76BC21;
             margin-top: 8px;
+            color: #111827;
         }
 
         .btn-print {
             display: block;
             width: 100%;
             padding: 14px;
-            background-color: #1A1A1A;
+            background-color: #76BC21;
             color: #FFFFFF;
-            border: 2px solid #1A1A1A;
+            border: 2px solid #76BC21;
             font-size: 1rem;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 25px;
@@ -154,8 +158,9 @@
         }
 
         .btn-print:hover {
-            background-color: #FFFFFF;
-            color: #1A1A1A;
+            background-color: #1E5622;
+            border-color: #1E5622;
+            color: #FFFFFF;
         }
 
         @media print {
@@ -168,24 +173,38 @@
                 overflow: visible !important;
             }
             body { 
-                background-color: #FFFFFF; 
-                padding: 0; 
-                display: block; 
+                background-color: #FFFFFF !important; 
+                padding: 0 !important; 
+                display: block !important; 
+                color: #000000 !important;
             }
             .ticket { 
-                box-shadow: none; 
-                max-width: 100%; 
-                padding: 5px; 
-                margin: 0 auto; 
-                width: 80mm; 
-                border: none;
+                box-shadow: none !important; 
+                max-width: 100% !important; 
+                padding: 5px !important; 
+                margin: 0 auto !important; 
+                width: 80mm !important; 
+                border: none !important;
+                color: #000000 !important;
+            }
+            * {
+                color: #000000 !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
             }
             .btn-print { display: none !important; }
             .d-print-none { display: none !important; }
             .total-row {
                 background-color: transparent !important;
-                border: none !important;
+                border-top: 1px dashed #000000 !important;
+                border-bottom: 1px dashed #000000 !important;
+                border-left: none !important;
+                border-right: none !important;
                 padding: 8px 0 !important;
+                border-radius: 0 !important;
+            }
+            .section-title {
+                border-bottom: 1px solid #000000 !important;
             }
         }
     </style>
@@ -193,8 +212,9 @@
 <body>
     <div class="ticket">
         <div class="header">
-            <div class="logo">REDCOVER</div>
-            <div class="subtitle">CIERRE DE CAJA Y DETALLE VENTAS</div>
+            <div class="logo">TU TIENDA TECNOLÓGICA</div>
+            <div class="subtitle">VENTA DE CELULARES &amp; TECNOLOGÍA</div>
+            <div style="font-size: 0.8rem; font-weight: 700; margin: 4px 0;">CIERRE DE CAJA Y DETALLE VENTAS</div>
             <div class="info">FECHA CIERRE: <strong>{{ fecha }}</strong></div>
             <div class="info">SUCURSAL: <strong>{{ sucursal }}</strong></div>
             <div class="info">EMISIÓN: {{ fecha_generacion }}</div>

@@ -2,52 +2,89 @@
 
 {% block content %}
 <style>
-    /* Fondo limpio que mantiene la legibilidad */
+    /* White Canvas 100% Estricto */
     body {
-        background-color: var(--brand-bg) !important;
-        background-image: linear-gradient(135deg, var(--brand-bg) 0%, #eef3f5 100%);
+        background-color: #FFFFFF !important;
+        background-image: none !important;
     }
 
-    /* Opcional: Ocultar la barra solo en login */
     .navbar-custom {
         display: none !important;
     }
+
+    .login-wrapper {
+        min-height: 85vh;
+        background: #FFFFFF;
+    }
+
+    .login-card {
+        background: #FFFFFF !important;
+        border: 1px solid var(--brand-border) !important;
+        border-top: 5px solid var(--brand-primary) !important;
+        border-radius: 20px;
+        box-shadow: 0 12px 35px rgba(118, 188, 33, 0.08) !important;
+    }
+
+    .login-icon-badge {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        background: rgba(118, 188, 33, 0.1);
+        border: 1px solid var(--brand-border);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.25rem;
+    }
 </style>
 
-<div class="row align-items-center justify-content-evenly" style="min-height: 85vh;">
-    <!-- Columna Izquierda: Cuadro de Acceso Segregado -->
-    <div class="col-md-6 col-lg-5 mb-4 order-2 order-md-1">
-        <div class="card card-custom p-5 border-0 shadow-lg rounded-4" style="border-top: 5px solid var(--brand-red) !important;">
-            <div class="text-center mb-5">
-                <h3 class="fw-bold text-brand-black">Acceso al Panel</h3>
-                <p class="text-muted">Introduce tus credenciales operativas</p>
+<div class="row align-items-center justify-content-center login-wrapper">
+    <!-- Columna Central: Cuadro de Acceso White Canvas -->
+    <div class="col-md-7 col-lg-5 col-xl-4 mb-4">
+        <div class="card login-card p-4 p-md-5">
+            <div class="text-center mb-4">
+                <div class="login-icon-badge">
+                    <i class="fa-solid fa-bag-shopping" style="color: var(--brand-primary); font-size: 1.85rem;"></i>
+                </div>
+                <h3 class="brand-title mb-1" style="font-size: 1.35rem;">Tu Tienda Tecnológica</h3>
+                <p class="brand-subtitle mb-3" style="font-size: 0.68rem;">VENTA DE CELULARES &amp; TECNOLOGÍA</p>
+                <div class="text-muted small">Ingresa tus credenciales para acceder al sistema</div>
             </div>
             
             <form method="POST" action="/auth/login">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 0.05em;">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0" style="border-color: var(--brand-border); color: var(--brand-primary);">
+                            <i class="fa-solid fa-envelope"></i>
+                        </span>
+                        <input type="email" class="form-control form-control-lg border-start-0 ps-0" name="email" required placeholder="admin@tutienda.com">
+                    </div>
+                </div>
+                
                 <div class="mb-4">
-                    <label class="form-label fw-bold text-brand-black">Correo Electrónico</label>
-                    <input type="email" class="form-control form-control-lg bg-light border-0" name="email" required placeholder="tu@redcover.com">
+                    <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 0.05em;">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0" style="border-color: var(--brand-border); color: var(--brand-primary);">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" class="form-control form-control-lg border-start-0 ps-0" name="password" required placeholder="••••••••">
+                    </div>
                 </div>
                 
-                <div class="mb-5">
-                    <label class="form-label fw-bold text-brand-black">Contraseña</label>
-                    <input type="password" class="form-control form-control-lg bg-light border-0" name="password" required placeholder="••••••••">
-                </div>
-                
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-blue btn-lg rounded-pill shadow-sm">
-                        Ingresar <i class="fa-solid fa-arrow-right ms-2"></i>
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-pink btn-lg fw-bold shadow-sm py-3" style="font-size: 0.95rem; letter-spacing: 0.05em;">
+                        INICIAR SESIÓN <i class="fa-solid fa-arrow-right ms-2"></i>
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
 
-    <!-- Columna Derecha: Logo Central y Limpio -->
-    <div class="col-10 col-md-6 col-lg-6 d-flex justify-content-center align-items-center text-center order-1 order-md-2 mb-4 mb-md-0">
-        <!-- Logo a la altura del usuario sin solapamiento -->
-        <img src="{{ url_for('static', filename='img/redcover.png') }}" alt="Identidad Visual redcover.com" class="img-fluid" style="max-height: 280px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.08));">
+            <div class="text-center mt-4 pt-3 border-top" style="border-color: var(--divider) !important;">
+                <span class="text-muted" style="font-size: 0.75rem;">Sistema POS &amp; Gestión Comercial &bull; v2.0</span>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
