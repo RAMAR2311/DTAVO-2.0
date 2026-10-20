@@ -467,10 +467,10 @@
                         <span>Dashboard Principal</span>
                     </a>
 
-                    <!-- SECCIÓN: VENTAS & CAJA -->
-                    <div class="sidebar-section-label">Caja &amp; Ventas</div>
+                    <!-- SECCIÓN: VENTAS -->
+                    <div class="sidebar-section-label">Ventas</div>
                     <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupCaja" aria-expanded="true">
-                        <span><i class="fa-solid fa-cash-register sidebar-icon"></i> Caja &amp; Facturación</span>
+                        <span><i class="fa-solid fa-cash-register sidebar-icon"></i> Ventas</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
                     <div class="collapse show" id="groupCaja">
@@ -490,39 +490,10 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: INVENTARIO & PRODUCTOS -->
-                    <div class="sidebar-section-label">Inventario &amp; Stock</div>
-                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupInventario" aria-expanded="false">
-                        <span><i class="fa-solid fa-boxes-stacked sidebar-icon"></i> Gestión de Inventario</span>
-                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
-                    </button>
-                    <div class="collapse" id="groupInventario">
-                        <div class="sidebar-submenu">
-                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.inventario') }}">
-                                <i class="fa-solid fa-mobile-screen-button me-2" style="width: 16px;"></i> Inventario Celulares
-                            </a>
-                            <a class="sidebar-sublink" href="/inventory">
-                                <i class="fa-solid fa-box-open me-2" style="width: 16px;"></i> Inventario Accesorios
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario') }}">
-                                <i class="fa-solid fa-truck-ramp-box me-2" style="width: 16px;"></i> Celulares Externos
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario_accesorios') }}">
-                                <i class="fa-solid fa-headphones-simple me-2" style="width: 16px;"></i> Accesorios Externos
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('retomas_bp.cuarentena') }}">
-                                <i class="fa-solid fa-recycle me-2" style="width: 16px;"></i> Retomas / Cuarentena
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.trazabilidad') }}">
-                                <i class="fa-solid fa-timeline me-2" style="width: 16px;"></i> Trazabilidad IMEI
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- SECCIÓN: OPERACIONES & POSTVENTA -->
-                    <div class="sidebar-section-label">Operaciones &amp; Compras</div>
+                    <!-- SECCIÓN: COMPRAS -->
+                    <div class="sidebar-section-label">Compras</div>
                     <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupOperaciones" aria-expanded="false">
-                        <span><i class="fa-solid fa-cart-flatbed sidebar-icon"></i> Operaciones</span>
+                        <span><i class="fa-solid fa-cart-flatbed sidebar-icon"></i> Compras</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
                     <div class="collapse" id="groupOperaciones">
@@ -545,14 +516,35 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: ADMINISTRACIÓN & EQUIPO -->
-                    <div class="sidebar-section-label">Administración</div>
-                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupAdmin" aria-expanded="false">
-                        <span><i class="fa-solid fa-sliders sidebar-icon"></i> Equipo &amp; Finanzas</span>
+                    <!-- SECCIÓN: ADMINISTRATIVO (INVENTARIO + EQUIPO & FINANZAS) -->
+                    <div class="sidebar-section-label">Administrativo</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupAdministrativo" aria-expanded="false">
+                        <span><i class="fa-solid fa-boxes-stacked sidebar-icon"></i> Administrativo</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
-                    <div class="collapse" id="groupAdmin">
+                    <div class="collapse" id="groupAdministrativo">
                         <div class="sidebar-submenu">
+                            <!-- Inventario & Stock -->
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.inventario') }}">
+                                <i class="fa-solid fa-mobile-screen-button me-2" style="width: 16px;"></i> Inventario Celulares
+                            </a>
+                            <a class="sidebar-sublink" href="/inventory">
+                                <i class="fa-solid fa-box-open me-2" style="width: 16px;"></i> Inventario Accesorios
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario') }}">
+                                <i class="fa-solid fa-truck-ramp-box me-2" style="width: 16px;"></i> Celulares Externos
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario_accesorios') }}">
+                                <i class="fa-solid fa-headphones-simple me-2" style="width: 16px;"></i> Accesorios Externos
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('retomas_bp.cuarentena') }}">
+                                <i class="fa-solid fa-recycle me-2" style="width: 16px;"></i> Retomas / Cuarentena
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.trazabilidad') }}">
+                                <i class="fa-solid fa-timeline me-2" style="width: 16px;"></i> Trazabilidad IMEI
+                            </a>
+
+                            <!-- Equipo & Finanzas (Integrado en Administrativo) -->
                             <a class="sidebar-sublink" href="{{ url_for('admin_bp.asesores') }}">
                                 <i class="fa-solid fa-user-tie me-2" style="width: 16px;"></i> Asesores de Venta
                             </a>
