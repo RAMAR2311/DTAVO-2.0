@@ -247,6 +247,7 @@
                         <tr>
                             <th class="ps-4 text-start">FECHA</th>
                             <th class="text-start">OBSERVACIÓN</th>
+                            <th class="text-center">MÉTODO PAGO</th>
                             <th class="text-end">MONTO</th>
                             <th class="text-center pe-4">ACCIONES</th>
                         </tr>
@@ -259,6 +260,11 @@
                                 <div class="small text-muted">{{ p.fecha_pago.strftime('%I:%M %p') }}</div>
                             </td>
                             <td class="text-start text-truncate" style="max-width: 150px;" title="{{ p.observacion }}">{{ p.observacion or '-' }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark border text-capitalize">
+                                    <i class="fa-solid fa-building-columns text-success me-1"></i>{{ p.metodo_pago or 'Efectivo' }}
+                                </span>
+                            </td>
                             <td class="text-end fw-bold text-success">+${{ p.monto_abonado|cop }}</td>
                             <td class="text-center pe-4 text-nowrap">
                                 <div class="d-flex align-items-center justify-content-center gap-1">
@@ -452,8 +458,21 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label fw-bold">Método de Pago / Banco <span class="text-danger">*</span></label>
+                        <select name="metodo_pago" class="form-select bg-light" required>
+                            <option value="bancolombia" selected>🏦 Bancolombia</option>
+                            <option value="nequi">📱 Nequi</option>
+                            <option value="daviplata">📲 Daviplata</option>
+                            <option value="davivienda">🏦 Davivienda</option>
+                            <option value="efectivo">💵 Efectivo (Caja)</option>
+                            <option value="tarjeta_credito">💳 Tarjeta de Crédito</option>
+                            <option value="transferencia">🔄 Otra Transferencia</option>
+                        </select>
+                        <small class="text-muted" style="font-size: 0.75rem;">El monto se descontará automáticamente del saldo de este método en Bancos.</small>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label fw-bold">Observaciones (Opcional)</label>
-                        <input type="text" name="observacion" class="form-control bg-light" placeholder="Ej: Transferencia Bancolombia, Efectivo en local, etc.">
+                        <input type="text" name="observacion" class="form-control bg-light" placeholder="Ej: Pago factura #402, comprobante 9821...">
                     </div>
                 </div>
                 <div class="modal-footer border-0 bg-light">

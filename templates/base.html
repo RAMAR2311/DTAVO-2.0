@@ -560,6 +560,9 @@
                             <a class="sidebar-sublink" href="/gastos">
                                 <i class="fa-solid fa-money-bill-transfer me-2" style="width: 16px;"></i> Control de Gastos
                             </a>
+                            <a class="sidebar-sublink" href="{{ url_for('bancos_bp.index') }}">
+                                <i class="fa-solid fa-building-columns me-2" style="width: 16px;"></i> Bancos &amp; Métodos Pago
+                            </a>
                             <a class="sidebar-sublink" href="/admin/maneos">
                                 <i class="fa-solid fa-handshake me-2" style="width: 16px;"></i> Maneos
                             </a>
@@ -594,6 +597,10 @@
                     <a class="sidebar-link" href="/arqueo/nuevo">
                         <i class="fa-solid fa-calculator sidebar-icon"></i>
                         <span>Arqueo de Caja</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bancos_bp.index') }}">
+                        <i class="fa-solid fa-building-columns sidebar-icon"></i>
+                        <span>Bancos &amp; Métodos Pago</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('arqueo_bp.log_sobrantes') }}">
                         <i class="fa-solid fa-scale-unbalanced-flip sidebar-icon"></i>

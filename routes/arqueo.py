@@ -44,6 +44,21 @@ def calcular_totales_dia(ventas_del_dia):
     
     return total_efectivo, total_transferencia, total_retomas
 
+def calcular_desglose_metodos_dia(ventas_del_dia):
+    """Calcula el total recaudado desglosado exactamente por cada método de pago individual."""
+    desglose = {}
+    for v in ventas_del_dia:
+        if v.pagos:
+            for p in v.pagos:
+                metodo = p.metodo_pago.lower() if p.metodo_pago else 'efectivo'
+                if metodo != 'retoma':
+                    desglose[metodo] = desglose.get(metodo, Decimal('0')) + Decimal(str(p.monto or 0))
+        else:
+            metodo = v.metodo_pago.lower() if v.metodo_pago else 'efectivo'
+            if metodo != 'retoma':
+                desglose[metodo] = desglose.get(metodo, Decimal('0')) + Decimal(str(v.monto_total or 0))
+    return desglose
+
 def procesar_unidades_ch(ventas):
     desglose = []
     total_general_ch = Decimal('0')
@@ -222,12 +237,28 @@ def nuevo():
                 )
                 db.session.add(log_sobrante)
 
+            # --- INTEGRACIÓN CON MÓDULO BANCOS ---
+            # Sumar lo recaudado por cada método de pago individual a su respectiva cuenta bancaria
+            from services.bank_service import registrar_movimiento_banco
+            desglose_bancos = calcular_desglose_metodos_dia(ventas_del_dia)
+            for metodo_cod, monto_metodo in desglose_bancos.items():
+                if monto_metodo > 0:
+                    registrar_movimiento_banco(
+                        codigo_metodo=metodo_cod,
+                        monto=monto_metodo,
+                        tipo_movimiento='INGRESO',
+                        origen='ARQUEO_CIERRE',
+                        descripcion=f'Cierre de Arqueo #{nuevo_arqueo.id} ({sucursal_actual} - {fecha_seleccionada})',
+                        referencia_id=nuevo_arqueo.id,
+                        usuario_id=current_user.id
+                    )
+
             db.session.commit()
-            flash('Arqueo de caja guardado exitosamente.', 'success')
+            flash('Arqueo de caja guardado exitosamente y acreditado al Módulo de Bancos.', 'success')
             return redirect(url_for('arqueo_bp.reporte', fecha_inicio=fecha_str, fecha_fin=fecha_str))
         except Exception as e:
             db.session.rollback()
-            flash('Ocurrió un error al guardar el arqueo de caja.', 'danger')
+            flash(f'Ocurrió un error al guardar el arqueo de caja: {str(e)}', 'danger')
 
     return render_template(
         'arqueo/form.html',

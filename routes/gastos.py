@@ -41,6 +41,7 @@ def index():
             fecha_obj = obtener_hora_bogota()
 
         try:
+            from services.bank_service import registrar_movimiento_banco
             for monto, metodo in zip(montos, metodos_pago):
                 valor_float = float(monto)
                 if valor_float > 0:
@@ -55,11 +56,28 @@ def index():
                         sucursal=current_user.sucursal
                     )
                     db.session.add(nuevo_gasto)
+                    db.session.flush()
+
+                    # Regla de negocio solicitada:
+                    # Descontar del módulo de bancos A MENOS que sea Gasto Diario en Efectivo
+                    # (ya que el gasto diario en efectivo se descuenta directamente en el arqueo del día).
+                    es_gasto_diario_efectivo = (tipo_gasto == 'Gasto Diario' and str(metodo).lower() == 'efectivo')
+                    if not es_gasto_diario_efectivo:
+                        registrar_movimiento_banco(
+                            codigo_metodo=metodo,
+                            monto=valor_float,
+                            tipo_movimiento='EGRESO',
+                            origen='GASTO',
+                            descripcion=f'Gasto: {categoria} - {descripcion or ""} (Gasto #{nuevo_gasto.id})',
+                            referencia_id=nuevo_gasto.id,
+                            usuario_id=current_user.id
+                        )
+
             db.session.commit()
             flash('Gasto registrado exitosamente.', 'success')
         except Exception as e:
             db.session.rollback()
-            flash('Error al intentar registrar el gasto en la base de datos.', 'danger')
+            flash(f'Error al registrar el gasto: {str(e)}', 'danger')
         
         return redirect(url_for('gastos_bp.index'))
 

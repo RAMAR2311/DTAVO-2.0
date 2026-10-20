@@ -110,6 +110,10 @@ def create_app():
     from routes.purchases import purchases_bp
     app.register_blueprint(purchases_bp, url_prefix='/compras')
 
+    # Registro de Blueprint Bancos
+    from routes.bancos import bancos_bp
+    app.register_blueprint(bancos_bp, url_prefix='/bancos')
+
 
     @app.template_filter('cop')
     def cop_filter(value):

@@ -216,17 +216,35 @@ def add_payment(id):
         return redirect(url_for('providers_bp.detail', id=id))
 
     observacion = request.form.get('observacion', '').strip()
+    metodo_pago = request.form.get('metodo_pago', 'efectivo').strip()
     
     nuevo_pago = ProviderPayment(
         provider_id=id,
         monto_abonado=monto_abonado,
+        metodo_pago=metodo_pago,
         observacion=observacion
     )
     
     db.session.add(nuevo_pago)
+    db.session.flush()
+
+    # --- INTEGRACIÓN CON BANCOS: DESCONTAR ABONO DEL MÉTODO ESCOGIDO ---
+    from services.bank_service import registrar_movimiento_banco
+    proveedor = Provider.query.get(id)
+    nombre_prov = proveedor.nombre if proveedor else f'ID {id}'
+    registrar_movimiento_banco(
+        codigo_metodo=metodo_pago,
+        monto=monto_abonado,
+        tipo_movimiento='EGRESO',
+        origen='ABONO_PROVEEDOR',
+        descripcion=f'Abono a Proveedor: {nombre_prov} (Abono #{nuevo_pago.id})',
+        referencia_id=nuevo_pago.id,
+        usuario_id=current_user.id
+    )
+
     db.session.commit()
     
-    flash('Abono registrado correctamente.', 'success')
+    flash(f'Abono registrado correctamente y descontado de Bancos ({metodo_pago.capitalize()}).', 'success')
     return redirect(url_for('providers_bp.detail', id=id))
 
 @providers_bp.route('/eliminar/<int:id>', methods=['POST'])

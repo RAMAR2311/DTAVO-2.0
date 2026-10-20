@@ -536,6 +536,7 @@ class ProviderPayment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     provider_id = db.Column(db.Integer, db.ForeignKey('providers.id'), nullable=False)
     monto_abonado = db.Column(db.Numeric(12, 2), nullable=False)
+    metodo_pago = db.Column(db.String(50), nullable=False, default='efectivo')
     observacion = db.Column(db.String(255), nullable=True)
     fecha_pago = db.Column(db.DateTime, default=obtener_hora_bogota)
 
@@ -661,3 +662,45 @@ class PurchaseOrderItem(db.Model):
 
     def __init__(self, **kwargs):
         super(PurchaseOrderItem, self).__init__(**kwargs)
+
+
+class BankAccount(db.Model):
+    """Modelo para representar los Métodos de Pago / Cuentas Bancarias y su saldo acumulado."""
+    __tablename__ = 'bank_accounts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    codigo = db.Column(db.String(50), unique=True, nullable=False, index=True) # ej: efectivo, nequi, bancolombia, daviplata, addi, sitecredito, tarjeta_credito
+    nombre = db.Column(db.String(100), nullable=False) # ej: Nequi, Bancolombia, Efectivo en Caja
+    tipo = db.Column(db.String(50), nullable=False, default='banco') # 'efectivo', 'banco', 'credito_digital', 'tarjeta'
+    icono = db.Column(db.String(50), nullable=True, default='fa-building-columns')
+    saldo_actual = db.Column(db.Numeric(14, 2), nullable=False, default=0.00)
+    activo = db.Column(db.Boolean, default=True, nullable=False)
+    fecha_actualizacion = db.Column(db.DateTime, default=obtener_hora_bogota, onupdate=obtener_hora_bogota)
+
+    movimientos = db.relationship('BankTransaction', backref='cuenta', lazy=True, cascade='all, delete-orphan', order_by='desc(BankTransaction.fecha)')
+
+    def __init__(self, **kwargs):
+        super(BankAccount, self).__init__(**kwargs)
+
+
+class BankTransaction(db.Model):
+    """Historial completo de sumas (entradas) y descuentos (salidas) por cuenta bancaria/método de pago."""
+    __tablename__ = 'bank_transactions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    account_id = db.Column(db.Integer, db.ForeignKey('bank_accounts.id'), nullable=False)
+    tipo_movimiento = db.Column(db.String(20), nullable=False) # 'INGRESO' o 'EGRESO' o 'AJUSTE'
+    origen = db.Column(db.String(50), nullable=False) # 'ARQUEO_CIERRE', 'ABONO_PROVEEDOR', 'GASTO', 'AJUSTE_MANUAL'
+    monto = db.Column(db.Numeric(14, 2), nullable=False)
+    saldo_anterior = db.Column(db.Numeric(14, 2), nullable=False, default=0.00)
+    saldo_nuevo = db.Column(db.Numeric(14, 2), nullable=False, default=0.00)
+    descripcion = db.Column(db.String(255), nullable=True)
+    referencia_id = db.Column(db.Integer, nullable=True) # ID de Arqueo, Abono o Gasto
+    usuario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    fecha = db.Column(db.DateTime, default=obtener_hora_bogota, index=True)
+
+    usuario = db.relationship('User', foreign_keys=[usuario_id])
+
+    def __init__(self, **kwargs):
+        super(BankTransaction, self).__init__(**kwargs)
+
