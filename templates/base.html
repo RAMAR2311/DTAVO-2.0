@@ -199,36 +199,196 @@
             background-color: rgba(118, 188, 33, 0.03) !important;
         }
 
-        /* Sidebar Offcanvas (100% White Canvas con Resalte Verde Lima) */
+        /* Sidebar Offcanvas Premium y Optimizado */
         .offcanvas {
             background-color: #FFFFFF !important;
             color: var(--text-primary) !important;
             border-right: 1px solid var(--brand-border) !important;
-            box-shadow: 4px 0 25px rgba(118, 188, 33, 0.06) !important;
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.08) !important;
         }
         .offcanvas-header {
-            background-color: #FFFFFF !important;
-            border-bottom: 1px solid var(--brand-border) !important;
+            background: linear-gradient(135deg, #112314 0%, #17381b 100%) !important;
+            border-bottom: 2px solid var(--brand-primary) !important;
+            padding: 1.25rem 1.25rem;
         }
-        .offcanvas-title {
-            color: var(--brand-dark) !important;
+        .offcanvas-header .offcanvas-title {
+            color: #FFFFFF !important;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
         }
-        .offcanvas-body .nav-link {
-            color: var(--text-primary) !important;
-            font-weight: 500;
-            border-radius: 8px;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease-in-out;
+        .offcanvas-header .btn-close {
+            filter: invert(1) brightness(1.5);
+            opacity: 0.85;
         }
-        .offcanvas-body .nav-link:hover, .offcanvas-body .nav-link.active {
-            background-color: rgba(118, 188, 33, 0.08) !important;
-            border-left: 3px solid var(--brand-primary) !important;
-            color: var(--brand-primary) !important;
+        .offcanvas-body {
+            scrollbar-width: thin;
+            scrollbar-color: #D1D5DB transparent;
+        }
+        .offcanvas-body::-webkit-scrollbar {
+            width: 5px;
+        }
+        .offcanvas-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .offcanvas-body::-webkit-scrollbar-thumb {
+            background-color: #E2E8F0;
+            border-radius: 20px;
+        }
+        .offcanvas-body::-webkit-scrollbar-thumb:hover {
+            background-color: var(--brand-primary);
+        }
+
+        /* Buscador rápido del Menú */
+        .sidebar-search-box {
+            position: relative;
+            margin: 0.85rem 1rem 0.5rem 1rem;
+        }
+        .sidebar-search-box input {
+            font-size: 0.82rem;
+            padding: 0.5rem 0.75rem 0.5rem 2.1rem;
+            border-radius: 10px;
+            border: 1px solid #E2E8F0;
+            background: #F8FAFC;
+            transition: all 0.2s ease;
+        }
+        .sidebar-search-box input:focus {
+            background: #FFFFFF;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px rgba(118, 188, 33, 0.15);
+        }
+        .sidebar-search-box i {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 0.82rem;
+        }
+
+        /* Categorías / Títulos de Sección */
+        .sidebar-section-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94A3B8;
+            padding: 0.75rem 0.75rem 0.35rem 0.75rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sidebar-section-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #F1F5F9;
+        }
+
+        /* Links de navegación */
+        .offcanvas-body .sidebar-link {
+            color: #334155 !important;
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.6rem 0.85rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+        .offcanvas-body .sidebar-link:hover {
+            background: #F4FBF0 !important;
+            color: #1E5622 !important;
+            border-color: rgba(118, 188, 33, 0.25);
             transform: translateX(3px);
         }
-        .offcanvas-body .border-bottom { border-bottom-color: var(--divider) !important; }
-        .offcanvas-body .bg-light { background-color: #FFFFFF !important; border-color: var(--brand-border) !important; }
-        .offcanvas-body .text-muted { color: var(--text-secondary) !important; }
+        .offcanvas-body .sidebar-link.active {
+            background: linear-gradient(90deg, rgba(118, 188, 33, 0.15), rgba(118, 188, 33, 0.05)) !important;
+            color: #1E5622 !important;
+            border-left: 3px solid var(--brand-primary);
+        }
+        .sidebar-icon {
+            width: 22px;
+            text-align: center;
+            margin-right: 0.75rem;
+            font-size: 0.95rem;
+            color: #64748B;
+            transition: color 0.2s;
+        }
+        .offcanvas-body .sidebar-link:hover .sidebar-icon {
+            color: var(--brand-primary);
+        }
+
+        /* Acordeones / Submódulos */
+        .sidebar-accordion-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #334155;
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.6rem 0.85rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .sidebar-accordion-btn:hover {
+            background: #F8FAFC;
+            color: #0F172A;
+        }
+        .sidebar-accordion-btn[aria-expanded="true"] {
+            background: #F4FBF0;
+            color: #1E5622;
+            border-color: rgba(118, 188, 33, 0.2);
+        }
+        .sidebar-accordion-btn[aria-expanded="true"] .sidebar-icon {
+            color: var(--brand-primary);
+        }
+        .sidebar-accordion-btn .chevron-arrow {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            transition: transform 0.2s ease;
+        }
+        .sidebar-accordion-btn[aria-expanded="true"] .chevron-arrow {
+            transform: rotate(180deg);
+            color: var(--brand-primary);
+        }
+
+        .sidebar-submenu {
+            background: #F8FAFC;
+            border-radius: 10px;
+            padding: 0.35rem 0.45rem;
+            margin: 0.25rem 0 0.5rem 0.75rem;
+            border-left: 2px solid var(--brand-primary);
+        }
+        .sidebar-submenu .sidebar-sublink {
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 0.45rem 0.65rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.15s ease;
+        }
+        .sidebar-submenu .sidebar-sublink:hover {
+            background: #FFFFFF;
+            color: var(--brand-primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transform: translateX(2px);
+        }
+        .sidebar-badge-count {
+            font-size: 0.65rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -263,227 +423,325 @@
     </nav>
 
     {% if current_user.is_authenticated %}
-    <!-- Offcanvas Menú Lateral (Sidebar) -->
-    <div class="offcanvas offcanvas-start border-0 shadow" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="width: 280px;">
-        <div class="offcanvas-header bg-brand-pink border-bottom">
-            <h5 class="offcanvas-title fw-bold text-brand-black" id="offcanvasNavbarLabel">
-                <i class="fa-solid fa-user-circle me-2"></i>{{ current_user.rol | capitalize }}
-            </h5>
+    <!-- Offcanvas Menú Lateral (Sidebar Optimizado y Categorizado) -->
+    <div class="offcanvas offcanvas-start border-0 shadow" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="width: 300px;">
+        <div class="offcanvas-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(118,188,33,0.2); border: 1px solid rgba(118,188,33,0.4); color: #76BC21;">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h6 class="offcanvas-title fw-bold mb-0 text-white" id="offcanvasNavbarLabel">
+                        {{ current_user.nombre or current_user.email.split('@')[0] | capitalize }}
+                    </h6>
+                    <span class="badge" style="background: rgba(118,188,33,0.25); color: #76BC21; font-size: 0.65rem; border: 1px solid rgba(118,188,33,0.4);">
+                        ROL: {{ current_user.rol | upper }}
+                    </span>
+                </div>
+            </div>
             <button type="button" class="btn-close shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
+
         <div class="offcanvas-body d-flex flex-column p-0">
-            <ul class="navbar-nav w-100 mb-auto px-3 py-3 gap-2">
+            <!-- Buscador Rápido de Módulos -->
+            <div class="sidebar-search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="sidebarSearchInput" class="form-control" placeholder="Buscar módulo o acción..." autocomplete="off">
+            </div>
+
+            <div class="flex-grow-1 px-3 py-2 overflow-y-auto" id="sidebarMenuContainer">
                 {% if current_user.rol == 'admin' %}
-                    <!-- Enlaces Únicos para el Administrador de la Tienda -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/admin/dashboard"><i class="fa-solid fa-chart-pie text-brand-pink me-2" style="width:20px; text-align:center;"></i> Dashboard</a>
-                    </li>
+                    <!-- SECCIÓN: VISTA GENERAL -->
+                    <div class="sidebar-section-label">General</div>
+                    <a class="sidebar-link" href="/admin/dashboard">
+                        <i class="fa-solid fa-chart-pie sidebar-icon text-success"></i>
+                        <span>Dashboard Principal</span>
+                    </a>
 
-                    <!-- Módulo Celulares -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseCelulares" role="button" aria-expanded="false" aria-controls="collapseCelulares">
-                            <span><i class="fa-solid fa-mobile-screen-button text-brand-black me-2" style="width:20px; text-align:center;"></i> Módulo Celulares</span>
-                            <i class="fa-solid fa-chevron-down small text-muted"></i>
-                        </a>
-                        <div class="collapse" id="collapseCelulares">
-                            <ul class="nav flex-column ms-3 mt-1 mb-2 gap-1 border-start ps-2">
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('celulares_bp.inventario') }}"><i class="fa-solid fa-mobile-screen-button text-brand-pink me-2" style="width:20px; text-align:center;"></i> Inventario Celulares</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('externos_bp.inventario') }}"><i class="fa-solid fa-box-open text-brand-black me-2" style="width:20px; text-align:center;"></i> Productos Externos</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('retomas_bp.cuarentena') }}"><i class="fa-solid fa-recycle text-brand-pink me-2" style="width:20px; text-align:center;"></i> Retomas</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('celulares_bp.clientes') }}"><i class="fa-solid fa-users text-brand-black me-2" style="width:20px; text-align:center;"></i> Clientes Celulares</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('celulares_bp.historial_ventas') }}"><i class="fa-solid fa-clock-rotate-left text-brand-pink me-2" style="width:20px; text-align:center;"></i> Historial Celulares</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('celulares_bp.trazabilidad') }}"><i class="fa-solid fa-timeline text-brand-pink me-2" style="width:20px; text-align:center;"></i> Trazabilidad IMEI</a>
-                                </li>
-
-                            </ul>
+                    <!-- SECCIÓN: VENTAS & CAJA -->
+                    <div class="sidebar-section-label">Caja &amp; Ventas</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupCaja" aria-expanded="true">
+                        <span><i class="fa-solid fa-cash-register sidebar-icon text-primary"></i> Caja &amp; Facturación</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse show" id="groupCaja">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="/sales/caja_visual">
+                                <i class="fa-solid fa-store me-2 text-primary" style="width: 16px;"></i> Caja Rápida Visual
+                            </a>
+                            <a class="sidebar-sublink" href="/sales/catalogo">
+                                <i class="fa-solid fa-book-open me-2 text-secondary" style="width: 16px;"></i> Catálogo Tienda
+                            </a>
+                            <a class="sidebar-sublink" href="/arqueo/nuevo">
+                                <i class="fa-solid fa-calculator me-2 text-success" style="width: 16px;"></i> Arqueo de Caja
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('arqueo_bp.log_sobrantes') }}">
+                                <i class="fa-solid fa-scale-unbalanced-flip me-2 text-warning" style="width: 16px;"></i> Log de Sobrantes
+                            </a>
                         </div>
-                    </li>
+                    </div>
 
-                    <!-- Módulo Accesorios -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseAccesorios" role="button" aria-expanded="false" aria-controls="collapseAccesorios">
-                            <span><i class="fa-solid fa-headphones text-brand-black me-2" style="width:20px; text-align:center;"></i> Módulo Accesorios</span>
-                            <i class="fa-solid fa-chevron-down small text-muted"></i>
-                        </a>
-                        <div class="collapse" id="collapseAccesorios">
-                            <ul class="nav flex-column ms-3 mt-1 mb-2 gap-1 border-start ps-2">
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/inventory"><i class="fa-solid fa-box-open text-brand-pink me-2" style="width:20px; text-align:center;"></i> Inventario Accesorios</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('externos_bp.inventario_accesorios') }}"><i class="fa-solid fa-headphones-simple text-brand-black me-2" style="width:20px; text-align:center;"></i> Accesorios Externos</a>
-                                </li>
-                            </ul>
+                    <!-- SECCIÓN: INVENTARIO & PRODUCTOS -->
+                    <div class="sidebar-section-label">Inventario &amp; Stock</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupInventario" aria-expanded="false">
+                        <span><i class="fa-solid fa-boxes-stacked sidebar-icon text-info"></i> Gestión de Inventario</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse" id="groupInventario">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.inventario') }}">
+                                <i class="fa-solid fa-mobile-screen-button me-2 text-success" style="width: 16px;"></i> Inventario Celulares
+                            </a>
+                            <a class="sidebar-sublink" href="/inventory">
+                                <i class="fa-solid fa-box-open me-2 text-primary" style="width: 16px;"></i> Inventario Accesorios
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario') }}">
+                                <i class="fa-solid fa-truck-ramp-box me-2 text-secondary" style="width: 16px;"></i> Celulares Externos
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario_accesorios') }}">
+                                <i class="fa-solid fa-headphones-simple me-2 text-secondary" style="width: 16px;"></i> Accesorios Externos
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('retomas_bp.cuarentena') }}">
+                                <i class="fa-solid fa-recycle me-2 text-warning" style="width: 16px;"></i> Retomas / Cuarentena
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.trazabilidad') }}">
+                                <i class="fa-solid fa-timeline me-2 text-danger" style="width: 16px;"></i> Trazabilidad IMEI
+                            </a>
                         </div>
-                    </li>
+                    </div>
 
-                    <!-- Catálogo -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/catalogo"><i class="fa-solid fa-book-open text-brand-black me-2" style="width:20px; text-align:center;"></i> Catálogo Tienda</a>
-                    </li>
+                    <!-- SECCIÓN: OPERACIONES & POSTVENTA -->
+                    <div class="sidebar-section-label">Operaciones &amp; Compras</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupOperaciones" aria-expanded="false">
+                        <span><i class="fa-solid fa-cart-flatbed sidebar-icon text-warning"></i> Operaciones</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse" id="groupOperaciones">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="{{ url_for('purchases_bp.index') }}">
+                                <i class="fa-solid fa-file-circle-plus me-2 text-success" style="width: 16px;"></i> Compras (Ingresos)
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('providers_bp.list_providers') }}">
+                                <i class="fa-solid fa-truck-fast me-2 text-primary" style="width: 16px;"></i> Directorio Proveedores
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('warranties_bp.index') }}">
+                                <i class="fa-solid fa-shield-halved me-2 text-info" style="width: 16px;"></i> Garantías &amp; Soporte
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.clientes') }}">
+                                <i class="fa-solid fa-address-book me-2 text-secondary" style="width: 16px;"></i> Directorio Clientes
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.historial_ventas') }}">
+                                <i class="fa-solid fa-clock-rotate-left me-2 text-muted" style="width: 16px;"></i> Historial de Ventas
+                            </a>
+                        </div>
+                    </div>
 
-                    <!-- Módulo Caja -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapseCaja" role="button" aria-expanded="false" aria-controls="collapseCaja">
-                            <span><i class="fa-solid fa-cash-register text-brand-pink me-2" style="width:20px; text-align:center;"></i> Módulo Caja</span>
-                            <i class="fa-solid fa-chevron-down small text-muted"></i>
-                        </a>
-                        <div class="collapse" id="collapseCaja">
-                            <ul class="nav flex-column ms-3 mt-1 mb-2 gap-1 border-start ps-2">
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/sales/caja_visual"><i class="fa-solid fa-store text-brand-pink me-2" style="width:20px; text-align:center;"></i> Caja Rápida Visual</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('arqueo_bp.log_sobrantes') }}"><i class="fa-solid fa-scale-unbalanced-flip text-warning me-2" style="width:20px; text-align:center;"></i> Log de Sobrantes</a>
-                                </li>
-                            </ul>
+                    <!-- SECCIÓN: ADMINISTRACIÓN & EQUIPO -->
+                    <div class="sidebar-section-label">Administración</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupAdmin" aria-expanded="false">
+                        <span><i class="fa-solid fa-sliders sidebar-icon text-dark"></i> Equipo &amp; Finanzas</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse" id="groupAdmin">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.asesores') }}">
+                                <i class="fa-solid fa-user-tie me-2 text-primary" style="width: 16px;"></i> Asesores de Venta
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.ventas_vendedores') }}">
+                                <i class="fa-solid fa-chart-line me-2 text-success" style="width: 16px;"></i> Rendimiento Asesores
+                            </a>
+                            <a class="sidebar-sublink" href="/admin/vendedores">
+                                <i class="fa-solid fa-users-gear me-2 text-secondary" style="width: 16px;"></i> Perfiles &amp; Usuarios
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.aprobaciones') }}">
+                                <i class="fa-solid fa-tags me-2 text-warning" style="width: 16px;"></i> Aprobaciones Especiales
+                            </a>
+                            <a class="sidebar-sublink" href="/gastos">
+                                <i class="fa-solid fa-money-bill-transfer me-2 text-danger" style="width: 16px;"></i> Control de Gastos
+                            </a>
+                            <a class="sidebar-sublink" href="/admin/maneos">
+                                <i class="fa-solid fa-handshake me-2 text-info" style="width: 16px;"></i> Maneos
+                            </a>
                         </div>
-                    </li>
-                    
-                    <!-- Módulo Personal / Asesores -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#collapsePersonal" role="button" aria-expanded="false" aria-controls="collapsePersonal">
-                            <span><i class="fa-solid fa-users text-brand-black me-2" style="width:20px; text-align:center;"></i> Personal</span>
-                            <i class="fa-solid fa-chevron-down small text-muted"></i>
-                        </a>
-                        <div class="collapse" id="collapsePersonal">
-                            <ul class="nav flex-column ms-3 mt-1 mb-2 gap-1 border-start ps-2">
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="/admin/vendedores"><i class="fa-solid fa-users-gear text-brand-black me-2" style="width:20px; text-align:center;"></i> Perfiles</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('admin_bp.asesores') }}"><i class="fa-solid fa-user-tie text-brand-black me-2" style="width:20px; text-align:center;"></i> Asesores</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold small" href="{{ url_for('admin_bp.ventas_vendedores') }}"><i class="fa-solid fa-chart-line text-brand-pink me-2" style="width:20px; text-align:center;"></i> Ventas Asesores</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('warranties_bp.index') }}"><i class="fa-solid fa-shield-halved text-brand-pink me-2" style="width:20px; text-align:center;"></i> Garantías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('purchases_bp.index') }}"><i class="fa-solid fa-cart-flatbed text-brand-pink me-2" style="width:20px; text-align:center;"></i> Compras (Ingreso)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('providers_bp.list_providers') }}"><i class="fa-solid fa-truck-fast text-brand-black me-2" style="width:20px; text-align:center;"></i> Proveedores</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('admin_bp.aprobaciones') }}"><i class="fa-solid fa-tags text-brand-pink me-2" style="width:20px; text-align:center;"></i> Aprobaciones</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/gastos"><i class="fa-solid fa-money-bill-transfer text-brand-black me-2" style="width:20px; text-align:center;"></i> Gastos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/admin/maneos"><i class="fa-solid fa-handshake text-brand-pink me-2" style="width:20px; text-align:center;"></i> Maneos</a>
-                    </li>
-                    <!-- ZENIC — Asistente IA -->
-                    <li class="nav-item">
-                        <a class="nav-link rounded-3 px-3 py-2 fw-bold border-bottom d-flex align-items-center gap-2"
-                           href="/zenic"
-                           style="background:linear-gradient(90deg,rgba(217,22,22,.08),transparent);border-left:3px solid #D91616 !important;color:#D91616;">
-                            <i class="fa-solid fa-robot" style="width:20px;text-align:center;"></i>
-                            ZENIC <span style="font-size:.6rem;background:#D91616;color:#fff;padding:1px 6px;border-radius:10px;margin-left:4px;letter-spacing:1px;">IA</span>
-                        </a>
-                    </li>
-                    <li class="nav-item mt-2">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold bg-light border" href="/arqueo/nuevo"><i class="fa-solid fa-calculator text-brand-black me-2" style="width:20px; text-align:center;"></i> Arqueo de Caja</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('arqueo_bp.log_sobrantes') }}"><i class="fa-solid fa-scale-unbalanced-flip text-warning me-2" style="width:20px; text-align:center;"></i> Log de Sobrantes</a>
-                    </li>
+                    </div>
+
+                    <!-- SECCIÓN: INTELIGENCIA ARTIFICIAL -->
+                    <div class="sidebar-section-label">Inteligencia Artificial</div>
+                    <a class="sidebar-link" href="/zenic" style="background: rgba(217, 22, 22, 0.06); border: 1px solid rgba(217, 22, 22, 0.2); color: #D91616 !important;">
+                        <i class="fa-solid fa-robot sidebar-icon" style="color: #D91616;"></i>
+                        <span>ZENIC Asistente</span>
+                        <span class="ms-auto badge bg-danger text-white rounded-pill px-2 py-1" style="font-size: 0.6rem;">IA</span>
+                    </a>
+
                 {% elif current_user.rol == 'vendedor' %}
-                    <!-- Vistas Estrictamente Operativas (Cajeros) -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/catalogo"><i class="fa-solid fa-book-open text-brand-pink me-2" style="width:20px; text-align:center;"></i> Catálogo Rápido</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/caja_visual"><i class="fa-solid fa-store text-brand-pink me-2" style="width:20px; text-align:center;"></i> Caja Rápida Visual</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/sales/ventas_hoy"><i class="fa-solid fa-list-check me-2" style="color: var(--brand-red); width:20px; text-align:center;"></i> Ventas del Día</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('warranties_bp.index') }}"><i class="fa-solid fa-shield-halved text-brand-black me-2" style="width:20px; text-align:center;"></i> Garantías</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/admin/maneos"><i class="fa-solid fa-handshake text-brand-pink me-2" style="width:20px; text-align:center;"></i> Maneos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="/gastos"><i class="fa-solid fa-money-bill-transfer text-brand-black me-2" style="width:20px; text-align:center;"></i> Gastos</a>
-                    </li>
-                    <li class="nav-item mt-2">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold bg-light border" href="/arqueo/nuevo"><i class="fa-solid fa-calculator text-brand-pink me-2" style="width:20px; text-align:center;"></i> Arqueo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('arqueo_bp.log_sobrantes') }}"><i class="fa-solid fa-scale-unbalanced-flip text-warning me-2" style="width:20px; text-align:center;"></i> Log de Sobrantes</a>
-                    </li>
+                    <!-- SECCIÓN: CAJERO / VENDEDOR -->
+                    <div class="sidebar-section-label">Punto de Venta</div>
+                    <a class="sidebar-link" href="/sales/caja_visual">
+                        <i class="fa-solid fa-store sidebar-icon text-primary"></i>
+                        <span>Caja Rápida Visual</span>
+                    </a>
+                    <a class="sidebar-link" href="/sales/catalogo">
+                        <i class="fa-solid fa-book-open sidebar-icon text-success"></i>
+                        <span>Catálogo Tienda</span>
+                    </a>
+                    <a class="sidebar-link" href="/sales/ventas_hoy">
+                        <i class="fa-solid fa-list-check sidebar-icon text-warning"></i>
+                        <span>Ventas del Día</span>
+                    </a>
+
+                    <div class="sidebar-section-label">Gestión</div>
+                    <a class="sidebar-link" href="/arqueo/nuevo">
+                        <i class="fa-solid fa-calculator sidebar-icon text-success"></i>
+                        <span>Arqueo de Caja</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('arqueo_bp.log_sobrantes') }}">
+                        <i class="fa-solid fa-scale-unbalanced-flip sidebar-icon text-warning"></i>
+                        <span>Log de Sobrantes</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('warranties_bp.index') }}">
+                        <i class="fa-solid fa-shield-halved sidebar-icon text-info"></i>
+                        <span>Garantías</span>
+                    </a>
+                    <a class="sidebar-link" href="/gastos">
+                        <i class="fa-solid fa-money-bill-transfer sidebar-icon text-danger"></i>
+                        <span>Gastos</span>
+                    </a>
+                    <a class="sidebar-link" href="/admin/maneos">
+                        <i class="fa-solid fa-handshake sidebar-icon text-secondary"></i>
+                        <span>Maneos</span>
+                    </a>
+
                 {% elif current_user.rol == 'bodega' %}
-                    <!-- Vistas Exclusivas para el Encargado de Bodega -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.dashboard') }}"><i class="fa-solid fa-boxes-stacked text-brand-black me-2" style="width:20px; text-align:center;"></i> Bodega</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('inventory_bp.index') }}"><i class="fa-solid fa-box text-brand-pink me-2" style="width:20px; text-align:center;"></i> Mi Inventario (Bodega)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.clientes') }}"><i class="fa-solid fa-address-book text-brand-black me-2" style="width:20px; text-align:center;"></i> Directorio Clientes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.nuevo_cliente') }}"><i class="fa-solid fa-user-plus text-brand-pink me-2" style="width:20px; text-align:center;"></i> Registrar Cliente</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.caja_rapida') }}"><i class="fa-solid fa-store text-brand-black me-2" style="width:20px; text-align:center;"></i> Caja Rápida (POS)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.nueva_factura') }}"><i class="fa-solid fa-file-invoice text-brand-pink me-2" style="width:20px; text-align:center;"></i> Factura Manual</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold border-bottom" href="{{ url_for('bodega_bp.modulo_abonos') }}"><i class="fa-solid fa-money-bill-transfer text-brand-black me-2" style="width:20px; text-align:center;"></i> Módulo Abonos</a>
-                    </li>
+                    <!-- SECCIÓN: BODEGA -->
+                    <div class="sidebar-section-label">Control Bodega</div>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.dashboard') }}">
+                        <i class="fa-solid fa-boxes-stacked sidebar-icon text-primary"></i>
+                        <span>Panel Bodega</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('inventory_bp.index') }}">
+                        <i class="fa-solid fa-box sidebar-icon text-success"></i>
+                        <span>Mi Inventario</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.caja_rapida') }}">
+                        <i class="fa-solid fa-store sidebar-icon text-info"></i>
+                        <span>Caja Rápida (POS)</span>
+                    </a>
+
+                    <div class="sidebar-section-label">Clientes &amp; Pagos</div>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.clientes') }}">
+                        <i class="fa-solid fa-address-book sidebar-icon text-secondary"></i>
+                        <span>Directorio Clientes</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.nuevo_cliente') }}">
+                        <i class="fa-solid fa-user-plus sidebar-icon text-primary"></i>
+                        <span>Registrar Cliente</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.nueva_factura') }}">
+                        <i class="fa-solid fa-file-invoice sidebar-icon text-warning"></i>
+                        <span>Factura Manual</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.modulo_abonos') }}">
+                        <i class="fa-solid fa-money-bill-transfer sidebar-icon text-danger"></i>
+                        <span>Módulo de Abonos</span>
+                    </a>
+
                 {% elif current_user.rol == 'vendedor_bodega' %}
-                    <!-- Vistas para el Vendedor de Bodega (Sin Inventario) -->
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.dashboard') }}"><i class="fa-solid fa-house-chimney text-brand-pink me-2" style="width:20px; text-align:center;"></i> Mi Panel</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.clientes') }}"><i class="fa-solid fa-address-book text-brand-black me-2" style="width:20px; text-align:center;"></i> Mis Clientes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.nuevo_cliente') }}"><i class="fa-solid fa-user-plus text-brand-pink me-2" style="width:20px; text-align:center;"></i> Crear Cliente</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.caja_rapida') }}"><i class="fa-solid fa-store text-brand-black me-2" style="width:20px; text-align:center;"></i> Caja Rápida (POS)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-semibold border-bottom" href="{{ url_for('bodega_bp.nueva_factura') }}"><i class="fa-solid fa-file-invoice text-brand-pink me-2" style="width:20px; text-align:center;"></i> Factura Manual</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-brand-black rounded-3 px-3 py-2 fw-bold border-bottom" href="{{ url_for('bodega_bp.modulo_abonos') }}"><i class="fa-solid fa-money-bill-transfer text-brand-black me-2" style="width:20px; text-align:center;"></i> Registrar Abono</a>
-                    </li>
+                    <!-- SECCIÓN: VENDEDOR BODEGA -->
+                    <div class="sidebar-section-label">Operación Bodega</div>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.dashboard') }}">
+                        <i class="fa-solid fa-house-chimney sidebar-icon text-primary"></i>
+                        <span>Mi Panel</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.caja_rapida') }}">
+                        <i class="fa-solid fa-store sidebar-icon text-info"></i>
+                        <span>Caja Rápida (POS)</span>
+                    </a>
+
+                    <div class="sidebar-section-label">Clientes &amp; Facturación</div>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.clientes') }}">
+                        <i class="fa-solid fa-address-book sidebar-icon text-secondary"></i>
+                        <span>Mis Clientes</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.nuevo_cliente') }}">
+                        <i class="fa-solid fa-user-plus sidebar-icon text-primary"></i>
+                        <span>Crear Cliente</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.nueva_factura') }}">
+                        <i class="fa-solid fa-file-invoice sidebar-icon text-warning"></i>
+                        <span>Factura Manual</span>
+                    </a>
+                    <a class="sidebar-link" href="{{ url_for('bodega_bp.modulo_abonos') }}">
+                        <i class="fa-solid fa-money-bill-transfer sidebar-icon text-success"></i>
+                        <span>Registrar Abono</span>
+                    </a>
                 {% endif %}
-            </ul>
+            </div>
             
             <!-- Interfaz de Desconexión / Fin de Turno al final del sidebar -->
-            <div class="px-3 pb-4 mt-auto">
-                <a class="btn btn-outline-danger w-100 rounded-pill fw-bold" href="{{ url_for('auth_bp.logout') }}">
-                    <i class="fa-solid fa-sign-out-alt me-2"></i> Salir del Sistema
+            <div class="p-3 border-top mt-auto" style="background: #FAFAFA; border-color: #E2E8F0 !important;">
+                <a class="btn btn-outline-danger w-100 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 py-2" href="{{ url_for('auth_bp.logout') }}" style="font-size: 0.85rem;">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span>Cerrar Sesión</span>
                 </a>
             </div>
         </div>
     </div>
+
+    <!-- Script para filtrado dinámico en el buscador del sidebar -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('sidebarSearchInput');
+            const menuContainer = document.getElementById('sidebarMenuContainer');
+            
+            if (searchInput && menuContainer) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    const links = menuContainer.querySelectorAll('.sidebar-link, .sidebar-sublink');
+                    const collapses = menuContainer.querySelectorAll('.collapse');
+                    const sectionLabels = menuContainer.querySelectorAll('.sidebar-section-label');
+                    const accordionBtns = menuContainer.querySelectorAll('.sidebar-accordion-btn');
+
+                    if (query === '') {
+                        // Restaurar estado normal
+                        links.forEach(el => el.style.display = '');
+                        sectionLabels.forEach(el => el.style.display = '');
+                        accordionBtns.forEach(el => el.style.display = '');
+                        return;
+                    }
+
+                    // Expandir todos los acordeones para que se vean las coincidencias
+                    collapses.forEach(c => {
+                        c.classList.add('show');
+                    });
+
+                    // Filtrar links
+                    links.forEach(link => {
+                        const text = link.textContent.toLowerCase();
+                        if (text.includes(query)) {
+                            link.style.display = 'flex';
+                        } else {
+                            link.style.display = 'none';
+                        }
+                    });
+
+                    // Ocultar acordeones si todos sus sublinks están ocultos
+                    accordionBtns.forEach(btn => {
+                        const targetId = btn.getAttribute('data-bs-target');
+                        if (targetId) {
+                            const subMenu = document.querySelector(targetId);
+                            if (subMenu) {
+                                const visibleChildren = subMenu.querySelectorAll('.sidebar-sublink[style="display: flex;"]');
+                                btn.style.display = visibleChildren.length > 0 ? 'flex' : 'none';
+                            }
+                        }
+                    });
+
+                    // Ocultar etiquetas de sección durante la búsqueda para máxima limpieza
+                    sectionLabels.forEach(el => el.style.display = 'none');
+                });
+            }
+        });
+    </script>
     {% endif %}
 
     <!-- App Container -->
