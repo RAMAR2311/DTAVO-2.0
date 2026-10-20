@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()  # Carga variables desde .env (incluye OPENAI_API_KEY)
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user
@@ -134,11 +134,19 @@ def create_app():
         if current_user.rol == 'admin':
             return redirect(url_for('admin_bp.dashboard'))
             
-        if current_user.rol == 'bodega' or current_user.rol == 'vendedor_bodega':
-            return redirect(url_for('bodega_bp.dashboard'))
-            
         # Por defecto, Vendedores van directo a Caja Visual
         return redirect(url_for('sales_bp.caja_visual'))
+
+    @app.route('/sw.js')
+    def service_worker():
+        response = send_from_directory(os.path.join(app.root_path, 'static'), 'sw.js', mimetype='application/javascript')
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Service-Worker-Allowed'] = '/'
+        return response
+
+    @app.route('/manifest.json')
+    def manifest():
+        return send_from_directory(os.path.join(app.root_path, 'static'), 'manifest.json', mimetype='application/manifest+json')
 
     # Auto-parcheador de esquema de base de datos para prevenir errores 500 en producción por columnas faltantes
     with app.app_context():

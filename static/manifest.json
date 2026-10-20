@@ -3,19 +3,23 @@
     "short_name": "Tu Tienda Tecno",
     "description": "Sistema POS y de gestión comercial de Tu Tienda Tecnológica",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
+    "orientation": "any",
     "background_color": "#ffffff",
     "theme_color": "#76BC21",
     "icons": [
         {
             "src": "/static/img/icons/icon-192x192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         },
         {
             "src": "/static/img/icons/icon-512x512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ]
 }
