@@ -4,7 +4,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-brand-black m-0"><i class="fa-solid fa-money-bill-wave text-success me-2"></i>Control de Gastos y Costos</h2>
     <div class="d-flex align-items-center gap-2">
-        <a href="{{ url_for('bank_bp.index') }}" class="btn btn-outline-success rounded-pill px-3 fw-bold shadow-sm">
+        <a href="{{ url_for('bancos_bp.index') }}" class="btn btn-outline-success rounded-pill px-3 fw-bold shadow-sm">
             <i class="fa-solid fa-building-columns me-1"></i> Ir a Bancos
         </a>
         <a href="{{ url_for('admin_bp.dashboard') if current_user.rol == 'admin' else url_for('sales_bp.procesar_venta') }}" class="btn btn-outline-secondary rounded-pill px-4">
