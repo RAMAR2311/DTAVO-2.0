@@ -262,7 +262,7 @@
                             <td class="text-start text-truncate" style="max-width: 150px;" title="{{ p.observacion }}">{{ p.observacion or '-' }}</td>
                             <td class="text-center">
                                 <span class="badge bg-light text-dark border text-capitalize">
-                                    <i class="fa-solid fa-building-columns text-success me-1"></i>{{ p.metodo_pago or 'Efectivo' }}
+                                    <i class="fa-solid fa-building-columns text-success me-1"></i>{{ 'Efectivo Caja Mayor' if (p.metodo_pago == 'efectivo' or not p.metodo_pago) else p.metodo_pago }}
                                 </span>
                             </td>
                             <td class="text-end fw-bold text-success">+${{ p.monto_abonado|cop }}</td>
@@ -464,7 +464,7 @@
                             <option value="nequi">📱 Nequi</option>
                             <option value="daviplata">📲 Daviplata</option>
                             <option value="davivienda">🏦 Davivienda</option>
-                            <option value="efectivo">💵 Efectivo (Caja)</option>
+                            <option value="efectivo">💵 Efectivo Caja Mayor</option>
                             <option value="tarjeta_credito">💳 Tarjeta de Crédito</option>
                             <option value="transferencia">🔄 Otra Transferencia</option>
                         </select>

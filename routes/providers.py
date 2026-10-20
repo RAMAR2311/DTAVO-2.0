@@ -3,7 +3,7 @@ from datetime import datetime
 import pytz
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 from models import db, Provider, ProviderInvoice, ProviderPayment
 from decorators import admin_required
 
