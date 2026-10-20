@@ -304,9 +304,12 @@ def delete_payment(payment_id):
     pago = ProviderPayment.query.get_or_404(payment_id)
     provider_id = pago.provider_id
     try:
+        from services.bank_service import revertir_movimiento_banco
+        revertir_movimiento_banco(origen='ABONO_PROVEEDOR', referencia_id=payment_id)
+
         db.session.delete(pago)
         db.session.commit()
-        flash('Abono eliminado correctamente.', 'success')
+        flash('Abono eliminado correctamente y reversado en Bancos.', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'Error al eliminar el abono: {str(e)}', 'danger')

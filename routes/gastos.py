@@ -113,9 +113,12 @@ def eliminar_gasto(id):
     gasto = Expense.query.get_or_404(id)
     descripcion = gasto.descripcion or gasto.categoria
     try:
+        from services.bank_service import revertir_movimiento_banco
+        revertir_movimiento_banco(origen='GASTO', referencia_id=id)
+
         db.session.delete(gasto)
         db.session.commit()
-        flash(f'Gasto "{descripcion}" eliminado correctamente.', 'success')
+        flash(f'Gasto "{descripcion}" eliminado correctamente y actualizado en Bancos.', 'success')
     except Exception as e:
         db.session.rollback()
         flash('Error al intentar eliminar el gasto.', 'danger')

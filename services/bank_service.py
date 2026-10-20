@@ -85,3 +85,25 @@ def registrar_movimiento_banco(codigo_metodo, monto, tipo_movimiento, origen, de
 
     db.session.add(transaccion)
     return transaccion
+
+def revertir_movimiento_banco(origen, referencia_id):
+    """
+    Reversa y elimina el movimiento bancario asociado a un origen y referencia_id
+    cuando se elimina un Gasto o un Abono a Proveedor. Restaura el saldo de la cuenta.
+    """
+    movimientos = BankTransaction.query.filter_by(origen=origen, referencia_id=referencia_id).all()
+    for mov in movimientos:
+        cuenta = BankAccount.query.get(mov.account_id)
+        if cuenta:
+            monto_dec = Decimal(str(mov.monto or 0))
+            saldo_actual = Decimal(str(cuenta.saldo_actual or 0))
+            # Si era EGRESO (se restó dinero), al eliminarlo devolvemos el dinero (sumamos)
+            if mov.tipo_movimiento == 'EGRESO':
+                cuenta.saldo_actual = saldo_actual + monto_dec
+            # Si era INGRESO (se sumó dinero), al eliminarlo lo restamos
+            elif mov.tipo_movimiento == 'INGRESO':
+                cuenta.saldo_actual = saldo_actual - monto_dec
+            cuenta.fecha_actualizacion = obtener_hora_bogota()
+        
+        db.session.delete(mov)
+

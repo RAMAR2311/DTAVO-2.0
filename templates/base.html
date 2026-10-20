@@ -560,14 +560,18 @@
                             <a class="sidebar-sublink" href="/gastos">
                                 <i class="fa-solid fa-money-bill-transfer me-2" style="width: 16px;"></i> Control de Gastos
                             </a>
-                            <a class="sidebar-sublink" href="{{ url_for('bancos_bp.index') }}">
-                                <i class="fa-solid fa-building-columns me-2" style="width: 16px;"></i> Bancos &amp; Métodos Pago
-                            </a>
                             <a class="sidebar-sublink" href="/admin/maneos">
                                 <i class="fa-solid fa-handshake me-2" style="width: 16px;"></i> Maneos
                             </a>
                         </div>
                     </div>
+
+                    <!-- SECCIÓN: BANCOS (INDEPENDIENTE) -->
+                    <div class="sidebar-section-label">Finanzas</div>
+                    <a class="sidebar-link" href="{{ url_for('bancos_bp.index') }}">
+                        <i class="fa-solid fa-building-columns sidebar-icon"></i>
+                        <span>Bancos</span>
+                    </a>
 
                     <!-- SECCIÓN: INTELIGENCIA ARTIFICIAL -->
                     <div class="sidebar-section-label">Inteligencia Artificial</div>
