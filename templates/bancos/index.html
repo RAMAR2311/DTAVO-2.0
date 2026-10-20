@@ -1,103 +1,128 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+<!-- Cabecera y Acciones Rápidas -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
         <h2 class="fw-bold text-brand-black m-0 d-flex align-items-center gap-2">
-            <i class="fa-solid fa-building-columns text-success"></i> Módulo de Bancos &amp; Métodos de Pago
+            <i class="fa-solid fa-building-columns text-success"></i> Módulo de Bancos &amp; Caja Mayor
         </h2>
-        <p class="text-muted small m-0">Monitoreo de saldos en tiempo real por cada método de pago recibido e historial detallado de movimientos.</p>
+        <p class="text-muted small m-0">Gestión de efectivo en caja mayor, cuentas digitales e historial de transacciones.</p>
     </div>
-    <div class="d-flex gap-2">
+
+    <!-- Botones de Acción Solicitados -->
+    <div class="d-flex flex-wrap gap-2">
         {% if current_user.rol == 'admin' %}
-        <button type="button" class="btn btn-outline-success rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#modalAjusteManual">
-            <i class="fa-solid fa-sliders me-1"></i> Ajuste Manual
+        <!-- 1. Botón Transferir a Caja Mayor -->
+        <button type="button" class="btn btn-success rounded-pill px-3 py-2 fw-bold shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTransferirCajaMayor">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>Transferir a Caja Mayor</span>
+        </button>
+
+        <button type="button" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAjusteManual" title="Ajuste manual de saldo">
+            <i class="fa-solid fa-sliders me-1"></i> Ajuste
         </button>
         {% endif %}
-        <a href="{{ url_for('admin_bp.dashboard') if current_user.rol == 'admin' else url_for('sales_bp.procesar_venta') }}" class="btn btn-outline-secondary rounded-pill px-4">
+
+        <!-- 2. Botón Realizar Abono a Proveedor -->
+        <a href="{{ url_for('providers_bp.list_providers') }}" class="btn btn-outline-primary rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-truck-fast"></i>
+            <span>Realizar Abono Proveedor</span>
+        </a>
+
+        <!-- 3. Botón Registrar Gasto -->
+        <a href="{{ url_for('gastos_bp.index') }}" class="btn btn-outline-danger rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Registrar Gasto</span>
+        </a>
+
+        <a href="{{ url_for('admin_bp.dashboard') if current_user.rol == 'admin' else url_for('sales_bp.procesar_venta') }}" class="btn btn-light border rounded-pill px-3 py-2 text-secondary fw-semibold">
             <i class="fa-solid fa-arrow-left me-1"></i> Volver
         </a>
     </div>
 </div>
 
-<!-- Tarjetas de Totales Generales -->
+<!-- 3 Tarjetas Principales -->
 <div class="row g-3 mb-4">
+    <!-- Tarjeta 1: Total Consolidado -->
     <div class="col-12 col-md-4">
         <div class="card card-custom p-4 border-0 shadow-sm h-100" style="border-left: 5px solid #198754 !important;">
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="text-secondary fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Saldo Total Consolidado</span>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(25, 135, 84, 0.1); color: #198754;">
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(25, 135, 84, 0.1); color: #198754;">
                     <i class="fa-solid fa-vault fs-5"></i>
                 </div>
             </div>
             <h2 class="fw-bolder m-0 text-success font-mono">${{ total_global|cop }}</h2>
-            <small class="text-muted mt-1 d-block">Suma total de dinero físico y digital</small>
+            <small class="text-muted mt-2 d-block">Suma total de Caja Mayor + Cuentas Digitales</small>
         </div>
     </div>
-    <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 border-0 shadow-sm h-100" style="border-left: 5px solid #0d6efd !important;">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-secondary fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Total en Cuentas Digitales</span>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
-                    <i class="fa-solid fa-mobile-screen fs-5"></i>
-                </div>
-            </div>
-            <h2 class="fw-bolder m-0 text-primary font-mono">${{ total_en_bancos|cop }}</h2>
-            <small class="text-muted mt-1 d-block">Nequi, Bancolombia, Daviplata, Addi, etc.</small>
-        </div>
-    </div>
+
+    <!-- Tarjeta 2: Efectivo Caja Mayor (Principal) -->
     <div class="col-12 col-md-4">
         <div class="card card-custom p-4 border-0 shadow-sm h-100" style="border-left: 5px solid #ffc107 !important;">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-secondary fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Total Efectivo en Caja</span>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background: rgba(255, 193, 7, 0.15); color: #b78103;">
+                <span class="text-dark fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Efectivo Caja Mayor</span>
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(255, 193, 7, 0.18); color: #b78103;">
                     <i class="fa-solid fa-money-bill-wave fs-5"></i>
                 </div>
             </div>
             <h2 class="fw-bolder m-0 text-dark font-mono">${{ total_efectivo|cop }}</h2>
-            <small class="text-muted mt-1 d-block">Saldo neto acumulado en efectivo físico</small>
+            <small class="text-muted mt-2 d-block">Fondo de efectivo acumulado en tienda</small>
+        </div>
+    </div>
+
+    <!-- Tarjeta 3: Cuentas Digitales (Con Acordeón Desplegable Interno) -->
+    <div class="col-12 col-md-4">
+        <div class="card card-custom p-4 border-0 shadow-sm h-100 position-relative" style="border-left: 5px solid #0d6efd !important;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-secondary fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Cuentas Digitales</span>
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                    <i class="fa-solid fa-mobile-screen fs-5"></i>
+                </div>
+            </div>
+            <h2 class="fw-bolder m-0 text-primary font-mono">${{ total_en_bancos|cop }}</h2>
+            
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetalleBancos" aria-expanded="false" aria-controls="collapseDetalleBancos">
+                    <i class="fa-solid fa-layer-group me-1"></i> Ver desglose por cuenta <i class="fa-solid fa-chevron-down ms-1 small"></i>
+                </button>
+                <small class="text-muted">{{ cuentas|length - 1 }} cuentas</small>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Grid de Métodos de Pago / Bancos -->
-<h5 class="fw-bold text-brand-black mb-3 d-flex align-items-center gap-2">
-    <i class="fa-solid fa-wallet text-success"></i> Saldo por Método de Pago
-</h5>
-<div class="row g-3 mb-5">
-    {% for cuenta in cuentas %}
-    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-        <div class="card card-custom p-3 border shadow-sm h-100 position-relative bg-white" style="border-radius: 16px; border-color: rgba(118, 188, 33, 0.2) !important;">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
-                         style="width: 42px; height: 42px; background: rgba(118, 188, 33, 0.12); color: var(--brand-primary); font-size: 1.1rem;">
-                        <i class="fa-solid {{ cuenta.icono or 'fa-building-columns' }}"></i>
+<!-- Desglose de Cuentas Digitales (Colapsado dentro de la vista para máxima limpieza) -->
+<div class="collapse mb-4" id="collapseDetalleBancos">
+    <div class="card card-custom p-4 border shadow-sm bg-light" style="border-radius: 20px;">
+        <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+            <i class="fa-solid fa-wallet text-primary"></i> Saldos en cada Cuenta Digital:
+        </h6>
+        <div class="row g-3">
+            {% for c in cuentas %}
+            {% if c.codigo != 'efectivo' %}
+            <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                <div class="card p-3 border-0 shadow-sm rounded-3 bg-white h-100">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid {{ c.icono or 'fa-building-columns' }} text-success"></i>
+                            <span class="fw-bold text-dark small">{{ c.nombre }}</span>
+                        </div>
+                        <a href="{{ url_for('bancos_bp.index', account_id=c.id) }}" class="btn btn-sm btn-light border rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Filtrar movimientos">
+                            <i class="fa-solid fa-filter text-secondary" style="font-size: 0.65rem;"></i>
+                        </a>
                     </div>
-                    <div>
-                        <h6 class="fw-bold mb-0 text-dark">{{ cuenta.nombre }}</h6>
-                        <span class="badge bg-light text-muted border text-uppercase" style="font-size: 0.65rem;">{{ cuenta.tipo }}</span>
-                    </div>
-                </div>
-                <a href="{{ url_for('bancos_bp.index', account_id=cuenta.id) }}" class="btn btn-sm btn-light border rounded-pill px-2" title="Filtrar movimientos">
-                    <i class="fa-solid fa-filter text-secondary" style="font-size: 0.75rem;"></i>
-                </a>
-            </div>
-            
-            <div class="mt-auto pt-2 border-top">
-                <small class="text-muted d-block" style="font-size: 0.72rem;">SALDO DISPONIBLE</small>
-                <div class="d-flex align-items-baseline justify-content-between">
-                    <h4 class="fw-bold mb-0 font-mono {{ 'text-success' if cuenta.saldo_actual >= 0 else 'text-danger' }}">
-                        ${{ cuenta.saldo_actual|cop }}
-                    </h4>
-                    <span class="badge {{ 'bg-success-subtle text-success' if cuenta.saldo_actual >= 0 else 'bg-danger-subtle text-danger' }} rounded-pill" style="font-size: 0.68rem;">
-                        {{ cuenta.movimientos|length }} movs
-                    </span>
+                    <h5 class="fw-bold font-mono mb-0 {{ 'text-success' if c.saldo_actual >= 0 else 'text-danger' }}">
+                        ${{ c.saldo_actual|cop }}
+                    </h5>
+                    <small class="text-muted" style="font-size: 0.7rem;">{{ c.movimientos|length }} movimientos registrados</small>
                 </div>
             </div>
+            {% endif %}
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
 </div>
 
 <!-- Sección de Historial de Transacciones (Auditoría) -->
@@ -107,7 +132,7 @@
             <h5 class="fw-bold m-0 text-brand-black d-flex align-items-center gap-2">
                 <i class="fa-solid fa-clock-rotate-left text-success"></i> Historial de Movimientos
             </h5>
-            <small class="text-muted">Registro en vivo de todas las sumas y descuentos (Arqueos, Abonos a Proveedor, Gastos y Ajustes).</small>
+            <small class="text-muted">Registro en vivo de ingresos y egresos (Cierres de Arqueo, Abonos a Proveedores, Gastos y Traslados).</small>
         </div>
         {% if selected_account_id or selected_tipo or fecha_inicio or fecha_fin %}
         <a href="{{ url_for('bancos_bp.index') }}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
@@ -190,6 +215,10 @@
                             <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
                                 <i class="fa-solid fa-receipt me-1"></i> Gasto
                             </span>
+                        {% elif m.origen == 'TRASLADO_A_CAJA' %}
+                            <span class="badge bg-warning-subtle text-dark border border-warning px-2 py-1">
+                                <i class="fa-solid fa-money-bill-transfer me-1"></i> Traslado a Caja
+                            </span>
                         {% else %}
                             <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">
                                 <i class="fa-solid fa-gear me-1"></i> Ajuste
@@ -222,12 +251,61 @@
     </div>
 </div>
 
-<!-- Modal Ajuste Manual de Saldo -->
+<!-- Modal 1: Transferir de Bancos a Caja Mayor -->
 {% if current_user.rol == 'admin' %}
-<div class="modal fade" id="modalAjusteManual" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalTransferirCajaMayor" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-success text-white border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-money-bill-transfer me-2"></i> Transferir de Bancos a Caja Mayor
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('bancos_bp.transferir_a_caja_mayor') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-body p-4">
+                    <div class="alert alert-info border-0 mb-4 py-2 small">
+                        <i class="fa-solid fa-circle-info me-1"></i> Esta acción retirará saldo de la cuenta digital que escojas y lo sumará a <strong>Efectivo Caja Mayor</strong>.
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Cuenta de Origen (Banco / Método) <span class="text-danger">*</span></label>
+                        <select name="origen_id" class="form-select bg-light" required>
+                            {% for c in cuentas %}
+                            {% if c.codigo != 'efectivo' %}
+                            <option value="{{ c.id }}">{{ c.nombre }} (Saldo actual: ${{ c.saldo_actual|cop }})</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Monto a Retirar / Trasladar <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">$</span>
+                            <input type="number" step="0.01" min="0.01" name="monto" class="form-control bg-light fw-bold text-success" placeholder="0" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Detalle o Motivo (Opcional)</label>
+                        <input type="text" name="motivo" class="form-control bg-light" placeholder="Ej: Retiro en cajero para base física, efectivo en tienda...">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold">
+                        <i class="fa-solid fa-check me-1"></i> Realizar Transferencia
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: Ajuste Manual de Saldo -->
+<div class="modal fade" id="modalAjusteManual" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white border-0">
                 <h5 class="modal-title fw-bold"><i class="fa-solid fa-sliders me-2"></i> Ajuste Manual de Saldo</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -265,7 +343,7 @@
                 </div>
                 <div class="modal-footer border-0 bg-light">
                     <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold"><i class="fa-solid fa-check me-1"></i> Aplicar Ajuste</button>
+                    <button type="submit" class="btn btn-dark rounded-pill px-4 fw-bold"><i class="fa-solid fa-check me-1"></i> Aplicar Ajuste</button>
                 </div>
             </form>
         </div>

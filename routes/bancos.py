@@ -93,3 +93,55 @@ def ajuste_manual():
         flash(f'Error al procesar el ajuste manual: {str(e)}', 'danger')
 
     return redirect(url_for('bancos_bp.index'))
+
+@bancos_bp.route('/transferir_a_caja_mayor', methods=['POST'])
+@login_required
+@admin_required
+def transferir_a_caja_mayor():
+    """Transfiere dinero desde un banco/método digital hacia la Caja Mayor (Efectivo)."""
+    origen_id = request.form.get('origen_id', type=int)
+    monto = request.form.get('monto', type=float)
+    motivo = request.form.get('motivo', '').strip()
+
+    if not origen_id or not monto or monto <= 0:
+        flash('Datos de transferencia inválidos. El monto debe ser mayor a 0.', 'danger')
+        return redirect(url_for('bancos_bp.index'))
+
+    cuenta_origen = BankAccount.query.get_or_404(origen_id)
+
+    if cuenta_origen.codigo == 'efectivo':
+        flash('No puedes transferir de Efectivo hacia Efectivo.', 'warning')
+        return redirect(url_for('bancos_bp.index'))
+
+    try:
+        detalle_origen = f'Retiro/Traslado hacia Efectivo Caja Mayor: {motivo or "Sin detalle"}'
+        detalle_destino = f'Ingreso traslado desde {cuenta_origen.nombre}: {motivo or "Sin detalle"}'
+
+        # 1. Egresar del banco origen
+        registrar_movimiento_banco(
+            codigo_metodo=cuenta_origen.codigo,
+            monto=monto,
+            tipo_movimiento='EGRESO',
+            origen='TRASLADO_A_CAJA',
+            descripcion=detalle_origen,
+            usuario_id=current_user.id
+        )
+
+        # 2. Ingresar a Efectivo Caja Mayor
+        registrar_movimiento_banco(
+            codigo_metodo='efectivo',
+            monto=monto,
+            tipo_movimiento='INGRESO',
+            origen='TRASLADO_A_CAJA',
+            descripcion=detalle_destino,
+            usuario_id=current_user.id
+        )
+
+        db.session.commit()
+        flash(f'Transferencia de ${monto:,.0f} desde {cuenta_origen.nombre} a Efectivo Caja Mayor realizada con éxito.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error al realizar la transferencia: {str(e)}', 'danger')
+
+    return redirect(url_for('bancos_bp.index'))
+
