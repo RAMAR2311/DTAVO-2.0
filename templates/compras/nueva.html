@@ -337,23 +337,49 @@
     });
 
     function agregarProducto(prodId, nombre, varId, varNombre, stock, costo, tipoInv, imei) {
-        // Verificar si ya existe en la lista
-        const index = itemsCompra.findIndex(it => it.product_id === prodId && it.variant_id === varId);
-        if (index >= 0) {
-            itemsCompra[index].cantidad += 1;
-        } else {
+        const esCelular = (tipoInv === 'celulares');
+
+        // Si es celular, cada equipo es una unidad física única identificada por su IMEI / serial
+        if (esCelular) {
+            const yaEnLista = itemsCompra.some(it => it.product_id === prodId || (imei && it.imei && it.imei === imei));
+            if (yaEnLista) {
+                alert(`Este equipo con IMEI/Serial (${imei || nombre}) ya fue agregado a la lista de ingreso.`);
+                inputBusqueda.value = '';
+                resultadosBox.style.display = 'none';
+                return;
+            }
+
             itemsCompra.push({
                 product_id: prodId,
                 nombre: nombre,
-                variant_id: varId,
-                variant_nombre: varNombre,
-                stock_actual: stock,
-                cantidad: 1,
+                variant_id: null,
+                variant_nombre: null,
+                stock_actual: stock || 0,
+                cantidad: 1, // En celulares siempre es exactamente 1 unidad por cada serial único
                 costo_unitario: costo || 0,
-                tipo_inventario: tipoInv,
+                tipo_inventario: 'celulares',
                 imei: imei || '',
                 imei2: ''
             });
+        } else {
+            // Accesorios / tienda general por lote
+            const index = itemsCompra.findIndex(it => it.product_id === prodId && it.variant_id === varId);
+            if (index >= 0) {
+                itemsCompra[index].cantidad += 1;
+            } else {
+                itemsCompra.push({
+                    product_id: prodId,
+                    nombre: nombre,
+                    variant_id: varId,
+                    variant_nombre: varNombre,
+                    stock_actual: stock,
+                    cantidad: 1,
+                    costo_unitario: costo || 0,
+                    tipo_inventario: tipoInv,
+                    imei: '',
+                    imei2: ''
+                });
+            }
         }
 
         inputBusqueda.value = '';
@@ -367,6 +393,11 @@
     }
 
     function actualizarCantidad(index, val) {
+        if (itemsCompra[index].tipo_inventario === 'celulares') {
+            itemsCompra[index].cantidad = 1;
+            renderizarTotales();
+            return;
+        }
         const qty = parseInt(val) || 1;
         itemsCompra[index].cantidad = qty > 0 ? qty : 1;
         renderizarTotales();
@@ -428,10 +459,15 @@
                         <span class="badge bg-light text-dark border">${it.stock_actual} uds</span>
                     </td>
                     <td class="text-center">
-                        <input type="number" class="form-control text-center font-mono fw-bold" 
-                               min="1" value="${it.cantidad}" 
-                               onchange="actualizarCantidad(${idx}, this.value)"
-                               onkeyup="actualizarCantidad(${idx}, this.value)">
+                        ${esCelular ? `
+                            <span class="badge bg-secondary font-mono fw-bold px-3 py-2" title="Unidad única por Serial/IMEI">1 ud</span>
+                            <input type="hidden" value="1">
+                        ` : `
+                            <input type="number" class="form-control text-center font-mono fw-bold" 
+                                   min="1" value="${it.cantidad}" 
+                                   onchange="actualizarCantidad(${idx}, this.value)"
+                                   onkeyup="actualizarCantidad(${idx}, this.value)">
+                        `}
                     </td>
                     <td>
                         <div class="input-group input-group-sm">

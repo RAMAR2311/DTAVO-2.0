@@ -116,27 +116,38 @@ def api_crear_producto_rapido():
             p_minimo = costo
 
         if tipo == 'celulares':
-            # Validación de IMEI único si viene código
-            imei_principal = codigo if codigo else None
+            imei_principal = str(data.get('imei') or codigo).strip()
             imei2_val = str(data.get('imei2', '')).strip() or None
-            
-            if imei_principal:
-                existente = Product.query.filter((Product.imei == imei_principal) | (Product.sku == imei_principal)).first()
-                if existente:
-                    return jsonify({'success': False, 'error': f'Ya existe un equipo con ese IMEI o SKU: {existente.nombre}'}), 400
+            marca_val = data.get('marca', '').strip()
+            modelo_val = data.get('modelo', '').strip()
+
+            if not imei_principal:
+                return jsonify({'success': False, 'error': 'El serial / IMEI principal es obligatorio para celulares.'}), 400
+
+            if not nombre:
+                nombre = f"{marca_val} {modelo_val}".strip() or f"Celular IMEI {imei_principal}"
+
+            # Verificar si ya existe este serial/IMEI en la base de datos
+            existente = Product.query.filter(
+                (Product.imei == imei_principal) | 
+                (Product.sku == imei_principal) | 
+                (Product.imei2 == imei_principal)
+            ).first()
+            if existente:
+                return jsonify({'success': False, 'error': f'Ya existe un equipo registrado con el IMEI/Serial {imei_principal}: {existente.nombre}'}), 400
 
             nuevo = Product(
                 nombre=nombre,
-                sku=imei_principal or f"CEL-{int(datetime.now().timestamp())}",
+                sku=imei_principal,
                 tipo_inventario='celulares',
-                cantidad_stock=0, # Se incrementará en la orden de compra
+                cantidad_stock=0, # Se incrementará en 1 al confirmar la orden de compra
                 precio_costo=costo,
                 precio_sugerido=p_sugerido,
                 precio_minimo=p_minimo,
                 imei=imei_principal,
                 imei2=imei2_val,
-                marca=data.get('marca', '').strip() or None,
-                modelo_celular=data.get('modelo', '').strip() or None,
+                marca=marca_val or None,
+                modelo_celular=modelo_val or None,
                 color=data.get('color', '').strip() or None,
                 memoria=data.get('memoria', '').strip() or None,
                 bateria=data.get('bateria', '').strip() or None,
