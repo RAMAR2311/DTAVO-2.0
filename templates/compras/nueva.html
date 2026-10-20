@@ -75,9 +75,14 @@
                         <h5 class="fw-bold m-0">
                             <i class="fa-solid fa-magnifying-glass text-brand-pink me-2"></i> 2. Búsqueda Avanzada de Productos
                         </h5>
-                        <span class="badge rounded-pill px-3 py-1 bg-light text-secondary border" id="badgeTipoActual">
-                            Filtrando: Accesorios
-                        </span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge rounded-pill px-3 py-1 bg-light text-secondary border" id="badgeTipoActual">
+                                Filtrando: Accesorios
+                            </span>
+                            <button type="button" class="btn btn-outline-success btn-sm rounded-pill fw-bold" onclick="abrirModalCrearDirecto()">
+                                <i class="fa-solid fa-plus me-1"></i> + Crear y Agregar Nuevo
+                            </button>
+                        </div>
                     </div>
 
                     <div class="position-relative mb-3">
@@ -86,13 +91,13 @@
                                 <i class="fa-solid fa-search"></i>
                             </span>
                             <input type="text" id="buscadorAvanzado" class="form-control border-start-0 ps-0" 
-                                   placeholder="Escribe nombre, modelo, SKU, IMEI o marca para buscar y agregar..." 
+                                   placeholder="Escanea con la pistola o escribe serial, IMEI, SKU o nombre..." 
                                    autocomplete="off">
                         </div>
                         
                         <!-- Lista de Sugerencias desplegable -->
                         <div id="resultadosBusqueda" class="list-group position-absolute w-100 shadow-lg mt-1 rounded-3 overflow-auto" 
-                             style="max-height: 280px; z-index: 1050; display: none; background: #FFFFFF; border: 1px solid var(--brand-border);">
+                             style="max-height: 320px; z-index: 1050; display: none; background: #FFFFFF; border: 1px solid var(--brand-border);">
                             <!-- Se inyecta con JavaScript -->
                         </div>
                     </div>
@@ -201,11 +206,14 @@
 
     // Buscador Avanzado con Debounce
     let timerBusqueda = null;
+    let ultimosProductosEncontrados = [];
+
     inputBusqueda.addEventListener('input', function() {
         clearTimeout(timerBusqueda);
         const query = this.value.trim();
-        if (query.length < 2) {
+        if (query.length < 1) {
             resultadosBox.style.display = 'none';
+            ultimosProductosEncontrados = [];
             return;
         }
 
@@ -213,15 +221,51 @@
             fetch(`/compras/api/buscar_productos?tipo=${tipoSelect.value}&q=${encodeURIComponent(query)}`)
                 .then(res => res.json())
                 .then(data => {
-                    mostrarResultados(data.productos);
+                    ultimosProductosEncontrados = data.productos || [];
+                    mostrarResultados(ultimosProductosEncontrados, query);
                 })
                 .catch(err => console.error('Error buscando productos:', err));
-        }, 250);
+        }, 200);
     });
 
-    function mostrarResultados(productos) {
+    // Detectar pistola lectora o Enter en el buscador
+    inputBusqueda.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = this.value.trim();
+            if (!query) return;
+
+            // Si hay exactamente 1 producto encontrado, agregarlo de inmediato
+            if (ultimosProductosEncontrados.length === 1) {
+                const p = ultimosProductosEncontrados[0];
+                if (!p.variantes || p.variantes.length === 0) {
+                    agregarProducto(p.id, p.nombre, null, null, p.stock, p.costo, p.tipo_inventario, p.imei || '');
+                    this.value = '';
+                    resultadosBox.style.display = 'none';
+                    return;
+                }
+            }
+
+            // Si no hay productos encontrados con ese serial/código, abrir ventana para crearlo al instante
+            if (ultimosProductosEncontrados.length === 0) {
+                abrirModalCrearDirecto(query);
+            }
+        }
+    });
+
+    function mostrarResultados(productos, query) {
+        const queryEsc = escapeHtml(query || inputBusqueda.value.trim());
+        const esCelular = (tipoSelect.value === 'celulares');
+        
         if (!productos || productos.length === 0) {
-            resultadosBox.innerHTML = '<div class="p-3 text-muted text-center"><i class="fa-solid fa-triangle-exclamation me-1"></i> No se encontraron productos.</div>';
+            resultadosBox.innerHTML = `
+                <div class="p-3 text-center bg-white">
+                    <p class="text-muted mb-2"><i class="fa-solid fa-triangle-exclamation text-warning me-1"></i> No se encontró ningún producto con: <strong class="text-dark font-mono">"${queryEsc}"</strong></p>
+                    <button type="button" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm" onclick="abrirModalCrearDirecto('${queryEsc}')">
+                        <i class="fa-solid fa-plus-circle me-1"></i> Ingresar / Registrar como Nuevo Producto
+                    </button>
+                </div>
+            `;
             resultadosBox.style.display = 'block';
             return;
         }
@@ -266,6 +310,15 @@
                 `;
             }
         });
+
+        // Opción rápida al pie de la lista por si el usuario quiere crearlo aunque hayan coincidencias parciales
+        html += `
+            <div class="p-2 border-top bg-light text-center">
+                <a href="javascript:void(0)" class="text-decoration-none small text-success fw-bold" onclick="abrirModalCrearDirecto('${queryEsc}')">
+                    <i class="fa-solid fa-plus-circle me-1"></i> ¿No es ninguno de estos? Registrar "${queryEsc}" como nuevo producto
+                </a>
+            </div>
+        `;
 
         resultadosBox.innerHTML = html;
         resultadosBox.style.display = 'block';
@@ -439,9 +492,239 @@
         return Math.round(val).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    // Modal Crear Producto Rápido
+    let modalCrearBS = null;
+    function abrirModalCrearDirecto(codigoInicial = '') {
+        if (!modalCrearBS) {
+            modalCrearBS = new bootstrap.Modal(document.getElementById('modalCrearProductoRapido'));
+        }
+        
+        const esCelular = (tipoSelect.value === 'celulares');
+        document.getElementById('modal_tipo_inventario').value = tipoSelect.value;
+        
+        // Configurar vista según tipo
+        if (esCelular) {
+            document.getElementById('tituloModalCrear').innerHTML = '<i class="fa-solid fa-mobile-screen me-2 text-success"></i> Registrar Celular al Ingreso';
+            document.getElementById('camposCelular').style.display = 'block';
+            document.getElementById('camposAccesorio').style.display = 'none';
+            document.getElementById('rapido_imei').value = codigoInicial || '';
+            document.getElementById('rapido_imei2').value = '';
+            document.getElementById('rapido_marca').value = '';
+            document.getElementById('rapido_modelo').value = '';
+            document.getElementById('rapido_color').value = '';
+            document.getElementById('rapido_memoria').value = '';
+            document.getElementById('rapido_bateria').value = '100';
+            document.getElementById('rapido_estado').value = 'Excelente';
+        } else {
+            document.getElementById('tituloModalCrear').innerHTML = '<i class="fa-solid fa-boxes-stacked me-2 text-success"></i> Registrar Accesorio / Producto al Ingreso';
+            document.getElementById('camposCelular').style.display = 'none';
+            document.getElementById('camposAccesorio').style.display = 'block';
+            document.getElementById('rapido_nombre_acc').value = '';
+            document.getElementById('rapido_sku_acc').value = codigoInicial || '';
+        }
+        
+        document.getElementById('rapido_costo').value = '';
+        document.getElementById('rapido_precio_sugerido').value = '';
+        document.getElementById('rapido_precio_minimo').value = '';
+        document.getElementById('alertaErrorModal').style.display = 'none';
+
+        modalCrearBS.show();
+
+        setTimeout(() => {
+            if (esCelular) {
+                if (codigoInicial) {
+                    document.getElementById('rapido_marca').focus();
+                } else {
+                    document.getElementById('rapido_imei').focus();
+                }
+            } else {
+                if (codigoInicial) {
+                    document.getElementById('rapido_nombre_acc').focus();
+                } else {
+                    document.getElementById('rapido_sku_acc').focus();
+                }
+            }
+        }, 400);
+    }
+
+    async function guardarProductoRapido() {
+        const btn = document.getElementById('btnGuardarProdRapido');
+        const alertBox = document.getElementById('alertaErrorModal');
+        const tipoInv = document.getElementById('modal_tipo_inventario').value;
+        const esCelular = (tipoInv === 'celulares');
+
+        let payload = {
+            tipo_inventario: tipoInv,
+            costo: parseFloat(document.getElementById('rapido_costo').value) || 0,
+            precio_sugerido: parseFloat(document.getElementById('rapido_precio_sugerido').value) || 0,
+            precio_minimo: parseFloat(document.getElementById('rapido_precio_minimo').value) || 0
+        };
+
+        if (esCelular) {
+            payload.imei = document.getElementById('rapido_imei').value.trim();
+            payload.imei2 = document.getElementById('rapido_imei2').value.trim();
+            payload.marca = document.getElementById('rapido_marca').value.trim();
+            payload.modelo = document.getElementById('rapido_modelo').value.trim();
+            payload.color = document.getElementById('rapido_color').value.trim();
+            payload.memoria = document.getElementById('rapido_memoria').value.trim();
+            payload.bateria = document.getElementById('rapido_bateria').value.trim();
+            payload.estado = document.getElementById('rapido_estado').value.trim();
+
+            if (!payload.imei || !payload.marca || !payload.modelo) {
+                alertBox.textContent = 'Por favor completa al menos Marca, Modelo e IMEI.';
+                alertBox.style.display = 'block';
+                return;
+            }
+        } else {
+            payload.nombre = document.getElementById('rapido_nombre_acc').value.trim();
+            payload.sku = document.getElementById('rapido_sku_acc').value.trim();
+
+            if (!payload.nombre) {
+                alertBox.textContent = 'Por favor ingresa el nombre del producto.';
+                alertBox.style.display = 'block';
+                return;
+            }
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Guardando...';
+
+        try {
+            const csrfToken = document.querySelector('input[name="csrf_token"]')?.value || '';
+            const res = await fetch('/compras/api/crear_producto_rapido', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || 'Error al guardar el producto.');
+            }
+
+            // Producto creado con éxito -> Agregarlo a la tabla de compra
+            const p = data.producto;
+            agregarProducto(p.id, p.nombre, null, null, p.stock || 0, p.costo || payload.costo, p.tipo_inventario, p.imei || '');
+
+            // Cerrar modal y limpiar
+            modalCrearBS.hide();
+            inputBusqueda.value = '';
+            resultadosBox.style.display = 'none';
+        } catch (err) {
+            alertBox.textContent = err.message || 'Ocurrió un error inesperado.';
+            alertBox.style.display = 'block';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> Guardar y Agregar al Ingreso';
+        }
+    }
+
     // Inicializar estado según selección previa
     document.addEventListener('DOMContentLoaded', () => {
         cambiarTipoInventario(tipoSelect.value);
     });
 </script>
+
+<!-- MODAL CREAR PRODUCTO RÁPIDO DIRECTO AL ESCANEAR/ESCRIBIR -->
+<div class="modal fade" id="modalCrearProductoRapido" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" id="tituloModalCrear">
+                    <i class="fa-solid fa-plus-circle text-success me-2"></i> Registrar Producto al Ingreso
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body px-4 py-3">
+                <div id="alertaErrorModal" class="alert alert-danger py-2 small" style="display: none;"></div>
+                <input type="hidden" id="modal_tipo_inventario" value="celulares">
+
+                <!-- Campos para Celulares -->
+                <div id="camposCelular">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted mb-1">IMEI 1 (Serial Principal) *</label>
+                            <input type="text" id="rapido_imei" class="form-control font-mono fw-bold" placeholder="Escanear o escribir IMEI">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-muted mb-1">IMEI 2 (Opcional)</label>
+                            <input type="text" id="rapido_imei2" class="form-control font-mono" placeholder="Segundo IMEI si aplica">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted mb-1">Marca *</label>
+                            <input type="text" id="rapido_marca" class="form-control" placeholder="Ej: Apple, Samsung, Xiaomi">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold text-muted mb-1">Modelo *</label>
+                            <input type="text" id="rapido_modelo" class="form-control" placeholder="Ej: iPhone 13, Galaxy S23">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-bold text-muted mb-1">Color</label>
+                            <input type="text" id="rapido_color" class="form-control" placeholder="Ej: Negro, Azul">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted mb-1">Capacidad / RAM</label>
+                            <input type="text" id="rapido_memoria" class="form-control" placeholder="Ej: 128GB / 6GB">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted mb-1">Batería (%)</label>
+                            <input type="text" id="rapido_bateria" class="form-control font-mono" placeholder="Ej: 100">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold text-muted mb-1">Estado</label>
+                            <select id="rapido_estado" class="form-select">
+                                <option value="Nuevo">Nuevo</option>
+                                <option value="Excelente" selected>Excelente / Seminuevo</option>
+                                <option value="Bueno">Bueno</option>
+                                <option value="Detalles">Con Detalles</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos para Accesorios / Tienda -->
+                <div id="camposAccesorio" style="display: none;">
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label class="form-label small fw-bold text-muted mb-1">Nombre del Producto / Accesorio *</label>
+                            <input type="text" id="rapido_nombre_acc" class="form-control" placeholder="Ej: Cargador Tipo C 20W">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label small fw-bold text-muted mb-1">Código de Barras / SKU (Opcional)</label>
+                            <input type="text" id="rapido_sku_acc" class="form-control font-mono" placeholder="Escanear código">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Precios Comunes -->
+                <div class="p-3 bg-light rounded-3 mt-3 border">
+                    <h6 class="fw-bold mb-2 text-dark small text-uppercase"><i class="fa-solid fa-tags text-success me-1"></i> Costos y Precios de Venta</h6>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small text-muted mb-1">Costo Unitario ($)</label>
+                            <input type="number" id="rapido_costo" class="form-control font-mono fw-bold" placeholder="0" step="100">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small text-muted mb-1">Precio Sugerido Venta ($)</label>
+                            <input type="number" id="rapido_precio_sugerido" class="form-control font-mono text-success fw-bold" placeholder="0" step="100">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small text-muted mb-1">Precio Mínimo ($)</label>
+                            <input type="number" id="rapido_precio_minimo" class="form-control font-mono" placeholder="0" step="100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" id="btnGuardarProdRapido" onclick="guardarProductoRapido()">
+                    <i class="fa-solid fa-check me-1"></i> Guardar y Agregar al Ingreso
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

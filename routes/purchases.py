@@ -1,5 +1,5 @@
 import json
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from datetime import datetime
 import pytz
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
@@ -82,6 +82,121 @@ def api_buscar_productos():
         })
 
     return jsonify({'productos': resultados})
+
+@purchases_bp.route('/api/crear_producto_rapido', methods=['POST'])
+@login_required
+@admin_required
+def api_crear_producto_rapido():
+    """
+    Crea un producto o celular en el catálogo directamente desde la orden de compra
+    cuando se escanea un código/IMEI/serial que no existía.
+    """
+    try:
+        data = request.get_json() or {}
+        tipo = data.get('tipo_inventario', 'accesorios')
+        codigo = str(data.get('codigo', '')).strip()
+        nombre = str(data.get('nombre', '')).strip()
+
+        if not nombre:
+            return jsonify({'success': False, 'error': 'El nombre del producto es obligatorio.'}), 400
+
+        try:
+            costo = Decimal(str(data.get('costo', 0)))
+        except (ValueError, TypeError, InvalidOperation):
+            costo = Decimal('0.00')
+
+        try:
+            p_sugerido = Decimal(str(data.get('precio_sugerido', costo)))
+        except:
+            p_sugerido = costo
+
+        try:
+            p_minimo = Decimal(str(data.get('precio_minimo', costo)))
+        except:
+            p_minimo = costo
+
+        if tipo == 'celulares':
+            # Validación de IMEI único si viene código
+            imei_principal = codigo if codigo else None
+            imei2_val = str(data.get('imei2', '')).strip() or None
+            
+            if imei_principal:
+                existente = Product.query.filter((Product.imei == imei_principal) | (Product.sku == imei_principal)).first()
+                if existente:
+                    return jsonify({'success': False, 'error': f'Ya existe un equipo con ese IMEI o SKU: {existente.nombre}'}), 400
+
+            nuevo = Product(
+                nombre=nombre,
+                sku=imei_principal or f"CEL-{int(datetime.now().timestamp())}",
+                tipo_inventario='celulares',
+                cantidad_stock=0, # Se incrementará en la orden de compra
+                precio_costo=costo,
+                precio_sugerido=p_sugerido,
+                precio_minimo=p_minimo,
+                imei=imei_principal,
+                imei2=imei2_val,
+                marca=data.get('marca', '').strip() or None,
+                modelo_celular=data.get('modelo', '').strip() or None,
+                color=data.get('color', '').strip() or None,
+                memoria=data.get('memoria', '').strip() or None,
+                bateria=data.get('bateria', '').strip() or None,
+                estado_celular=data.get('estado', 'Nuevo')
+            )
+            db.session.add(nuevo)
+            db.session.commit()
+
+            return jsonify({
+                'success': True,
+                'producto': {
+                    'id': nuevo.id,
+                    'nombre': nuevo.nombre,
+                    'sku': nuevo.sku,
+                    'imei': nuevo.imei or '',
+                    'imei2': nuevo.imei2 or '',
+                    'marca': nuevo.marca or '',
+                    'modelo': nuevo.modelo_celular or '',
+                    'tipo_inventario': 'celulares',
+                    'stock': 0,
+                    'costo': float(nuevo.precio_costo),
+                    'variantes': []
+                }
+            })
+
+        else: # Accesorios y tecnología general
+            sku_val = codigo if codigo else f"ACC-{int(datetime.now().timestamp())}"
+            existente = Product.query.filter_by(sku=sku_val).first()
+            if existente:
+                return jsonify({'success': False, 'error': f'Ya existe un producto con el código SKU {sku_val}: {existente.nombre}'}), 400
+
+            nuevo = Product(
+                nombre=nombre,
+                sku=sku_val,
+                tipo_inventario='tienda',
+                cantidad_stock=0,
+                precio_costo=costo,
+                precio_sugerido=p_sugerido,
+                precio_minimo=p_minimo
+            )
+            db.session.add(nuevo)
+            db.session.commit()
+
+            return jsonify({
+                'success': True,
+                'producto': {
+                    'id': nuevo.id,
+                    'nombre': nuevo.nombre,
+                    'sku': nuevo.sku,
+                    'tipo_inventario': 'accesorios',
+                    'stock': 0,
+                    'costo': float(nuevo.precio_costo),
+                    'variantes': []
+                }
+            })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 @purchases_bp.route('/guardar', methods=['POST'])
 @login_required
