@@ -235,7 +235,7 @@
                                                 </div>
                                                 <div class="col-md-5">
                                                     <label class="form-label fw-bold">Inventario / Ubicación <span class="text-danger">*</span></label>
-                                                    <input type="text" name="inventario" class="form-control bg-light" value="{{ r.venta.sucursal if r.venta and r.venta.sucursal else (current_user.sucursal or 'LOCAL 136') }}" placeholder="Ej: LOCAL 136, LOCAL 197, VITRINA" required>
+                                                    <input type="text" name="inventario" class="form-control bg-light" value="PRINCIPAL" placeholder="Ej: PRINCIPAL, VITRINA, BODEGA" required>
                                                 </div>
                                             </div>
                                             <div class="row g-3 mb-3">

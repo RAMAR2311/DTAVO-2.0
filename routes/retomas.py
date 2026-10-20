@@ -67,7 +67,7 @@ def aprobar_retoma(id):
     precio_minimo = request.form.get('precio_minimo', precio_sugerido)
     arreglos = request.form.get('arreglos', '0')
     bateria_input = request.form.get('bateria', retoma.bateria or '').strip()
-    inventario_input = request.form.get('inventario', '').strip() or (current_user.sucursal if current_user and hasattr(current_user, 'sucursal') and current_user.sucursal else 'LOCAL 136')
+    inventario_input = request.form.get('inventario', '').strip() or 'PRINCIPAL'
     
     if not nombre_definitivo or not precio_sugerido:
         flash('Faltan datos obligatorios para crear el producto.', 'danger')

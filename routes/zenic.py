@@ -95,7 +95,7 @@ def _dec(valor, campo='valor') -> Decimal:
 
 
 def _sucursal_default() -> str:
-    return getattr(current_user, 'sucursal', None) or 'LOCAL 136'
+    return getattr(current_user, 'sucursal', None) or 'PRINCIPAL'
 
 
 def _normalizar(texto) -> str:
@@ -1360,7 +1360,7 @@ ESQUEMAS = [
         "Totales de ventas de un periodo con desglose por método de pago, sucursal y tipo, "
         "más las últimas transacciones.",
         {'periodo': _PERIODO, 'desde': _DESDE, 'hasta': _HASTA,
-         'sucursal': {'type': 'string', 'description': "Filtrar por sucursal, ej. 'LOCAL 136'."}}),
+         'sucursal': {'type': 'string', 'description': "Filtrar por sucursal, ej. 'PRINCIPAL'."}}),
 
     _fn('detalle_venta',
         "Detalle completo de una venta: items, pagos, cliente y retomas asociadas.",
@@ -1424,7 +1424,7 @@ ESQUEMAS = [
                         'description': "'Gasto Diario' para operación diaria; 'Costo Indirecto' para fijos."},
          'descripcion': {'type': 'string', 'description': 'Detalle del gasto.'},
          'metodo_pago': {'type': 'string', 'enum': METODOS_PAGO},
-         'sucursal': {'type': 'string', 'description': "Ej. 'LOCAL 136'. Omite para usar la del usuario."},
+         'sucursal': {'type': 'string', 'description': "Ej. 'PRINCIPAL'."},
          'fecha': {'type': 'string', 'description': "YYYY-MM-DD, 'hoy' o 'ayer'. Por defecto hoy."}},
         ['monto', 'categoria']),
 
@@ -1578,7 +1578,7 @@ telefonía y accesorios en Colombia. Hablas con {current_user.nombre} (administr
 sucursal {_sucursal_default()}).
 
 Fecha y hora actual en Bogotá: {ahora.strftime('%A %d de %B de %Y, %H:%M')} ({ahora.date()}).
-Sucursales del sistema: {', '.join(sucursales) or 'LOCAL 136'}.
+Sede: Tienda Central / Principal (única tienda unificada).
 Moneda: pesos colombianos (COP), sin decimales.
 
 ESTADO ACTUAL (resumen):

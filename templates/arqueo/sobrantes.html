@@ -78,26 +78,14 @@
                     <input type="date" name="fecha_fin" class="form-control form-control-sm rounded-3" value="{{ fecha_fin }}">
                 </div>
 
-                {% if current_user.rol == 'admin' %}
-                <div class="col-md-3">
-                    <label class="form-label small fw-bold text-muted text-uppercase mb-1">Sucursal</label>
-                    <select name="sucursal" class="form-select form-select-sm rounded-3">
-                        <option value="">-- Todas las sucursales --</option>
-                        {% for s in sucursales %}
-                        <option value="{{ s }}" {% if sucursal_sel == s %}selected{% endif %}>{{ s }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                {% endif %}
-
-                <div class="col-md-{% if current_user.rol == 'admin' %}3{% else %}6{% endif %} d-flex gap-2">
+                <div class="col-md-6 d-flex gap-2">
                     <div class="flex-grow-1">
                         <label class="form-label small fw-bold text-muted text-uppercase mb-1">Buscar</label>
                         <input type="text" name="q" class="form-control form-control-sm rounded-3" placeholder="Cajero, notas..." value="{{ q }}">
                     </div>
                     <div class="align-self-end">
                         <button type="submit" class="btn btn-dark btn-sm rounded-3 px-3"><i class="fa-solid fa-filter me-1"></i> Filtrar</button>
-                        {% if fecha_inicio or fecha_fin or sucursal_sel or q %}
+                        {% if fecha_inicio or fecha_fin or q %}
                         <a href="{{ url_for('arqueo_bp.log_sobrantes') }}" class="btn btn-outline-secondary btn-sm rounded-3" title="Limpiar"><i class="fa-solid fa-xmark"></i></a>
                         {% endif %}
                     </div>
@@ -113,7 +101,6 @@
                 <thead class="table-dark">
                     <tr class="small text-uppercase">
                         <th class="ps-3 py-3">Fecha Arqueo</th>
-                        <th>Sucursal</th>
                         <th>Cajero / Usuario</th>
                         <th class="text-end">Esperado Sistema</th>
                         <th class="text-end">Efectivo Físico</th>
@@ -129,9 +116,6 @@
                             <i class="fa-solid fa-calendar-day text-secondary me-1"></i>
                             {{ item.fecha_arqueo.strftime('%d/%m/%Y') }}
                             <small class="d-block text-muted fw-normal" style="font-size: 0.72rem;">Registrado: {{ item.fecha_registro.strftime('%H:%M') }} hrs</small>
-                        </td>
-                        <td>
-                            <span class="badge bg-secondary bg-opacity-10 text-dark border px-2 py-1">{{ item.sucursal }}</span>
                         </td>
                         <td>
                             <div class="fw-semibold text-dark">{{ item.vendedor.nombre if item.vendedor else 'N/D' }}</div>
@@ -156,7 +140,7 @@
                         </td>
                         <td class="text-center pe-3">
                             {% if item.arqueo_id %}
-                            <a href="{{ url_for('arqueo_bp.imprimir_ticket_arqueo', fecha=item.fecha_arqueo.strftime('%Y-%m-%d'), sucursal=item.sucursal) }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill px-3 shadow-sm" title="Ver Recibo de Arqueo">
+                            <a href="{{ url_for('arqueo_bp.imprimir_ticket_arqueo', fecha=item.fecha_arqueo.strftime('%Y-%m-%d')) }}" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill px-3 shadow-sm" title="Ver Recibo de Arqueo">
                                 <i class="fa-solid fa-receipt me-1"></i> Arqueo
                             </a>
                             {% else %}
@@ -166,7 +150,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="8" class="text-center py-5 text-muted">
+                        <td colspan="7" class="text-center py-5 text-muted">
                             <i class="fa-solid fa-scale-balanced fa-3x mb-3 text-black-50 d-block"></i>
                             <h5 class="fw-bold">No se encontraron registros de sobrantes</h5>
                             <p class="small text-muted m-0">Cuando se cierre un arqueo de caja con sobrante de dinero, quedará registrado automáticamente en este módulo.</p>

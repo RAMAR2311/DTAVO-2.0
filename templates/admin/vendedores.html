@@ -47,14 +47,6 @@
                                     <option value="vendedor_bodega">Vendedor de Bodega</option>
                                 </select>
                 </div>
-                
-                <div class="mb-3">
-                    <label class="form-label text-brand-black fw-semibold small">Sucursal Asignada</label>
-                    <select name="sucursal" class="form-select bg-light border-0 py-2" required>
-                        <option value="LOCAL 136">LOCAL 136</option>
-                        <option value="LOCAL 197">LOCAL 197</option>
-                    </select>
-                </div>
 
                 <div class="mb-4">
                     <label class="form-label text-brand-black fw-semibold small">Contraseña (PIN)</label>
@@ -84,7 +76,6 @@
                         <tr>
                             <th class="ps-4">NOMBRE DE EMPLEADO</th>
                             <th>EMAIL (CREDENCIAL DE ACCESO)</th>
-                            <th>SUCURSAL</th>
                             <th>ROL / PERFIL</th>
                             <th class="text-center">STATUS</th>
                             <th class="text-center pe-4">ACCIONES</th>
@@ -95,7 +86,6 @@
                         <tr>
                             <td class="fw-bold text-brand-black ps-4">{{ vendedor.nombre }}</td>
                             <td class="text-muted">{{ vendedor.email }}</td>
-                            <td class="fw-bold"><span class="badge bg-secondary rounded-pill px-2">{{ vendedor.sucursal }}</span></td>
                             <td class="text-muted">
                                 {% if vendedor.rol == 'vendedor' %}
                                     <span class="badge bg-info bg-opacity-10 text-info border border-info rounded-pill px-2">Vendedor Cajas</span>
@@ -154,14 +144,6 @@
                                                     <option value="vendedor" {% if vendedor.rol == 'vendedor' %}selected{% endif %}>Vendedor (Cajas/Tienda)</option>
                                                     <option value="bodega" {% if vendedor.rol == 'bodega' %}selected{% endif %}>Encargado de Bodega</option>
                                                     <option value="vendedor_bodega" {% if vendedor.rol == 'vendedor_bodega' %}selected{% endif %}>Vendedor de Bodega</option>
-                                                </select>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label class="form-label text-brand-black fw-semibold small">Sucursal Asignada</label>
-                                                <select name="sucursal" class="form-select bg-light border-0 py-2" required>
-                                                    <option value="LOCAL 136" {% if vendedor.sucursal == 'LOCAL 136' %}selected{% endif %}>LOCAL 136</option>
-                                                    <option value="LOCAL 197" {% if vendedor.sucursal == 'LOCAL 197' %}selected{% endif %}>LOCAL 197</option>
                                                 </select>
                                             </div>
 

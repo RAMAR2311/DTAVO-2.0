@@ -88,53 +88,21 @@
                 </div>
             </div>
 
-            {% if resumen_por_sucursal %}
-            <!-- Consolidado por Locales -->
-            <h6 class="fw-bold text-brand-black mb-2"><i class="fa-solid fa-store me-1"></i> Desglose de Cierres por Local / Sucursal:</h6>
-            <div class="row g-3 mb-4">
-                {% for suc, data in resumen_por_sucursal.items() %}
-                <div class="col-md-6">
-                    <div class="card border shadow-sm p-3 rounded-3 bg-white">
-                        <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
-                            <span class="fw-bold fs-6 text-dark"><i class="fa-solid fa-location-dot text-brand-pink me-1"></i> {{ suc }}</span>
-                            <span class="badge bg-secondary">{{ data.cierres }} Cierre(s)</span>
-                        </div>
-                        <div class="row g-2 text-center small">
-                            <div class="col-4">
-                                <span class="text-muted d-block">Ventas Efec</span>
-                                <strong class="text-success">${{ data.total_efectivo|cop }}</strong>
-                            </div>
-                            <div class="col-4">
-                                <span class="text-muted d-block">Bancos</span>
-                                <strong class="text-info">${{ data.total_transferencia|cop }}</strong>
-                            </div>
-                            <div class="col-4">
-                                <span class="text-muted d-block">Sobrantes</span>
-                                <strong class="text-warning text-dark">+${{ data.total_sobrantes|cop }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
             <!-- Tabla Desglosada Registro a Registro -->
             <h5 class="fw-bold text-brand-black mb-3 border-bottom pb-2">📋 Desglose Analítico por Cierres de Día</h5>
             <div class="table-responsive">
                 <table class="table table-bordered table-sm fw-semibold mb-0 table-hover align-middle">
                     <thead class="table-light text-center text-uppercase" style="font-size: 0.85rem;">
                         <tr>
-                            <th width="8%">Fecha</th>
-                            <th width="10%">Cajero(a)</th>
-                            <th width="10%" class="text-secondary">Sucursal</th>
+                            <th width="9%">Fecha</th>
+                            <th width="12%">Cajero(a)</th>
                             <th width="10%" class="text-primary">Base Inicial</th>
-                            <th width="10%" class="text-dark bg-light border-start border-end">Venta Total</th>
-                            <th width="9%" class="text-success">Ventas Efec</th>
-                            <th width="9%" class="text-info">Bancos</th>
-                            <th width="9%" class="text-danger">Gastos</th>
-                            <th width="10%">Físico Contado</th>
-                            <th width="12%">Diferencia / Sobrante</th>
+                            <th width="11%" class="text-dark bg-light border-start border-end">Venta Total</th>
+                            <th width="10%" class="text-success">Ventas Efec</th>
+                            <th width="10%" class="text-info">Bancos</th>
+                            <th width="10%" class="text-danger">Gastos</th>
+                            <th width="11%">Físico Contado</th>
+                            <th width="13%">Diferencia / Sobrante</th>
                             {% if current_user.rol == 'admin' %}
                             <th width="8%" class="d-print-none">Acciones</th>
                             {% endif %}
@@ -144,8 +112,7 @@
                         {% for arqueo in arqueos %}
                         <tr>
                             <td class="text-center text-secondary">{{ arqueo.fecha_arqueo }}</td>
-                            <td class="text-truncate" style="max-width:110px;" title="{{ arqueo.cajero.nombre }}">{{ arqueo.cajero.nombre }}</td>
-                            <td class="text-center fw-bold text-secondary">{{ arqueo.sucursal }}</td>
+                            <td class="text-truncate" style="max-width:130px;" title="{{ arqueo.cajero.nombre }}">{{ arqueo.cajero.nombre }}</td>
                             <td class="text-end text-primary fw-bold">${{ (arqueo.base_inicial)|cop }}</td>
                             <td class="text-end text-dark fw-bolder bg-light border-start border-end">${{ (arqueo.total_efectivo_sistema + arqueo.total_transferencia_sistema)|cop }}</td>
                             <td class="text-end text-success fw-bold">${{ (arqueo.total_efectivo_sistema)|cop }}</td>
@@ -172,10 +139,10 @@
                             {% if current_user.rol == 'admin' %}
                             <td class="text-center d-print-none">
                                 <div class="d-flex justify-content-center gap-1">
-                                    <a href="{{ url_for('arqueo_bp.imprimir_ticket_arqueo', fecha=arqueo.fecha_arqueo, sucursal=arqueo.sucursal, autoprint=1) }}" target="_blank" class="btn btn-sm btn-outline-dark py-1 px-2 rounded-3 text-nowrap" title="Imprimir Ticket Térmico 80mm">
+                                    <a href="{{ url_for('arqueo_bp.imprimir_ticket_arqueo', fecha=arqueo.fecha_arqueo, autoprint=1) }}" target="_blank" class="btn btn-sm btn-outline-dark py-1 px-2 rounded-3 text-nowrap" title="Imprimir Ticket Térmico 80mm">
                                         <i class="fa-solid fa-receipt"></i>
                                     </a>
-                                    <form action="{{ url_for('arqueo_bp.revertir_arqueo', id=arqueo.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas revertir este arqueo de caja? Esto eliminará el cierre y permitirá volver a crear/modificar el arqueo para esta fecha y local.');" class="d-inline">
+                                    <form action="{{ url_for('arqueo_bp.revertir_arqueo', id=arqueo.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas revertir este arqueo de caja? Esto eliminará el cierre y permitirá volver a crear/modificar el arqueo para esta fecha.');" class="d-inline">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2 rounded-3 text-nowrap" title="Revertir Cierre">
                                             <i class="fa-solid fa-rotate-left"></i>

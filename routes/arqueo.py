@@ -145,42 +145,34 @@ def nuevo():
         fecha_seleccionada = obtener_hora_bogota().date()
         fecha_str = fecha_seleccionada.strftime('%Y-%m-%d')
 
-    # Determinar la sucursal a arqueár
-    sucursal_actual = current_user.sucursal
-    if current_user.rol == 'admin':
-        sucursal_actual = request.values.get('sucursal', current_user.sucursal)
-
-    # Calcular ventas del día de la sucursal actual
+    # Calcular ventas del día (unificado para toda la tienda)
     ventas_del_dia = Sale.query.filter(
         db.func.date(Sale.fecha_venta) == fecha_seleccionada,
-        Sale.tipo_venta.in_(['general', 'celulares']),
-        Sale.sucursal == sucursal_actual
+        Sale.tipo_venta.in_(['general', 'celulares'])
     ).order_by(Sale.fecha_venta.asc()).all()
     total_efectivo, total_transferencia, total_retomas = calcular_totales_dia(ventas_del_dia)
 
     # Calcular gastos automáticos del día
     gastos_diarios_registros = Expense.query.filter(
         db.func.date(Expense.fecha_gasto) == fecha_seleccionada,
-        Expense.tipo_gasto == 'Gasto Diario',
-        Expense.sucursal == sucursal_actual
+        Expense.tipo_gasto == 'Gasto Diario'
     ).all()
     gastos_automaticos = float(sum(g.monto for g in gastos_diarios_registros))
 
     # Calcular gastos por productos externos del día
     gastos_externos_registros = Expense.query.filter(
         db.func.date(Expense.fecha_gasto) == fecha_seleccionada,
-        Expense.categoria == 'Pago Prod. Externo',
-        Expense.sucursal == sucursal_actual
+        Expense.categoria == 'Pago Prod. Externo'
     ).all()
     gastos_externos = float(sum(g.monto for g in gastos_externos_registros))
 
-    # Verificar si ya existe un arqueo para esa sucursal en esa fecha
-    arqueo_existente = ArqueoCaja.query.filter_by(fecha_arqueo=fecha_seleccionada, tipo_arqueo='general', sucursal=sucursal_actual).first()
+    # Verificar si ya existe un arqueo para esa fecha
+    arqueo_existente = ArqueoCaja.query.filter_by(fecha_arqueo=fecha_seleccionada, tipo_arqueo='general').first()
 
     if request.method == 'POST':
         # Doble verificación en el backend para evitar duplicados por concurrencia
-        if ArqueoCaja.query.filter_by(fecha_arqueo=fecha_seleccionada, tipo_arqueo='general', sucursal=sucursal_actual).first():
-            flash('Ya existe un arqueo cerrado para esta fecha y sucursal. No se puede duplicar.', 'warning')
+        if ArqueoCaja.query.filter_by(fecha_arqueo=fecha_seleccionada, tipo_arqueo='general').first():
+            flash('Ya existe un arqueo cerrado para esta fecha. No se puede duplicar.', 'warning')
             return redirect(url_for('arqueo_bp.reporte', fecha_inicio=fecha_str, fecha_fin=fecha_str))
 
         base_inicial = float(request.form.get('base_inicial', 0.0))
@@ -190,8 +182,7 @@ def nuevo():
         # Recalcular gastos automáticos por seguridad en el backend
         gastos_recalculados = Expense.query.filter(
             db.func.date(Expense.fecha_gasto) == fecha_seleccionada,
-            Expense.tipo_gasto == 'Gasto Diario',
-            Expense.sucursal == sucursal_actual
+            Expense.tipo_gasto == 'Gasto Diario'
         ).all()
         gastos_del_dia = float(sum(g.monto for g in gastos_recalculados))
         
@@ -213,7 +204,7 @@ def nuevo():
             total_celulares=Decimal('0.00'),
             total_retomas_sistema=total_retomas,
             tipo_arqueo='general',
-            sucursal=sucursal_actual,
+            sucursal='PRINCIPAL',
             efectivo_fisico=efectivo_fisico_val,
             diferencia=diferencia_val,
             observacion_diferencia=observacion_diferencia
@@ -228,7 +219,7 @@ def nuevo():
                 log_sobrante = SobranteLog(
                     arqueo_id=nuevo_arqueo.id,
                     vendedor_id=current_user.id,
-                    sucursal=sucursal_actual,
+                    sucursal='PRINCIPAL',
                     fecha_arqueo=fecha_seleccionada,
                     monto_esperado=Decimal(str(esperado_efectivo)),
                     efectivo_fisico=Decimal(str(efectivo_fisico_val)),
@@ -248,7 +239,7 @@ def nuevo():
                         monto=monto_metodo,
                         tipo_movimiento='INGRESO',
                         origen='ARQUEO_CIERRE',
-                        descripcion=f'Cierre de Arqueo #{nuevo_arqueo.id} ({sucursal_actual} - {fecha_seleccionada})',
+                        descripcion=f'Cierre de Arqueo #{nuevo_arqueo.id} ({fecha_seleccionada})',
                         referencia_id=nuevo_arqueo.id,
                         usuario_id=current_user.id
                     )
@@ -268,8 +259,7 @@ def nuevo():
         arqueo_existente=arqueo_existente,
         gastos_automaticos=gastos_automaticos,
         gastos_externos=gastos_externos,
-        ventas_del_dia=ventas_del_dia,
-        sucursal_seleccionada=sucursal_actual
+        ventas_del_dia=ventas_del_dia
     )
 
 @arqueo_bp.route('/reporte', methods=['GET'])
@@ -293,15 +283,12 @@ def reporte():
         fecha_inicio_str = hoy.strftime('%Y-%m-%d')
         fecha_fin_str = hoy.strftime('%Y-%m-%d')
 
-    # Arqueo unificado: los administradores ven todos los locales, los vendedores solo su local
+    # Arqueo unificado (único para toda la tienda)
     query = ArqueoCaja.query.filter(
         ArqueoCaja.fecha_arqueo >= fecha_inicio,
         ArqueoCaja.fecha_arqueo <= fecha_fin,
         ArqueoCaja.tipo_arqueo == 'general'
     )
-    
-    if current_user.rol != 'admin':
-        query = query.filter(ArqueoCaja.sucursal == current_user.sucursal)
 
     arqueos = query.order_by(ArqueoCaja.fecha_arqueo.desc()).all()
 
@@ -312,18 +299,13 @@ def reporte():
         'total_transferencia': sum(a.total_transferencia_sistema for a in arqueos),
         'total_gastos': sum(a.gastos_del_dia for a in arqueos)
     }
-    
 
-    
     # Calcular los gastos por productos externos en este rango de fechas
     gastos_externos_query = Expense.query.filter(
         db.func.date(Expense.fecha_gasto) >= fecha_inicio,
         db.func.date(Expense.fecha_gasto) <= fecha_fin,
         Expense.categoria == 'Pago Prod. Externo'
-    )
-    if current_user.rol != 'admin':
-        gastos_externos_query = gastos_externos_query.filter(Expense.sucursal == current_user.sucursal)
-    gastos_externos_query = gastos_externos_query.all()
+    ).all()
     resumen['total_gastos_externos'] = sum(g.monto for g in gastos_externos_query)
     
     resumen['total_recaudado_bruto'] = resumen['total_efectivo'] + resumen['total_transferencia']
@@ -335,10 +317,7 @@ def reporte():
         db.func.date(Expense.fecha_gasto) <= fecha_fin,
         Expense.tipo_gasto == 'Gasto Diario',
         Expense.metodo_pago == 'efectivo'
-    )
-    if current_user.rol != 'admin':
-        gastos_efectivo_query = gastos_efectivo_query.filter(Expense.sucursal == current_user.sucursal)
-    gastos_efectivo_query = gastos_efectivo_query.all()
+    ).all()
     resumen['total_gastos_efectivo'] = sum(g.monto for g in gastos_efectivo_query)
 
     # El efectivo esperado en caja descuenta gastos en EFECTIVO
@@ -346,42 +325,12 @@ def reporte():
     resumen['total_sobrantes'] = sum((Decimal(str(a.diferencia)) for a in arqueos if a.diferencia and a.diferencia > 0), Decimal('0.00'))
     resumen['total_faltantes'] = sum((Decimal(str(abs(a.diferencia))) for a in arqueos if a.diferencia and a.diferencia < 0), Decimal('0.00'))
 
-    # Consolidado por Sucursal / Local
-    resumen_por_sucursal = {}
-    for a in arqueos:
-        suc = a.sucursal or 'LOCAL 136'
-        if suc not in resumen_por_sucursal:
-            resumen_por_sucursal[suc] = {
-                'total_base': Decimal('0.00'),
-                'total_efectivo': Decimal('0.00'),
-                'total_transferencia': Decimal('0.00'),
-                'total_gastos': Decimal('0.00'),
-                'total_sobrantes': Decimal('0.00'),
-                'total_faltantes': Decimal('0.00'),
-                'efectivo_fisico': Decimal('0.00'),
-                'cierres': 0
-            }
-        resumen_por_sucursal[suc]['total_base'] += Decimal(str(a.base_inicial or 0))
-        resumen_por_sucursal[suc]['total_efectivo'] += Decimal(str(a.total_efectivo_sistema or 0))
-        resumen_por_sucursal[suc]['total_transferencia'] += Decimal(str(a.total_transferencia_sistema or 0))
-        resumen_por_sucursal[suc]['total_gastos'] += Decimal(str(a.gastos_del_dia or 0))
-        if a.efectivo_fisico:
-            resumen_por_sucursal[suc]['efectivo_fisico'] += Decimal(str(a.efectivo_fisico))
-        if a.diferencia and a.diferencia > 0:
-            resumen_por_sucursal[suc]['total_sobrantes'] += Decimal(str(a.diferencia))
-        elif a.diferencia and a.diferencia < 0:
-            resumen_por_sucursal[suc]['total_faltantes'] += Decimal(str(abs(a.diferencia)))
-        resumen_por_sucursal[suc]['cierres'] += 1
-
     # Obtener todas las ventas del periodo para el detalle en la "tirilla" (unificado)
     ventas_query = Sale.query.filter(
         db.func.date(Sale.fecha_venta) >= fecha_inicio,
         db.func.date(Sale.fecha_venta) <= fecha_fin,
         Sale.tipo_venta.in_(['general', 'celulares'])
     )
-    if current_user.rol != 'admin':
-        ventas_query = ventas_query.filter(Sale.sucursal == current_user.sucursal)
-    
     ventas_periodo = ventas_query.order_by(Sale.fecha_venta.asc()).all()
 
     fecha_generacion = obtener_hora_bogota().strftime('%Y-%m-%d %H:%M')
@@ -391,15 +340,12 @@ def reporte():
         db.func.date(Expense.fecha_gasto) >= fecha_inicio,
         db.func.date(Expense.fecha_gasto) <= fecha_fin
     )
-    if current_user.rol != 'admin':
-        gastos_query = gastos_query.filter(Expense.sucursal == current_user.sucursal)
     gastos_periodo = gastos_query.order_by(Expense.fecha_gasto.asc()).all()
 
     return render_template(
         'arqueo/reporte.html',
         arqueos=arqueos,
         resumen=resumen,
-        resumen_por_sucursal=resumen_por_sucursal,
         fecha_inicio=fecha_inicio_str,
         fecha_fin=fecha_fin_str,
         fecha_generacion=fecha_generacion,
@@ -417,7 +363,7 @@ def revertir_arqueo(id):
         SobranteLog.query.filter_by(arqueo_id=arqueo.id).delete()
         db.session.delete(arqueo)
         db.session.commit()
-        flash(f"El arqueo de caja del {fecha_str} en {arqueo.sucursal} ha sido revertido exitosamente.", "success")
+        flash(f"El arqueo de caja del {fecha_str} ha sido revertido exitosamente.", "success")
     except Exception as e:
         db.session.rollback()
         flash("Ocurrió un error al revertir el arqueo de caja.", "danger")
@@ -428,19 +374,12 @@ def revertir_arqueo(id):
 def log_sobrantes():
     fecha_inicio_str = request.args.get('fecha_inicio', '')
     fecha_fin_str = request.args.get('fecha_fin', '')
-    sucursal = request.args.get('sucursal', '')
     q = request.args.get('q', '').strip()
 
     base_query = SobranteLog.query.options(
         joinedload(SobranteLog.vendedor),
         joinedload(SobranteLog.arqueo)
     )
-
-    # Restricción por rol: Los usuarios no-admin solo ven su propia sucursal
-    if current_user.rol != 'admin':
-        base_query = base_query.filter(SobranteLog.sucursal == current_user.sucursal)
-    elif sucursal:
-        base_query = base_query.filter(SobranteLog.sucursal == sucursal)
 
     if fecha_inicio_str:
         try:
@@ -460,7 +399,6 @@ def log_sobrantes():
         from models import User
         base_query = base_query.join(User).filter(
             db.or_(
-                SobranteLog.sucursal.ilike(f'%{q}%'),
                 SobranteLog.justificacion.ilike(f'%{q}%'),
                 User.nombre.ilike(f'%{q}%')
             )
@@ -473,9 +411,6 @@ def log_sobrantes():
     total_registros = len(sobrantes)
     mayor_sobrante = max((s.monto_sobrante for s in sobrantes), default=Decimal('0.00'))
 
-    # Sucursales únicas para filtro (Admin)
-    sucursales = [res[0] for res in db.session.query(ArqueoCaja.sucursal).distinct().all()] if current_user.rol == 'admin' else [current_user.sucursal]
-
     return render_template('arqueo/sobrantes.html',
                            sobrantes=sobrantes,
                            total_sobrantes_monto=total_sobrantes_monto,
@@ -483,15 +418,12 @@ def log_sobrantes():
                            mayor_sobrante=mayor_sobrante,
                            fecha_inicio=fecha_inicio_str,
                            fecha_fin=fecha_fin_str,
-                           sucursal_sel=sucursal,
-                           q=q,
-                           sucursales=sucursales)
+                           q=q)
 
 @arqueo_bp.route('/ticket', methods=['GET'])
 @login_required
 def imprimir_ticket_arqueo():
     fecha_str = request.args.get('fecha', obtener_hora_bogota().strftime('%Y-%m-%d'))
-    sucursal = request.args.get('sucursal')
     
     try:
         fecha_obj = datetime.strptime(fecha_str, '%Y-%m-%d').date()
@@ -499,34 +431,16 @@ def imprimir_ticket_arqueo():
         fecha_obj = obtener_hora_bogota().date()
         fecha_str = fecha_obj.strftime('%Y-%m-%d')
         
-    query_arqueo = ArqueoCaja.query.filter_by(fecha_arqueo=fecha_obj, tipo_arqueo='general')
-    if sucursal and sucursal != 'TODOS':
-        query_arqueo = query_arqueo.filter_by(sucursal=sucursal)
-    elif current_user.rol != 'admin':
-        query_arqueo = query_arqueo.filter_by(sucursal=current_user.sucursal)
-        
-    arqueo = query_arqueo.first()
+    arqueo = ArqueoCaja.query.filter_by(fecha_arqueo=fecha_obj, tipo_arqueo='general').first()
     
-    ventas_query = Sale.query.filter(
+    ventas = Sale.query.filter(
         db.func.date(Sale.fecha_venta) == fecha_obj,
         Sale.tipo_venta.in_(['general', 'celulares'])
-    )
-    if sucursal and sucursal != 'TODOS':
-        ventas_query = ventas_query.filter(Sale.sucursal == sucursal)
-    elif current_user.rol != 'admin':
-        ventas_query = ventas_query.filter(Sale.sucursal == current_user.sucursal)
-        
-    ventas = ventas_query.order_by(Sale.fecha_venta.asc()).all()
+    ).order_by(Sale.fecha_venta.asc()).all()
     
-    gastos_query = Expense.query.filter(
+    gastos = Expense.query.filter(
         db.func.date(Expense.fecha_gasto) == fecha_obj
-    )
-    if sucursal and sucursal != 'TODOS':
-        gastos_query = gastos_query.filter(Expense.sucursal == sucursal)
-    elif current_user.rol != 'admin':
-        gastos_query = gastos_query.filter(Expense.sucursal == current_user.sucursal)
-        
-    gastos = gastos_query.all()
+    ).all()
     
     total_efectivo = 0
     total_transferencia = 0
@@ -549,8 +463,6 @@ def imprimir_ticket_arqueo():
     total_gastos = sum(float(g.monto or 0) for g in gastos)
     fecha_generacion = obtener_hora_bogota().strftime('%d/%m/%Y %I:%M %p')
     
-    sucursal_nombre = sucursal if sucursal else (current_user.sucursal if current_user.rol != 'admin' else 'GENERAL')
-    
     return render_template(
         'arqueo/ticket.html',
         fecha=fecha_obj.strftime('%d/%m/%Y'),
@@ -563,5 +475,5 @@ def imprimir_ticket_arqueo():
         total_transferencia=total_transferencia,
         total_ventas=total_ventas,
         total_gastos=total_gastos,
-        sucursal=sucursal_nombre
+        sucursal='TIENDA PRINCIPAL'
     )

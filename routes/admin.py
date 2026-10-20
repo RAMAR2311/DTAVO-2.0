@@ -19,7 +19,7 @@ def vendedores():
         telefono = request.form.get('telefono')
         password = request.form.get('password')
         rol = request.form.get('rol', 'vendedor')
-        sucursal = request.form.get('sucursal', 'LOCAL 136')
+        sucursal = 'PRINCIPAL'
         
         # Se previene registrar vendedores con un mismo email para preservar la unicidad de las credenciales de acceso
         if User.query.filter_by(email=email).first():
@@ -79,7 +79,6 @@ def editar_vendedor(id):
     nombre = request.form.get('nombre')
     telefono = request.form.get('telefono')
     rol = request.form.get('rol')
-    sucursal = request.form.get('sucursal')
     password = request.form.get('password')
     
     if usuario.id == current_user.id and rol and rol != 'admin':
@@ -93,8 +92,7 @@ def editar_vendedor(id):
             usuario.telefono = telefono.strip()
         if rol:
             usuario.rol = rol
-        if sucursal:
-            usuario.sucursal = sucursal
+        usuario.sucursal = 'PRINCIPAL'
         if password and password.strip():
             usuario.password_hash = generate_password_hash(password)
             
@@ -343,7 +341,7 @@ def maneos_facturar(id):
 
         metodo_pago_seleccionado = request.form.get('metodo_pago', 'efectivo')
         
-        sucursal_actual = getattr(current_user, 'sucursal', 'LOCAL 136') or 'LOCAL 136'
+        sucursal_actual = 'PRINCIPAL'
         es_celular = (maneo.producto.tipo_inventario == 'celulares' or bool(maneo.producto.imei))
 
         # Registrar la venta real del Maneo
@@ -502,20 +500,14 @@ def balance_financiero():
     from models import Retoma, Cliente, Provider, Expense, Sale, SaleDetail, Product
 
     # ----------------------------------------------------
-    # VALIDAR ÁMBITO (Consolidado, Local 136, Local 197)
+    # ÁMBITO UNIFICADO (Tienda Principal)
     # ----------------------------------------------------
-    ambito = request.args.get('ambito', 'consolidado').strip().lower()
-    if ambito not in ['consolidado', 'local_136', 'local_197']:
-        ambito = 'consolidado'
+    ambito = 'consolidado'
 
     # ----------------------------------------------------
-    # 1. CARGA DE VENTAS SEGÚN PERÍODO
+    # 1. CARGA DE VENTAS SEGÚN PERÍODO (UNIFICADO)
     # ----------------------------------------------------
     ventas_query = Sale.query.filter(Sale.fecha_venta >= inicio_dt, Sale.fecha_venta < fin_dt_query).all()
-
-    # Clasificar ventas por local
-    ventas_136 = [v for v in ventas_query if '197' not in (v.sucursal or '')]
-    ventas_197 = [v for v in ventas_query if '197' in (v.sucursal or '')]
 
     def calcular_metricas_ventas(lista_ventas):
         brutas = Decimal('0.00')
@@ -571,38 +563,12 @@ def balance_financiero():
             'cantidad_ventas': len(lista_ventas)
         }
 
-    res_136 = calcular_metricas_ventas(ventas_136)
-    res_197 = calcular_metricas_ventas(ventas_197)
-    res_consolidado = calcular_metricas_ventas(ventas_query)
-
-    if ambito == 'local_136':
-        res_activo = res_136
-    elif ambito == 'local_197':
-        res_activo = res_197
-    else:
-        res_activo = res_consolidado
+    res_activo = calcular_metricas_ventas(ventas_query)
 
     # ----------------------------------------------------
-    # 2. GASTOS Y COSTOS INDIRECTOS
+    # 2. GASTOS Y COSTOS INDIRECTOS (UNIFICADO)
     # ----------------------------------------------------
-    gastos_base = Expense.query.filter(Expense.fecha_gasto >= inicio_dt, Expense.fecha_gasto < fin_dt_query).all()
-
-    def es_gasto_197(g):
-        if g.sucursal and '197' in g.sucursal:
-            return True
-        if g.usuario and g.usuario.sucursal and '197' in g.usuario.sucursal:
-            return True
-        return False
-
-    gastos_197 = [g for g in gastos_base if es_gasto_197(g)]
-    gastos_136 = [g for g in gastos_base if not es_gasto_197(g)]
-
-    if ambito == 'local_136':
-        gastos_auditar = gastos_136
-    elif ambito == 'local_197':
-        gastos_auditar = gastos_197
-    else:
-        gastos_auditar = gastos_base
+    gastos_auditar = Expense.query.filter(Expense.fecha_gasto >= inicio_dt, Expense.fecha_gasto < fin_dt_query).all()
 
     costos_indirectos = sum(Decimal(str(g.monto or 0)) for g in gastos_auditar if g.tipo_gasto == 'Costo Indirecto')
     gastos_operacionales = sum(
@@ -625,11 +591,10 @@ def balance_financiero():
     # ----------------------------------------------------
     # 4. BALANCE GENERAL PATRIMONIAL (SITUACIÓN A LA FECHA)
     # ----------------------------------------------------
-    inventario_136 = Decimal('0.00')
-    inventario_197 = Decimal('0.00')
     inventario_celulares_propios = Decimal('0.00')
     inventario_celulares_externos = Decimal('0.00')
     inventario_accesorios = Decimal('0.00')
+    inventario_total = Decimal('0.00')
 
     detalle_accesorios = []
     productos_stock = Product.query.filter(Product.cantidad_stock > 0).all()
@@ -642,10 +607,7 @@ def balance_financiero():
         else:
             val_p = Decimal(str(p.precio_costo or 0)) * p.cantidad_stock
 
-        if p.inventario and '197' in p.inventario:
-            inventario_197 += val_p
-        else:
-            inventario_136 += val_p
+        inventario_total += val_p
 
         # Clasificación transparente:
         # 1. Celulares Externos (consignación/prestados no enviados al inventario propio)
@@ -668,7 +630,7 @@ def balance_financiero():
                             'stock': v.cantidad_stock,
                             'costo_u': c_u,
                             'costo_total': c_u * v.cantidad_stock,
-                            'inventario': p.inventario or 'LOCAL 136'
+                            'inventario': 'PRINCIPAL'
                         })
             else:
                 c_u = float(p.precio_costo or 0)
@@ -679,18 +641,11 @@ def balance_financiero():
                     'stock': p.cantidad_stock,
                     'costo_u': c_u,
                     'costo_total': c_u * p.cantidad_stock,
-                    'inventario': p.inventario or 'LOCAL 136'
+                    'inventario': 'PRINCIPAL'
                 })
 
     inventario_celulares_total = inventario_celulares_propios + inventario_celulares_externos
-    inventario_total = inventario_136 + inventario_197
-
-    if ambito == 'local_136':
-        inventario_activo = inventario_136
-    elif ambito == 'local_197':
-        inventario_activo = inventario_197
-    else:
-        inventario_activo = inventario_total
+    inventario_activo = inventario_total
 
     cartera_clientes = sum(Decimal(str(c.deuda_total or 0)) for c in Cliente.query.all() if (c.deuda_total or 0) > 0)
     cuentas_por_pagar_proveedores = sum(
@@ -717,13 +672,12 @@ def balance_financiero():
         'total_salidas': float(total_salidas),
         'balance_neto': float(balance_neto),
         'margen_neto_pct': float(margen_neto_pct),
-        # Desgloses por Local para el reporte comparativo
-        'res_136': res_136,
-        'res_197': res_197,
+        'res_136': res_activo,
+        'res_197': res_activo,
         # Balance General Patrimonial
         'inventario_valorado_total': float(inventario_total),
-        'inventario_valorado_136': float(inventario_136),
-        'inventario_valorado_197': float(inventario_197),
+        'inventario_valorado_136': float(inventario_total),
+        'inventario_valorado_197': 0.0,
         'inventario_valorado_activo': float(inventario_activo),
         'inventario_valorado_celulares': float(inventario_celulares_total),
         'inventario_celulares_propios': float(inventario_celulares_propios),

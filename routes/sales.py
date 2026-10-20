@@ -101,7 +101,7 @@ def procesar_venta():
             metodo_pago=metodo_pago_principal,
             fecha_venta=fecha_venta_obj,
             tipo_venta=tipo_venta_detectado,
-            sucursal=current_user.sucursal
+            sucursal='PRINCIPAL'
         )
         db.session.add(nueva_venta)
         db.session.flush()
@@ -120,7 +120,7 @@ def procesar_venta():
                 raise ValueError("La cantidad vendida debe ser mayor a 0.")
 
             if es_manual:
-                # Producto manual (prestado de otro local) — no descuenta stock
+                # Producto manual (prestado) — no descuenta stock
                 nombre_manual = item.get('nombre_manual', 'Producto Externo')
                 precio_costo_manual = Decimal(str(item.get('precio_costo', '0.00')))
 
@@ -145,7 +145,7 @@ def procesar_venta():
                         descripcion=f"Pago por producto manual prestado: {nombre_manual}",
                         monto=(precio_costo_manual * cantidad_vendida),
                         fecha_gasto=fecha_venta_obj,
-                        sucursal=current_user.sucursal
+                        sucursal='PRINCIPAL'
                     )
                     db.session.add(gasto_externo)
             else:
@@ -545,7 +545,7 @@ def exportar_excel():
         fecha_str = v.fecha_venta.strftime('%Y-%m-%d %H:%M') if v.fecha_venta else ''
         vendedor_str = v.vendedor.nombre if v.vendedor else 'N/A'
         asesor_str = v.asesor.nombre if v.asesor else 'N/A'
-        sucursal_str = v.sucursal or 'LOCAL 136'
+        sucursal_str = v.sucursal or 'PRINCIPAL'
         metodo_pago_str = v.metodo_pago_display
         retomas_valor_total = sum(Decimal(str(r.valor_retoma or 0)) for r in v.retomas_asociadas)
         retomas_info_str = ", ".join(f"{r.modelo} (IMEI: {r.imei1})" for r in v.retomas_asociadas) if v.retomas_asociadas else ""

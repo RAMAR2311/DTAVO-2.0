@@ -13,18 +13,6 @@
                      <small class="text-muted">Estado de Resultados Operativo & Situación Patrimonial</small>
                  </div>
                  <div class="d-flex align-items-center gap-2 flex-wrap">
-                     <form method="GET" action="{{ url_for('admin_bp.balance_financiero') }}" class="d-flex align-items-center gap-2 flex-wrap m-0">
-                         <div class="input-group input-group-sm">
-                             <span class="input-group-text bg-light border-1 fw-semibold">Local</span>
-                             <select name="ambito" class="form-select form-select-sm" onchange="this.form.submit()">
-                                 <option value="consolidado" {% if datos.ambito == 'consolidado' %}selected{% endif %}>Consolidado (Ambos Locales: 136 + 197)</option>
-                                 <option value="local_136" {% if datos.ambito == 'local_136' %}selected{% endif %}>Local 136</option>
-                                 <option value="local_197" {% if datos.ambito == 'local_197' %}selected{% endif %}>Local 197</option>
-                             </select>
-                         </div>
-                         <input type="hidden" name="fecha_inicio" value="{{ fecha_inicio }}">
-                         <input type="hidden" name="fecha_fin" value="{{ fecha_fin }}">
-                     </form>
                      <button onclick="window.print()" class="btn btn-dark rounded-pill fw-bold px-4 shadow-sm btn-sm">
                          <i class="fa-solid fa-file-pdf me-1 text-brand-pink"></i> Imprimir Reporte Oficial
                      </button>
@@ -43,7 +31,7 @@
                 <p class="brand-subtitle mb-2" style="font-size: 0.72rem;">VENTA DE CELULARES &amp; TECNOLOGÍA</p>
                 <p class="fw-bold text-brand-black mb-2" style="margin-top: 2px;">NIT: 1013679035-0</p>
                 <div class="badge px-3 py-2 text-uppercase mb-2" style="background-color: var(--brand-dark); color: #fff; letter-spacing: 1px;">
-                    Ámbito: {% if datos.ambito == 'local_136' %}Local 136{% elif datos.ambito == 'local_197' %}Local 197{% else %}Consolidado General (Local 136 + Local 197){% endif %}
+                    SEDE: TIENDA PRINCIPAL
                 </div>
                 <h4 class="text-brand-black fw-bold mb-1">ESTADO DE RESULTADOS CONTABLE</h4>
                 <p class="mb-0 text-secondary">
@@ -73,46 +61,6 @@
                         </td>
                         <td class="text-end text-primary fw-bold">+${{ (datos.ventas_retoma)|cop }}</td>
                     </tr>
-
-                    {% if datos.ambito == 'consolidado' %}
-                    <tr class="border-top">
-                        <td colspan="2" class="pt-3 pb-2">
-                            <div class="small fw-bold text-uppercase text-muted mb-2"><i class="fa-solid fa-code-compare me-1"></i> Comparativo por Local Comercial:</div>
-                            <div class="table-responsive">
-                                <table class="table table-sm table-bordered bg-light mb-0 small text-center align-middle">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th class="text-start">Punto de Venta</th>
-                                            <th>Ventas</th>
-                                            <th class="text-end">Ingresos Brutos</th>
-                                            <th class="text-end">Costo Mercancía (COGS)</th>
-                                            <th class="text-end">Utilidad Bruta</th>
-                                            <th>Margen</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="text-start fw-bold"><i class="fa-solid fa-shop me-1 text-primary"></i> Local 136</td>
-                                            <td>{{ datos.res_136.cantidad_ventas }}</td>
-                                            <td class="text-end fw-semibold">${{ (datos.res_136.ventas_brutas)|cop }}</td>
-                                            <td class="text-end text-danger">-${{ (datos.res_136.costos_directos)|cop }}</td>
-                                            <td class="text-end fw-bold text-success">${{ (datos.res_136.utilidad_bruta)|cop }}</td>
-                                            <td><span class="badge bg-success bg-opacity-75">{{ "%.1f"|format(datos.res_136.margen_bruto_pct) }}%</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="text-start fw-bold"><i class="fa-solid fa-shop me-1 text-info"></i> Local 197</td>
-                                            <td>{{ datos.res_197.cantidad_ventas }}</td>
-                                            <td class="text-end fw-semibold">${{ (datos.res_197.ventas_brutas)|cop }}</td>
-                                            <td class="text-end text-danger">-${{ (datos.res_197.costos_directos)|cop }}</td>
-                                            <td class="text-end fw-bold text-success">${{ (datos.res_197.utilidad_bruta)|cop }}</td>
-                                            <td><span class="badge bg-success bg-opacity-75">{{ "%.1f"|format(datos.res_197.margen_bruto_pct) }}%</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endif %}
 
                     <tr class="border-top text-brand-black fw-bolder bg-light">
                         <td class="p-3">Σ TOTAL INGRESOS OPERACIONALES (VENTAS BRUTAS)</td>
@@ -212,18 +160,8 @@
                                         </td>
                                         <td class="text-end fw-semibold align-top">${{ (datos.inventario_valorado_accesorios)|cop }}</td>
                                     </tr>
-                                    {% if datos.ambito == 'consolidado' %}
-                                    <tr class="border-top text-muted small">
-                                        <td class="ps-3"><i class="fa-solid fa-shop me-1"></i> Stock Valorado Local 136</td>
-                                        <td class="text-end">${{ (datos.inventario_valorado_136)|cop }}</td>
-                                    </tr>
-                                    <tr class="text-muted small">
-                                        <td class="ps-3"><i class="fa-solid fa-shop me-1"></i> Stock Valorado Local 197</td>
-                                        <td class="text-end">${{ (datos.inventario_valorado_197)|cop }}</td>
-                                    </tr>
-                                    {% endif %}
                                     <tr class="border-top">
-                                        <td class="fw-bold">Σ Total Inventario Físico {% if datos.ambito == 'local_136' %}(Local 136){% elif datos.ambito == 'local_197' %}(Local 197){% else %}(Ambos Locales){% endif %}</td>
+                                        <td class="fw-bold">Σ Total Inventario Físico en Tienda</td>
                                         <td class="text-end fw-bold text-primary">${{ (datos.inventario_valorado_activo)|cop }}</td>
                                     </tr>
                                     <tr>

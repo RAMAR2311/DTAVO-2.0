@@ -6,19 +6,10 @@
         <i class="fa-solid fa-cash-register text-brand-blue me-2"></i> Módulo de Arqueo y Cierre Diario
     </h2>
     
-    <!-- Seleccionador de Fecha y Local -->
+    <!-- Seleccionador de Fecha -->
     <form id="fechaForm" action="{{ url_for('arqueo_bp.nuevo') }}" method="GET" class="d-flex align-items-center bg-white p-2 rounded-pill shadow-sm border gap-1">
         <label for="fecha" class="fw-bold ms-3 me-1 text-muted small mb-0">Fecha:</label>
         <input type="date" id="fecha" name="fecha" value="{{ fecha }}" class="form-control form-control-sm border-0 bg-transparent fw-bold text-brand-black" onchange="this.form.submit()" required style="width: 140px; box-shadow: none;">
-
-        {% if current_user.rol == 'admin' %}
-        <span class="text-muted">|</span>
-        <label for="sucursal" class="fw-bold me-1 text-muted small mb-0">Local:</label>
-        <select name="sucursal" id="sucursal" class="form-select form-select-sm border-0 bg-transparent fw-bold text-brand-black" onchange="this.form.submit()" style="width: 130px; box-shadow: none; padding-right: 25px;">
-            <option value="LOCAL 136" {% if sucursal_seleccionada == 'LOCAL 136' %}selected{% endif %}>LOCAL 136</option>
-            <option value="LOCAL 197" {% if sucursal_seleccionada == 'LOCAL 197' %}selected{% endif %}>LOCAL 197</option>
-        </select>
-        {% endif %}
     </form>
 </div>
 
@@ -26,15 +17,15 @@
 <div class="alert alert-warning text-center rounded-3 shadow-sm border-0 d-flex justify-content-between align-items-center p-3 mb-4">
     <div class="d-flex align-items-center">
         <i class="fa-solid fa-lock fs-4 me-3 text-warning"></i> 
-        <span class="fs-5">Arqueo cerrado por <strong>{{ arqueo_existente.cajero.nombre }}</strong> el {{ arqueo_existente.fecha_arqueo.strftime('%d/%m/%Y') }} ({{ arqueo_existente.sucursal }}).</span>
+        <span class="fs-5">Arqueo cerrado por <strong>{{ arqueo_existente.cajero.nombre }}</strong> el {{ arqueo_existente.fecha_arqueo.strftime('%d/%m/%Y') }}.</span>
     </div>
-    <a href="{{ url_for('arqueo_bp.imprimir_ticket_arqueo', fecha=fecha, sucursal=sucursal_seleccionada, autoprint=1) }}" target="_blank" class="btn btn-dark rounded-pill px-3 fw-bold shadow-sm">
+    <a href="{{ url_for('arqueo_bp.imprimir_ticket_arqueo', fecha=fecha, autoprint=1) }}" target="_blank" class="btn btn-dark rounded-pill px-3 fw-bold shadow-sm">
         <i class="fa-solid fa-print me-1"></i> Imprimir Ticket 80mm
     </a>
 </div>
 {% endif %}
 
-<form action="{{ url_for('arqueo_bp.nuevo') }}?fecha={{ fecha }}{% if current_user.rol == 'admin' %}&sucursal={{ sucursal_seleccionada }}{% endif %}" method="POST" id="formArqueo">
+<form action="{{ url_for('arqueo_bp.nuevo') }}?fecha={{ fecha }}" method="POST" id="formArqueo">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <div class="row g-4">

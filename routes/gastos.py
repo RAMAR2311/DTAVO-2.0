@@ -53,7 +53,7 @@ def index():
                         monto=valor_float,
                         metodo_pago=metodo,
                         fecha_gasto=fecha_obj,
-                        sucursal=current_user.sucursal
+                        sucursal='PRINCIPAL'
                     )
                     db.session.add(nuevo_gasto)
                     db.session.flush()

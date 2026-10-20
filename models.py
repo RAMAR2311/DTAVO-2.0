@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     telefono = db.Column(db.String(20)) # Nuevo Campo de Contacto (Nullable por Defecto)
     password_hash = db.Column(db.String(256), nullable=False)
     rol = db.Column(db.String(50), nullable=False, default='vendedor')
-    sucursal = db.Column(db.String(100), nullable=False, default='LOCAL 136')
+    sucursal = db.Column(db.String(100), nullable=False, default='PRINCIPAL')
     
     ventas = db.relationship('Sale', backref='vendedor', lazy=True)
     ajustes_stock = db.relationship('StockAdjustment', backref='admin', lazy=True)
@@ -146,7 +146,7 @@ class Sale(db.Model):
     monto_total = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
     metodo_pago = db.Column(db.String(50), nullable=False, default='efectivo')
     tipo_venta = db.Column(db.String(50), nullable=False, server_default='general') # 'general' o 'celulares'
-    sucursal = db.Column(db.String(100), nullable=False, default='LOCAL 136')
+    sucursal = db.Column(db.String(100), nullable=False, default='PRINCIPAL')
     
     detalles = db.relationship('SaleDetail', backref='venta', lazy=True, cascade="all, delete-orphan")
     pagos = db.relationship('SalePayment', backref='venta', lazy=True, cascade="all, delete-orphan")
@@ -273,7 +273,7 @@ class ArqueoCaja(db.Model):
     vendedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     fecha_arqueo = db.Column(db.Date, nullable=False)
     tipo_arqueo = db.Column(db.String(50), nullable=False, server_default='general') # 'general' o 'celulares'
-    sucursal = db.Column(db.String(100), nullable=False, default='LOCAL 136')
+    sucursal = db.Column(db.String(100), nullable=False, default='PRINCIPAL')
     base_inicial = db.Column(db.Numeric(14, 2), nullable=False, default=0.0)
     gastos_del_dia = db.Column(db.Numeric(14, 2), nullable=False, default=0.0)
     observaciones_gastos = db.Column(db.String(255), nullable=True)
@@ -299,7 +299,7 @@ class SobranteLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     arqueo_id = db.Column(db.Integer, db.ForeignKey('arqueo_caja.id', ondelete='CASCADE'), nullable=True)
     vendedor_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    sucursal = db.Column(db.String(100), nullable=False)
+    sucursal = db.Column(db.String(100), nullable=False, default='PRINCIPAL')
     fecha_arqueo = db.Column(db.Date, nullable=False)
     monto_esperado = db.Column(db.Numeric(14, 2), nullable=False, default=0.0)
     efectivo_fisico = db.Column(db.Numeric(14, 2), nullable=False, default=0.0)
@@ -341,7 +341,7 @@ class Expense(db.Model):
     descripcion = db.Column(db.String(255), nullable=True)
     monto = db.Column(db.Numeric(10, 2), nullable=False)
     metodo_pago = db.Column(db.String(50), nullable=False, default='efectivo')
-    sucursal = db.Column(db.String(100), nullable=False, default='LOCAL 136')
+    sucursal = db.Column(db.String(100), nullable=False, default='PRINCIPAL')
     fecha_gasto = db.Column(db.DateTime, default=obtener_hora_bogota)
 
     usuario = db.relationship('User', backref='gastos', lazy=True)

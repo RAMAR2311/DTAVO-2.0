@@ -21,7 +21,7 @@ def seed_data():
                 email="admin@redcover.com",
                 telefono="3001234567",
                 rol="admin",
-                sucursal="LOCAL 136",
+                sucursal="PRINCIPAL",
                 password_hash=generate_password_hash("admin123")
             )
             db.session.add(admin)
@@ -30,11 +30,11 @@ def seed_data():
         vendedor = User.query.filter_by(email="vendedor@redcover.com").first()
         if not vendedor:
             vendedor = User(
-                nombre="Cajero Local 196",
+                nombre="Cajero Central",
                 email="vendedor@redcover.com",
                 telefono="3007654321",
                 rol="vendedor",
-                sucursal="LOCAL 197",
+                sucursal="PRINCIPAL",
                 password_hash=generate_password_hash("ventas123")
             )
             db.session.add(vendedor)
@@ -171,7 +171,7 @@ def seed_data():
                 monto_total=Decimal("2750000.00"),
                 metodo_pago="efectivo",
                 tipo_venta="celulares",
-                sucursal="LOCAL 197",
+                sucursal="PRINCIPAL",
                 fecha_venta=obtener_hora_bogota() - timedelta(days=2)
             )
             db.session.add(sale1)
@@ -214,7 +214,7 @@ def seed_data():
                 monto_total=Decimal("739000.00"),
                 metodo_pago="mixto",
                 tipo_venta="general",
-                sucursal="LOCAL 136",
+                sucursal="PRINCIPAL",
                 fecha_venta=obtener_hora_bogota() - timedelta(days=1)
             )
             db.session.add(sale2)
@@ -270,7 +270,6 @@ def seed_data():
         fecha_arqueo = obtener_hora_bogota().date() - timedelta(days=1)
         arq_existente = ArqueoCaja.query.filter_by(
             fecha_arqueo=fecha_arqueo, 
-            sucursal="LOCAL 136", 
             tipo_arqueo="general"
         ).first()
         
@@ -278,7 +277,7 @@ def seed_data():
             arq = ArqueoCaja(
                 fecha_arqueo=fecha_arqueo,
                 vendedor_id=admin.id,
-                sucursal="LOCAL 136",
+                sucursal="PRINCIPAL",
                 tipo_arqueo="general",
                 base_inicial=200000.0,
                 total_efectivo_sistema=300000.0,      # El pago efectivo de la venta 2
