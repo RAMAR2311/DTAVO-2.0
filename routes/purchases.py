@@ -97,8 +97,20 @@ def api_crear_producto_rapido():
         codigo = str(data.get('codigo', '')).strip()
         nombre = str(data.get('nombre', '')).strip()
 
-        if not nombre:
-            return jsonify({'success': False, 'error': 'El nombre del producto es obligatorio.'}), 400
+        if tipo == 'celulares':
+            imei_principal = str(data.get('imei') or codigo).strip()
+            imei2_val = str(data.get('imei2', '')).strip() or None
+            marca_val = data.get('marca', '').strip()
+            modelo_val = data.get('modelo', '').strip()
+
+            if not imei_principal:
+                return jsonify({'success': False, 'message': 'El serial / IMEI principal es obligatorio.', 'error': 'El serial / IMEI principal es obligatorio.'}), 400
+
+            if not nombre:
+                nombre = f"{marca_val} {modelo_val}".strip() or f"Celular {imei_principal}"
+        else:
+            if not nombre:
+                return jsonify({'success': False, 'message': 'El nombre del producto es obligatorio.', 'error': 'El nombre del producto es obligatorio.'}), 400
 
         try:
             costo = Decimal(str(data.get('costo', 0)))
@@ -122,10 +134,9 @@ def api_crear_producto_rapido():
             modelo_val = data.get('modelo', '').strip()
 
             if not imei_principal:
-                return jsonify({'success': False, 'error': 'El serial / IMEI principal es obligatorio para celulares.'}), 400
+                return jsonify({'success': False, 'message': 'El serial / IMEI principal es obligatorio.', 'error': 'El serial / IMEI principal es obligatorio.'}), 400
 
-            if not nombre:
-                nombre = f"{marca_val} {modelo_val}".strip() or f"Celular IMEI {imei_principal}"
+            nombre_final = f"{marca_val} {modelo_val}".strip() or f"Celular IMEI {imei_principal}"
 
             # Verificar si ya existe este serial/IMEI en la base de datos
             existente = Product.query.filter(
@@ -134,10 +145,10 @@ def api_crear_producto_rapido():
                 (Product.imei2 == imei_principal)
             ).first()
             if existente:
-                return jsonify({'success': False, 'error': f'Ya existe un equipo registrado con el IMEI/Serial {imei_principal}: {existente.nombre}'}), 400
+                return jsonify({'success': False, 'message': f'Ya existe un equipo registrado con el IMEI/Serial {imei_principal}: {existente.nombre}', 'error': f'Ya existe un equipo registrado con el IMEI/Serial {imei_principal}'}), 400
 
             nuevo = Product(
-                nombre=nombre,
+                nombre=nombre_final,
                 sku=imei_principal,
                 tipo_inventario='celulares',
                 cantidad_stock=0, # Se incrementará en 1 al confirmar la orden de compra
@@ -174,10 +185,10 @@ def api_crear_producto_rapido():
             })
 
         else: # Accesorios y tecnología general
-            sku_val = codigo if codigo else f"ACC-{int(datetime.now().timestamp())}"
+            sku_val = str(data.get('sku') or codigo).strip() or f"ACC-{int(datetime.now().timestamp())}"
             existente = Product.query.filter_by(sku=sku_val).first()
             if existente:
-                return jsonify({'success': False, 'error': f'Ya existe un producto con el código SKU {sku_val}: {existente.nombre}'}), 400
+                return jsonify({'success': False, 'message': f'Ya existe un producto con el código SKU {sku_val}: {existente.nombre}', 'error': f'Ya existe un producto con el código SKU {sku_val}'}), 400
 
             nuevo = Product(
                 nombre=nombre,
@@ -206,7 +217,9 @@ def api_crear_producto_rapido():
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': f'Error en base de datos: {str(e)}', 'error': str(e)}), 500
 
 
 @purchases_bp.route('/guardar', methods=['POST'])

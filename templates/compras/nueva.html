@@ -606,6 +606,8 @@
             payload.bateria = document.getElementById('rapido_bateria').value.trim();
             payload.estado = document.getElementById('rapido_estado').value.trim();
 
+            payload.nombre = `${payload.marca} ${payload.modelo}`.trim();
+
             if (!payload.imei || !payload.marca || !payload.modelo) {
                 alertBox.textContent = 'Por favor completa al menos Marca, Modelo e IMEI.';
                 alertBox.style.display = 'block';
@@ -636,9 +638,9 @@
                 body: JSON.stringify(payload)
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
             if (!res.ok || !data.success) {
-                throw new Error(data.message || 'Error al guardar el producto.');
+                throw new Error(data.message || data.error || `Error ${res.status}: no se pudo guardar el producto.`);
             }
 
             // Producto creado con éxito -> Agregarlo a la tabla de compra
