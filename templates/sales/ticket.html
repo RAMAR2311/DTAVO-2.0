@@ -3,122 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket de Compra #{{ venta.id }} - Tu Tienda Tecnológica</title>
-    <!-- Incluir solo la fuente base "Roboto Mono" (Letra de ticketera 80mm) -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Comprobante DTAVO POS #{{ venta.id }}</title>
+    <!-- Fuentes térmicas optimizadas: JetBrains Mono y Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --ticket-font-mono: 'JetBrains Mono', 'Courier New', Courier, Consolas, monospace;
+            --ticket-font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            --dtavo-gold: #C59F60;
+            --dtavo-dark: #0A0A0A;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         body {
-            background-color: #FFFFFF; /* 100% White Canvas */
+            background-color: #0A0A0A;
             margin: 0;
-            padding: 30px;
+            padding: 30px 15px;
             display: flex;
             justify-content: center;
-            font-family: 'Roboto Mono', monospace, sans-serif;
+            font-family: var(--ticket-font-mono);
+            color: #000000;
         }
         
+        .ticket-wrapper {
+            width: 100%;
+            max-width: 380px; /* Adaptado a 80mm en pantalla */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         .ticket {
             background-color: #FFFFFF;
             width: 100%;
-            max-width: 380px; /* Ancho de impresora térmica 80mm */
-            padding: 25px 20px;
-            border: 1px solid #E6F4D7;
-            box-shadow: 0 4px 20px rgba(118, 188, 33, 0.08);
-            color: #1A1A1A;
-            box-sizing: border-box;
+            padding: 22px 18px;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            color: #000000;
         }
 
+        /* Encabezado */
         .header {
             text-align: center;
-            border-bottom: 2px dashed #1A1A1A;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 2px dashed #000000;
+            padding-bottom: 12px;
+            margin-bottom: 14px;
         }
 
-        .logo {
-            font-size: 1.25rem;
+        .brand-badge {
+            display: inline-block;
+            background: #000000;
+            color: #FFFFFF;
+            font-family: var(--ticket-font-sans);
+            font-size: 0.85rem;
             font-weight: 800;
-            margin: 2px 0 1px 0;
+            padding: 3px 10px;
+            letter-spacing: 1.5px;
+            border-radius: 3px;
+            margin-bottom: 4px;
+        }
+
+        .brand-title {
+            font-family: var(--ticket-font-sans);
+            font-size: 1.28rem;
+            font-weight: 800;
+            margin: 2px 0 0 0;
             letter-spacing: 0.5px;
             line-height: 1.2;
             text-transform: uppercase;
         }
 
-        .info {
-            font-size: 0.9rem;
-            margin: 3px 0;
-            line-height: 1.5;
+        .slogan {
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin: 2px 0 6px 0;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
+        .nit {
+            font-size: 0.76rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-box {
+            border-top: 1px dashed #000000;
+            padding-top: 8px;
+            font-size: 0.75rem;
+            line-height: 1.45;
+            text-align: left;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .client-box {
+            border-top: 1px dashed #000000;
+            padding-top: 6px;
+            margin-top: 6px;
+            text-align: left;
+            font-size: 0.75rem;
+            line-height: 1.35;
+        }
+
+        .section-label {
+            font-weight: 800;
+            margin: 0 0 3px 0;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tabla de Ítems */
         .table-items {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
         }
 
         .table-items th {
             text-align: left;
-            border-bottom: 1px solid #1A1A1A;
-            padding-bottom: 8px;
-            font-weight: 700;
+            border-bottom: 1.5px solid #000000;
+            border-top: 1.5px solid #000000;
+            padding: 6px 0;
+            font-weight: 800;
+            font-size: 0.72rem;
+            text-transform: uppercase;
         }
 
         .table-items td {
-            padding: 10px 0;
+            padding: 8px 0;
             vertical-align: top;
+            border-bottom: 1px dotted #ccc;
         }
 
-        .col-qty { width: 15%; text-align: center; }
-        .col-prod { width: 55%; padding-right: 10px; }
-        .col-sub { width: 30%; text-align: right; }
+        .col-qty { width: 14%; text-align: center; font-weight: 700; }
+        .col-prod { width: 56%; padding-right: 8px; }
+        .col-sub { width: 30%; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
 
+        .item-imei-row {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #111;
+            margin-top: 3px;
+            padding: 2px 4px;
+            background: #f3f3f3;
+            border-left: 2px solid #000;
+            display: inline-block;
+            word-break: break-all;
+        }
+
+        .item-specs {
+            font-size: 0.68rem;
+            color: #333;
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        /* Totales y Desglose */
         .totals {
-            border-top: 2px dashed #1A1A1A;
-            padding-top: 20px;
-            margin-bottom: 25px;
+            border-top: 2px dashed #000000;
+            padding-top: 12px;
+            margin-bottom: 18px;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .retoma-box {
+            margin: 8px 0 12px 0;
+            padding: 6px 8px;
+            border: 1px dashed #000000;
+            background: #FAFAFA;
+        }
+
+        .retoma-header {
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            font-size: 1.35rem;
+            font-family: var(--ticket-font-sans);
+            font-size: 1.32rem;
             font-weight: 800;
-            background-color: #FFFFFF;
-            padding: 10px 12px;
-            border-radius: 6px;
-            border: 2px solid #76BC21;
-            color: #111827;
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 8px 10px;
+            border-radius: 4px;
+            margin-top: 8px;
+            letter-spacing: -0.5px;
+            font-variant-numeric: tabular-nums;
         }
 
+        .payments-box {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px dashed #000000;
+            font-size: 0.8rem;
+        }
+
+        /* Footer Institucional DTAVO */
         .footer {
             text-align: center;
-            font-size: 0.85rem;
-            margin-top: 30px;
+            font-size: 0.78rem;
+            margin-top: 15px;
+            border-top: 2px dashed #000000;
+            padding-top: 12px;
         }
 
-        .btn-print {
+        .footer-courtesy {
+            font-family: var(--ticket-font-sans);
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .warranty-text {
+            font-size: 0.65rem;
+            line-height: 1.35;
+            text-align: justify;
+            margin: 10px 0;
+            border-top: 1px dashed #000000;
+            border-bottom: 1px dashed #000000;
+            padding: 8px 0;
+        }
+
+        .qr-placeholder {
+            margin: 12px auto 8px auto;
+            text-align: center;
+        }
+
+        .qr-img {
+            width: 100px;
+            height: 100px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Botones de Pantalla (Ocultos en impresión) */
+        .btn-action {
             display: block;
             width: 100%;
-            padding: 15px;
-            background-color: #76BC21;
-            color: #FFFFFF;
-            border: 2px solid #76BC21;
-            font-size: 1.05rem;
+            padding: 13px;
+            font-family: var(--ticket-font-sans);
+            font-size: 0.95rem;
             border-radius: 8px;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
-            margin-top: 20px;
-            font-family: inherit;
-            transition: 0.2s;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
         }
 
-        .btn-print:hover {
-            background-color: #1E5622;
-            border-color: #1E5622;
+        .btn-print-thermal {
+            background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%);
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px rgba(197, 159, 96, 0.4);
+        }
+        .btn-print-thermal:hover {
+            background: #A6824D;
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+        .btn-whatsapp:hover {
+            background-color: #20BD5A;
+            transform: translateY(-2px);
+        }
+
+        .btn-back-pos {
+            background-color: #1A1A1A;
+            border: 1px solid #333;
             color: #FFFFFF;
         }
+        .btn-back-pos:hover {
+            background-color: #252525;
+            border-color: #C59F60;
+        }
 
-        /* MEDIA QUERY DE IMPRESIÓN RIGUROSA: 100% MONOCROMÁTICO LIMPIO (58mm/80mm) */
+        /* ================================================================ */
+        /* MEDIA QUERY DE IMPRESIÓN RIGUROSA: 100% BLANCO/NEGRO (58mm/80mm) */
+        /* ================================================================ */
         @media print {
             @page {
                 size: 80mm auto;
@@ -129,20 +324,24 @@
                 overflow: visible !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
-            }
-            body { 
-                background-color: #FFFFFF !important; 
-                padding: 0 !important; 
-                display: block !important; 
+                background-color: #FFFFFF !important;
                 color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
             }
-            .ticket { 
-                box-shadow: none !important; 
-                max-width: 100% !important; 
-                padding: 0 !important; 
-                margin: 0 auto !important; 
-                width: 80mm !important; 
+            .ticket-wrapper {
+                max-width: 100% !important;
+                width: 80mm !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+            .ticket {
+                box-shadow: none !important;
                 border: none !important;
+                padding: 3mm 4mm !important;
+                width: 100% !important;
                 color: #000000 !important;
             }
             * {
@@ -152,236 +351,257 @@
                 box-shadow: none !important;
                 text-shadow: none !important;
             }
-            .btn-print { display: none !important; }
-            .d-print-none { display: none !important; }
-            .total-row { 
-                background-color: transparent !important; 
-                border-top: 1px dashed #000000 !important;
-                border-bottom: 1px dashed #000000 !important;
-                border-left: none !important;
-                border-right: none !important;
-                padding: 8px 0 !important; 
-                border-radius: 0 !important;
+            .brand-badge {
+                border: 1px solid #000000 !important;
+                background: #000000 !important;
+                color: #FFFFFF !important;
             }
+            .total-row {
+                background-color: transparent !important;
+                color: #000000 !important;
+                border-top: 2px dashed #000000 !important;
+                border-bottom: 2px dashed #000000 !important;
+                border-radius: 0 !important;
+                padding: 6px 0 !important;
+            }
+            .d-print-none {
+                display: none !important;
+            }
+        }
+
+        /* Soporte adicional para tirilla angosta 58mm si se fuerza la clase .ticket-58mm */
+        @media print and (max-width: 60mm) {
+            @page { size: 58mm auto; margin: 0; }
+            .ticket-wrapper { width: 58mm !important; }
+            .ticket { padding: 2mm !important; font-size: 0.72rem !important; }
+            .brand-title { font-size: 1.1rem !important; }
         }
     </style>
 </head>
 <body>
 
-<div class="ticket">
-    <div class="header">
-        <h1 class="logo">TU TIENDA TECNOLÓGICA</h1>
-        <p style="font-size: 0.72rem; font-weight: 700; margin: 0 0 6px 0; letter-spacing: 0.15em; text-transform: uppercase;">VENTA DE CELULARES &amp; TECNOLOGÍA</p>
-        <p style="font-size: 0.78rem; font-weight: bold; margin: 0 0 8px 0; letter-spacing: 0.5px;">NIT: 1013679035-0</p>
-        
-        <div style="border-top: 1px dashed #1A1A1A; padding: 6px 0; font-size: 0.78rem; line-height: 1.4; text-align: left;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                <span><strong>Folio/Ticket:</strong> #{{ venta.id }}</span>
-                <span><strong>Fecha:</strong> {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</span>
-            </div>
-            <div style="margin-bottom: 2px;">
-                <strong>Cajero:</strong> {{ venta.vendedor.nombre }}
-            </div>
-            {% if venta.asesor %}
-            <div style="margin-bottom: 2px;">
-                <strong>Asesor de Venta:</strong> {{ venta.asesor.nombre }}
-            </div>
-            {% endif %}
-            <div>
-                <strong>Método de Pago:</strong> 
-                {% if venta.pagos|length > 1 %}
-                    PAGO DIVIDIDO
-                {% elif venta.pagos|length == 1 %}
-                    {{ venta.pagos[0].metodo_pago|upper }}
-                {% else %}
-                    {{ venta.metodo_pago|upper }}
+<div class="ticket-wrapper">
+    <div class="ticket">
+        <!-- Encabezado DTAVO -->
+        <div class="header">
+            <div class="brand-badge">ECOSISTEMA DTAVO</div>
+            <h1 class="brand-title">DTAVO · TERMINAL POS</h1>
+            <p class="slogan">"El pulso inteligente de tu negocio"</p>
+            <p class="nit">NIT: 1013679035-0</p>
+            
+            <div class="meta-box">
+                <div class="meta-row">
+                    <span><strong>COMPROBANTE:</strong> #{{ venta.id }}</span>
+                    <span><strong>FECHA:</strong> {{ venta.fecha_venta.strftime('%d/%m/%Y %H:%M') }}</span>
+                </div>
+                <div class="meta-row">
+                    <span><strong>OPERADOR:</strong> {{ venta.vendedor.nombre }}</span>
+                    <span><strong>SEDE:</strong> PRINCIPAL</span>
+                </div>
+                {% if venta.asesor %}
+                <div class="meta-row">
+                    <span><strong>ASESOR COMERCIAL:</strong> {{ venta.asesor.nombre }}</span>
+                </div>
                 {% endif %}
-            </div>
-        </div>
-
-        {% if venta.cliente %}
-        <div style="border-top: 1px dashed #1A1A1A; padding-top: 6px; margin-top: 4px; text-align: left; font-size: 0.78rem; line-height: 1.35;">
-            <p style="font-weight: bold; margin: 0 0 3px 0; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px;">Datos del Cliente:</p>
-            <div style="margin-bottom: 1px;"><strong>Nombre:</strong> {{ venta.cliente.nombre }}</div>
-            <div style="margin-bottom: 1px;"><strong>Documento:</strong> {{ venta.cliente.documento }}</div>
-            <div style="margin-bottom: 1px;"><strong>Teléfono:</strong> {{ venta.cliente.telefono }}</div>
-            {% if venta.cliente.email %}<div style="margin-bottom: 1px;"><strong>Correo:</strong> {{ venta.cliente.email }}</div>{% endif %}
-            {% if venta.cliente.direccion %}<div><strong>Dirección:</strong> {{ venta.cliente.direccion }}</div>{% endif %}
-        </div>
-        {% endif %}
-    </div>
-
-    <table class="table-items">
-        <thead>
-            <tr>
-                <th class="col-qty">CANT</th>
-                <th class="col-prod">CONCEPTO</th>
-                <th class="col-sub">IMPORTE</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for detalle in venta.detalles %}
-            <tr>
-                <td class="col-qty">{{ detalle.cantidad_vendida }}</td>
-                <!-- Cortar la longitud del título si es gigantesco para no descuadrar la ticketera -->
-                <td class="col-prod">
-                    {# 1. Determinar el producto asociado (directo o resuelto por IMEI en factura de proveedor o manual) #}
-                    {% set prod = detalle.producto %}
-                    {% if not prod and detalle.variante and detalle.variante.producto %}
-                        {% set prod = detalle.variante.producto %}
-                    {% endif %}
-                    {% set prov_inv = (venta.provider_invoices[0] if venta.provider_invoices and venta.provider_invoices|length > 0 else None) %}
-                    {% if not prod and prov_inv %}
-                        {% set prod = prov_inv.producto_detectado %}
-                    {% endif %}
-
-                    {% if prod %}
-                        {# Limpiar prefijo 'Celular' si se trata de computadores, laptops, tablets, iPads, gafas, etc. #}
-                        {% set prod_nombre = prod.nombre or 'Producto' %}
-                        {% if prod_nombre.startswith('Celular ') %}
-                            {% set lower_name = prod_nombre|lower %}
-                            {% if 'macbook' in lower_name or 'laptop' in lower_name or 'computador' in lower_name or 'pc' in lower_name or 'ipad' in lower_name or 'tablet' in lower_name or 'gafas' in lower_name or 'smartwatch' in lower_name or 'reloj' in lower_name or 'playstation' in lower_name or 'nintendo' in lower_name or 'xbox' in lower_name %}
-                                {% set prod_nombre = prod_nombre[8:] %}
-                            {% endif %}
+                <div class="meta-row">
+                    <span><strong>MÉTODO DE PAGO:</strong> 
+                        {% if venta.pagos|length > 1 %}
+                            PAGO MIXTO DIVIDIDO
+                        {% elif venta.pagos|length == 1 %}
+                            {{ venta.pagos[0].metodo_pago|upper }}
+                        {% else %}
+                            {{ venta.metodo_pago|upper }}
                         {% endif %}
-                        {{ prod_nombre[:45] }}{% if prod_nombre|length > 45 %}...{% endif %}
-                        {% if detalle.variante %}
-                            <br><small style="font-size: 0.75rem;">{{ detalle.variante.nombre_variante }}</small>
-                        {% endif %}
-                        
-                        <div style="font-size: 0.7rem; color: #444; margin-top: 3px; line-height: 1.2;">
-                            {% if prod.inventario %}
-                                <div style="font-weight: bold; text-transform: uppercase;">Inventario: {{ prod.inventario }}</div>
-                            {% elif prod.proveedor %}
-                                <div style="font-weight: bold; text-transform: uppercase;">Inventario: Externo ({{ prod.proveedor }})</div>
-                            {% elif prod.tipo_inventario == 'externos' %}
-                                <div style="font-weight: bold; text-transform: uppercase;">Inventario: Externo</div>
-                            {% endif %}
-                            {% if prod.memoria %}Cap: {{ prod.memoria }} {% endif %}
-                            {% if prod.bateria %}Bat: {{ prod.bateria }}% {% endif %}
-                            {% if prod.color %}Col: {{ prod.color }}{% endif %}
-                            {% if prod.imei or prod.imei2 %}<br>{% endif %}
-                            {% if prod.imei %}IMEI 1: {{ prod.imei }}{% endif %}
-                            {% if prod.imei2 %}| IMEI 2: {{ prod.imei2 }}{% endif %}
-                        </div>
-                    {% elif detalle.nombre_manual %}
-                        {{ detalle.nombre_manual[:50] }}{% if detalle.nombre_manual|length > 50 %}...{% endif %}
-                        {% if prov_inv %}
-                            <div style="font-size: 0.7rem; color: #444; margin-top: 3px; line-height: 1.2;">
-                                <div style="font-weight: bold; text-transform: uppercase;">Inventario: Externo {% if prov_inv.provider %}({{ prov_inv.provider.nombre }}){% endif %}</div>
-                                {% if prov_inv.numero_factura and 'IMEI' in prov_inv.numero_factura %}
-                                    <div>{{ prov_inv.numero_factura }}</div>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                    {% elif prov_inv %}
-                        {{ (prov_inv.numero_factura or prov_inv.descripcion or 'Equipo Externo')[:45] }}
-                        <div style="font-size: 0.7rem; color: #444; margin-top: 3px; line-height: 1.2;">
-                            <div style="font-weight: bold; text-transform: uppercase;">Inventario: Externo {% if prov_inv.provider %}({{ prov_inv.provider.nombre }}){% endif %}</div>
-                        </div>
-                    {% else %}
-                        Artículo (ID: {{ detalle.product_id or 'S/N' }})
-                    {% endif %}
-                </td>
-                <td class="col-sub">
-                    {% if detalle.precio_venta_final == 0 %}
-                        OBSEQUIO
-                    {% else %}
-                        ${{ (detalle.precio_venta_final * detalle.cantidad_vendida)|cop }}
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="totals">
-        {% set ns = namespace(subtotal=venta.monto_total) %}
-        {% for retoma in venta.retomas_asociadas %}
-            {% set ns.subtotal = ns.subtotal + retoma.valor_retoma %}
-        {% endfor %}
-        
-        {% if venta.retomas_asociadas %}
-        <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; margin-bottom: 10px;">
-            <span>SUBTOTAL:</span>
-            <span>${{ ns.subtotal|cop }}</span>
-        </div>
-        
-        <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
-            <p style="font-weight: 700; font-size: 0.85rem; margin-bottom: 8px;">EQUIPOS EN RETOMA (DESCUENTO):</p>
-            {% for retoma in venta.retomas_asociadas %}
-            <div style="font-size: 0.85rem; padding: 3px 0;">
-                <div style="display: flex; justify-content: space-between;">
-                    <span>{{ retoma.modelo }} (IMEI 1: {{ retoma.imei1 }}{% if retoma.imei2 %} | IMEI 2: {{ retoma.imei2 }}{% endif %})</span>
-                    <span style="font-weight: 700;">-${{ retoma.valor_retoma|cop }}</span>
+                    </span>
                 </div>
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
 
-        <div class="total-row">
-            <span>TOTAL:</span>
-            <span>${{ (venta.monto_total)|cop }}</span>
-        </div>
-        
-        {% if venta.pagos|length > 1 %}
-        <!-- Desglose de pagos mixtos -->
-        <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc;">
-            <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; text-align: center;">DESGLOSE DE PAGOS:</p>
-            {% for pago in venta.pagos %}
-            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 3px 0;">
-                <span style="text-transform: capitalize;">{{ pago.metodo_pago }}:</span>
-                <span style="font-weight: 700;">${{ (pago.monto)|cop }}</span>
+            {% if venta.cliente %}
+            <div class="client-box">
+                <p class="section-label">DATOS DEL CLIENTE / TITULAR:</p>
+                <div class="meta-row"><span><strong>Nombre:</strong> {{ venta.cliente.nombre }}</span></div>
+                <div class="meta-row">
+                    <span><strong>Doc / NIT:</strong> {{ venta.cliente.documento }}</span>
+                    <span><strong>Tel:</strong> {{ venta.cliente.telefono }}</span>
+                </div>
+                {% if venta.cliente.email %}<div class="meta-row"><span><strong>Email:</strong> {{ venta.cliente.email }}</span></div>{% endif %}
+                {% if venta.cliente.direccion %}<div class="meta-row"><span><strong>Dir:</strong> {{ venta.cliente.direccion }}</span></div>{% endif %}
             </div>
-            {% endfor %}
+            {% endif %}
         </div>
-        {% endif %}
+
+        <!-- Detalle de Productos -->
+        <table class="table-items">
+            <thead>
+                <tr>
+                    <th class="col-qty">CANT</th>
+                    <th class="col-prod">DESCRIPCIÓN</th>
+                    <th class="col-sub">TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detalle in venta.detalles %}
+                <tr>
+                    <td class="col-qty">{{ detalle.cantidad_vendida }}</td>
+                    <td class="col-prod">
+                        {# Resolver producto asociado #}
+                        {% set prod = detalle.producto %}
+                        {% if not prod and detalle.variante and detalle.variante.producto %}
+                            {% set prod = detalle.variante.producto %}
+                        {% endif %}
+                        {% set prov_inv = (venta.provider_invoices[0] if venta.provider_invoices and venta.provider_invoices|length > 0 else None) %}
+                        {% if not prod and prov_inv %}
+                            {% set prod = prov_inv.producto_detectado %}
+                        {% endif %}
+
+                        {% if prod %}
+                            {% set prod_nombre = prod.nombre or 'Dispositivo' %}
+                            {% if prod_nombre.startswith('Celular ') %}
+                                {% set lower_name = prod_nombre|lower %}
+                                {% if 'macbook' in lower_name or 'laptop' in lower_name or 'computador' in lower_name or 'pc' in lower_name or 'ipad' in lower_name or 'tablet' in lower_name or 'smartwatch' in lower_name or 'reloj' in lower_name %}
+                                    {% set prod_nombre = prod_nombre[8:] %}
+                                {% endif %}
+                            {% endif %}
+                            <strong>{{ prod_nombre[:45] }}{% if prod_nombre|length > 45 %}...{% endif %}</strong>
+                            {% if detalle.variante %}
+                                <br><small>{{ detalle.variante.nombre_variante }}</small>
+                            {% endif %}
+
+                            <!-- Línea de Identificación de Precisión (IMEI / Serial) -->
+                            {% if prod.imei or prod.imei2 %}
+                            <div class="item-imei-row">
+                                {% if prod.imei %}IMEI 1: {{ prod.imei }}{% endif %}
+                                {% if prod.imei2 %} | IMEI 2: {{ prod.imei2 }}{% endif %}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="item-specs">
+                                {% if prod.memoria %}{{ prod.memoria }} {% endif %}
+                                {% if prod.bateria %}| Batería: {{ prod.bateria }}% {% endif %}
+                                {% if prod.color %}| Color: {{ prod.color }}{% endif %}
+                            </div>
+                        {% elif detalle.nombre_manual %}
+                            <strong>{{ detalle.nombre_manual[:48] }}{% if detalle.nombre_manual|length > 48 %}...{% endif %}</strong>
+                            {% if prov_inv and prov_inv.numero_factura and 'IMEI' in prov_inv.numero_factura %}
+                                <div class="item-imei-row">{{ prov_inv.numero_factura }}</div>
+                            {% endif %}
+                        {% elif prov_inv %}
+                            <strong>{{ (prov_inv.numero_factura or prov_inv.descripcion or 'Dispositivo Tecnológico')[:45] }}</strong>
+                        {% else %}
+                            <strong>Ítem (Ref: #{{ detalle.product_id or 'S/N' }})</strong>
+                        {% endif %}
+                    </td>
+                    <td class="col-sub">
+                        {% if detalle.precio_venta_final == 0 %}
+                            CORTESÍA
+                        {% else %}
+                            ${{ (detalle.precio_venta_final * detalle.cantidad_vendida)|cop }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Totales, Retomas y Pagos -->
+        <div class="totals">
+            {% set ns = namespace(subtotal=venta.monto_total) %}
+            {% for retoma in venta.retomas_asociadas %}
+                {% set ns.subtotal = ns.subtotal + retoma.valor_retoma %}
+            {% endfor %}
+            
+            {% if venta.retomas_asociadas %}
+            <div class="calc-row">
+                <span>SUBTOTAL OPERATIVO:</span>
+                <span>${{ ns.subtotal|cop }}</span>
+            </div>
+            
+            <!-- Desglose estricto de retoma / Trade-in -->
+            <div class="retoma-box">
+                <div class="retoma-header">
+                    <span>[RETOMA / TRADE-IN APLICADO]</span>
+                </div>
+                {% for retoma in venta.retomas_asociadas %}
+                <div class="calc-row" style="font-size: 0.76rem; margin-bottom: 2px;">
+                    <span>{{ retoma.modelo }} (IMEI: {{ retoma.imei1 }})</span>
+                    <span style="font-weight: 800;">-${{ retoma.valor_retoma|cop }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="total-row">
+                <span>TOTAL A PAGAR:</span>
+                <span>${{ (venta.monto_total)|cop }}</span>
+            </div>
+            
+            {% if venta.pagos|length > 1 %}
+            <!-- Desglose de pagos multiformato -->
+            <div class="payments-box">
+                <div class="section-label" style="text-align: center; margin-bottom: 6px;">DESGLOSE DE MEDIOS DE PAGO:</div>
+                {% for pago in venta.pagos %}
+                <div class="calc-row" style="font-size: 0.78rem;">
+                    <span style="text-transform: uppercase;">{{ pago.metodo_pago }}:</span>
+                    <span style="font-weight: 700;">${{ (pago.monto)|cop }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Pie de Ticket Oficial DTAVO -->
+        <div class="footer">
+            <p class="footer-courtesy">¡Gracias por su preferencia!</p>
+            <p style="font-size: 0.75rem; font-weight: 700; margin: 2px 0;">Garantía y soporte respaldado por DTAVO</p>
+            <p style="font-size: 0.7rem; color: #333; margin: 0 0 6px 0;">Sistema Comercial DTAVO · v2.0</p>
+
+            <div class="warranty-text">
+                <strong>TÉRMINOS DE GARANTÍA DTAVO:</strong> Equipos nuevos cuentan con garantía de 1 año; equipos de exhibición / semi-nuevos con garantía de 8 meses según inspección. La remoción o alteración del sello de seguridad invalida la garantía inmediatamente. No cubre fallas causadas por humedad, golpes, sobretensiones eléctricas, manipulación de software no autorizado o intervención por terceros. Para radicar soporte técnico presente este comprobante digital o físico. Ley 1480 de 2011.
+            </div>
+
+            <!-- Código QR para Consulta Digital y Trazabilidad -->
+            <div class="qr-placeholder">
+                <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ request.url|urlencode }}" alt="Código QR DTAVO">
+                <p style="font-size: 0.65rem; font-weight: 700; margin-top: 4px; text-transform: uppercase;">
+                    Escanee para consultar garantía y factura digital
+                </p>
+            </div>
+        </div>
     </div>
 
-    <div class="footer">
-        <p style="font-size: 1rem; font-weight: bold; margin-bottom: 5px;">¡Gracias por tu compra!</p>
-        <p style="font-size: 0.72rem; line-height: 1.3; text-align: justify; margin: 10px 0; border-top: 1px dashed #1A1A1A; border-bottom: 1px dashed #1A1A1A; padding: 10px 0;">
-            <strong>Políticas de Garantía:</strong> Equipos nuevos: garantía de 1 año. Equipos de exhibición: garantía de 8 meses. La remoción, rotura o alteración del sticker de seguridad de la tienda en el equipo anula automáticamente la garantía. No cubre equipos con garantía vencida, reportados por operador, IMEI o serial alterado, daños por golpes, caídas, humedad, líquidos, polvo, manipulación indebida, software modificado, instalaciones o actualizaciones no autorizadas, equipos intervenidos por terceros, pantallas despegadas, manchas negras, líneas en pantalla, rayones o cualquier daño físico. Para hacer efectiva la garantía es obligatorio presentar la factura original. El tiempo de revisión y diagnóstico es de 2 a 3 días hábiles. Si la garantía procede, se reemplazará la pieza defectuosa; si el equipo no puede ser reparado, se realizará el cambio del mismo. El tiempo máximo de reparación es de hasta 15 días hábiles, de conformidad con la Ley 1480 de 2011.
-        </p>
-        <p style="font-size: 0.8rem; margin-top: 5px;">Soporte: contacto@tutiendatecnologica.com</p>
-        <p style="font-size: 0.7rem; color: #666; margin-top: 10px; font-weight: bold;">Aliado tecnológico ZENIC S.A.S.</p>
-    </div>
-
-    <div style="display: flex; flex-direction: column; gap: 10px;" class="d-print-none">
+    <!-- Controles de Pantalla -->
+    <div class="d-print-none" style="display: flex; flex-direction: column; gap: 10px;">
         <div style="display: flex; gap: 10px;">
-            <button class="btn-print" onclick="window.print()" style="flex: 1; margin-top: 20px;">
-                [ IMPRIMIR TICKET ]
+            <button class="btn-action btn-print-thermal" onclick="window.print()" style="flex: 1;">
+                <i class="fa-solid fa-print"></i> IMPRIMIR TICKET (80mm/58mm)
             </button>
             {% if venta.cliente and venta.cliente.telefono %}
                 {% set phone = venta.cliente.telefono|replace(' ', '')|replace('*', '')|replace('-', '')|replace('+', '') %}
                 {% if not phone.startswith('57') and phone|length == 10 %}
                     {% set phone = '57' ~ phone %}
                 {% endif %}
-                {% set mensaje = "Hola " ~ venta.cliente.nombre ~ "! Aquí tienes tu factura digital de Tu Tienda Tecnológica: " ~ request.url %}
+                {% set mensaje = "Estimado/a " ~ venta.cliente.nombre ~ ",\n\nAdjuntamos su comprobante comercial DTAVO POS correspondiente a la orden #" ~ venta.id ~ " por valor de $" ~ (venta.monto_total)|cop ~ ".\n\nPuede consultar el detalle de su compra y respaldo de garantía en:\n" ~ request.url ~ "\n\nDTAVO · El pulso inteligente de tu negocio." %}
                 <a href="https://wa.me/{{ phone }}?text={{ mensaje|urlencode }}" 
                    target="_blank" 
-                   class="btn-print btn-wa" 
-                   style="flex: 1; background-color: #25D366; border-color: #25D366; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center; margin-top: 20px;">
-                    [ ENVIAR WHATSAPP ]
+                   class="btn-action btn-whatsapp" 
+                   style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i class="fa-brands fa-whatsapp"></i> ENVIAR WHATSAPP
                 </a>
             {% endif %}
         </div>
         <a href="{{ url_for('sales_bp.caja_visual') }}" 
-           class="btn-print" 
-           style="background-color: #1A1A1A; border-color: #1A1A1A; color: #FFFFFF; text-decoration: none; text-align: center; display: block; margin-top: 5px; box-sizing: border-box;">
-            [ VOLVER A LA CAJA ]
+           class="btn-action btn-back-pos">
+            ← VOLVER AL TERMINAL POS
         </a>
     </div>
 </div>
 
 <!-- Lógica de Auto-Impresión Reactiva -->
 <script>
-    // Evento silencioso que detona el pop-up de impresora nativo de Windows al renderizar
     window.onload = function() {
         setTimeout(() => {
             window.print();
-        }, 700); // 700ms de retraso para asegurar carga asíncrona de tipografías de Google
+        }, 600);
     };
 </script>
 

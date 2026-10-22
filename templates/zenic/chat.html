@@ -2,29 +2,29 @@
 {% block content %}
 
 <style>
-  /* ── Variables ZENIC (Tech Green & White Canvas del Sistema) ────────────────────────── */
+  /* ── Variables DTAVO Core AI (Luxury Dark Obsidian & Champagne Gold) ────────────────── */
   :root {
-    --z-dark:       #F8FAF6;
-    --z-card:       #FFFFFF;
-    --z-surface:    #FFFFFF;
-    --z-border:     #E6F4D7;
-    --z-primary:    #76BC21;
-    --z-primary-glow: rgba(118, 188, 33, 0.22);
-    --z-primary-dark: #1E5622;
-    --z-accent:     #5ea315;
-    --z-text:       #111827;
-    --z-muted:      #6B7280;
-    --z-user-bg:    #F1F9EB;
-    --z-user-border:#D1ECB4;
-    --z-ai-bg:      #FFFFFF;
-    --z-ai-border:  #E6F4D7;
-    --z-ok:         #198754;
-    --z-warn:       #b45309;
+    --z-dark:       #0A0A0A;
+    --z-card:       #111111;
+    --z-surface:    #161616;
+    --z-border:     #222222;
+    --z-primary:    #C59F60;
+    --z-primary-glow: rgba(197, 159, 96, 0.22);
+    --z-primary-dark: #A6824D;
+    --z-accent:     #d4ad6e;
+    --z-text:       #FFFFFF;
+    --z-muted:      #9CA3AF;
+    --z-user-bg:    #1C1A14;
+    --z-user-border:#C59F60;
+    --z-ai-bg:      #121212;
+    --z-ai-border:  #222222;
+    --z-ok:         #10B981;
+    --z-warn:       #F59E0B;
   }
 
   body { background: var(--z-dark) !important; color: var(--z-text) !important; }
 
-  .navbar-custom { background: #FFFFFF !important; border-bottom: 2px solid var(--z-border) !important; box-shadow: 0 2px 12px rgba(118, 188, 33, 0.05) !important; }
+  .navbar-custom { background: var(--dtavo-bg) !important; border-bottom: 1px solid var(--z-border) !important; }
 
   /* ── Wrapper principal ─────────────────────── */
   .zenic-wrapper {
@@ -42,10 +42,10 @@
     align-items: center;
     gap: 14px;
     padding: 1rem 1.25rem .85rem;
-    background: #FFFFFF;
+    background: var(--z-card);
     border: 1px solid var(--z-border);
     border-radius: 16px;
-    box-shadow: 0 4px 18px rgba(118, 188, 33, 0.06);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
     flex-shrink: 0;
     margin-bottom: .75rem;
   }
@@ -335,10 +335,10 @@
 
   <!-- Header -->
   <div class="zenic-header">
-    <div class="zenic-logo">🤖</div>
+    <div class="zenic-logo">🧠</div>
     <div>
-      <div class="zenic-title">ZEN<span>IC</span></div>
-      <div style="font-size:.75rem;color:var(--z-muted);">Asistente Inteligente · Tu Tienda Tecnológica</div>
+      <div class="zenic-title">DTAVO <span>CORE AI</span></div>
+      <div style="font-size:.75rem;color:var(--z-muted);">Inteligencia Comercial Predictiva · Ecosistema DTAVO</div>
     </div>
     <div class="zenic-header-actions">
       <div class="zenic-badge">IA Activa</div>
@@ -353,12 +353,12 @@
   <!-- Área de chat -->
   <div class="zenic-chat" id="zenicChat">
     <div class="welcome-state" id="welcomeState">
-      <div class="welcome-logo">🤖</div>
-      <h2 class="welcome-title">Hola, soy ZENIC</h2>
+      <div class="welcome-logo">🧠</div>
+      <h2 class="welcome-title">DTAVO Core AI</h2>
       <p class="welcome-sub">
-        Consulto la información del sistema en tiempo real y también puedo <strong>registrar</strong>
-        ventas, gastos, productos y celulares por ti. Toda acción que modifique el sistema te la
-        muestro primero para que la apruebes.
+        Consulto la información comercial del sistema en tiempo real y puedo <strong>registrar</strong>
+        operaciones, arqueos, inventario y ventas con total trazabilidad. Toda acción ejecutiva se somete
+        a confirmación previa.
       </p>
 
       <div class="sugg-tabs">

@@ -3,142 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
-    <title>Tu Tienda Tecnológica - Venta de Celulares & Tecnología</title>
+    <title>DTAVO · Terminal POS & Plataforma Comercial</title>
     <!-- Favicon y PWA -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=5">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}?v=5">
-    <link rel="manifest" href="/manifest.json?v=5">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=6">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}?v=6">
+    <link rel="manifest" href="/manifest.json?v=6">
     
     <!-- Meta tags para iOS, Android y PWA -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Tu Tienda Tecno">
-    <meta name="application-name" content="Tu Tienda Tecno">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=5">
-    <meta name="theme-color" content="#76BC21">
+    <meta name="apple-mobile-web-app-title" content="DTAVO">
+    <meta name="application-name" content="DTAVO">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=6">
+    <meta name="theme-color" content="#0A0A0A">
 
-    <!-- Google Fonts: Orbitron, Montserrat, Inter, JetBrains Mono -->
+    <!-- Google Fonts: Plus Jakarta Sans, Outfit, Inter, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Montserrat:wght@400;600;700;800;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* DESIGN TOKENS (Tech Green Light Theme - 100% White Canvas) */
+        /* DESIGN TOKENS OFICIALES DTAVO (Luxury Dark & Champagne Gold) */
         :root {
-            --brand-bg: #FFFFFF;             /* Fondo 100% Blanco Puro */
-            --brand-card-bg: #FFFFFF;        /* Superficie Blanca Pura */
-            --brand-border: #E6F4D7;         /* Tinte verde muy suave de delimitación */
-            
-            --brand-primary: #76BC21;        /* Verde Lima Tech (Botones CTA, bordes activos) */
-            --brand-secondary: #1E5622;      /* Verde Circuito (Hover states, badges) */
-            --brand-dark: #1A1A1A;           /* Negro Carbón estructural */
-            
-            --text-primary: #111827;         /* Negro profundo lectura nítida */
-            --text-secondary: #4B5563;       /* Gris medio secundario */
-            --divider: #F4F4F6;              /* Divisores sutiles */
-            
+            /* Fondo y Superficies Obsidian */
+            --dtavo-bg: #0A0A0A;          /* Fondo base ultra oscuro */
+            --dtavo-card-bg: #111111;     /* Tarjetas, modales, paneles y sidebars */
+            --dtavo-input-bg: #161616;    /* Campos de formulario */
+            --dtavo-border: #222222;      /* Bordes estructurales sutiles */
+
+            /* Acentos Champagne Gold */
+            --dtavo-primary: #C59F60;     /* Color primario corporativo */
+            --dtavo-hover: #A6824D;       /* Hover de botones y elementos interactivos */
+            --dtavo-gold-glow: rgba(197, 159, 96, 0.15); /* Halos y sombras de foco */
+
+            /* Tipografía y Textos */
+            --dtavo-text-main: #FFFFFF;   /* Títulos, precios y cifras destacadas */
+            --dtavo-text-sec: #A0A0A0;    /* Textos secundarios y metadatos */
+
+            /* Estados Funcionales */
+            --dtavo-success: #10B981;     /* Venta exitosa / balance cuadrado */
+            --dtavo-warning: #F59E0B;     /* Stock crítico / retoma pendiente */
+            --dtavo-danger: #EF4444;      /* Anulaciones / faltante en caja */
+            --dtavo-info: #3B82F6;        /* IMEI / datos de sistema */
+
             /* Compatibilidad retroactiva con clases existentes */
-            --brand-red: #76BC21;
-            --brand-black: #1A1A1A;
+            --brand-bg: var(--dtavo-bg);
+            --brand-card-bg: var(--dtavo-card-bg);
+            --brand-border: var(--dtavo-border);
+            --brand-primary: var(--dtavo-primary);
+            --brand-secondary: var(--dtavo-hover);
+            --brand-dark: #050505;
+            --brand-red: var(--dtavo-danger);
+            --brand-black: #0A0A0A;
             --brand-white: #FFFFFF;
             
-            --brand-gradient: linear-gradient(135deg, #76BC21 0%, #1E5622 100%);
-            --card-shadow: 0 4px 20px rgba(118, 188, 33, 0.05);
-            --card-shadow-hover: 0 8px 28px rgba(118, 188, 33, 0.12);
+            --text-primary: var(--dtavo-text-main);
+            --text-secondary: var(--dtavo-text-sec);
+            --divider: #1A1A1A;
+            
+            --brand-gradient: linear-gradient(135deg, #C59F60 0%, #A6824D 100%);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+            --card-shadow-hover: 0 8px 28px rgba(197, 159, 96, 0.12);
         }
 
         body {
-            background-color: var(--brand-bg) !important;
-            color: var(--text-primary);
+            background-color: var(--dtavo-bg) !important;
+            color: var(--dtavo-text-main);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
         /* Tipografías Especiales */
         .brand-title {
-            font-family: 'Orbitron', 'Montserrat', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--brand-dark);
+            letter-spacing: -0.5px;
+            color: var(--dtavo-text-main);
         }
         .brand-subtitle {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.20em;
-            font-size: 0.72rem;
-            color: var(--brand-secondary);
+            letter-spacing: 0.18em;
+            font-size: 0.68rem;
+            color: var(--dtavo-primary);
         }
         .font-mono, .mono-data, .imei-cell, .price-display {
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            font-variant-numeric: tabular-nums;
         }
         .price-display {
-            color: var(--brand-primary) !important;
+            color: var(--dtavo-primary) !important;
             font-weight: 700;
         }
 
+        /* Botón Oficial DTAVO */
+        .btn-dtavo {
+            background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%) !important;
+            color: #FFFFFF !important;
+            font-weight: 700;
+            border: 1px solid #C59F60 !important;
+            border-radius: 0.75rem;
+            padding: 0.6rem 1.25rem;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-dtavo:hover {
+            background: #A6824D !important;
+            border-color: #A6824D !important;
+            color: #FFFFFF !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--dtavo-gold-glow);
+        }
+        .btn-dtavo-outline {
+            background: transparent !important;
+            color: var(--dtavo-primary) !important;
+            font-weight: 600;
+            border: 1px solid var(--dtavo-primary) !important;
+            border-radius: 0.75rem;
+            padding: 0.55rem 1.15rem;
+            transition: all 0.2s ease;
+        }
+        .btn-dtavo-outline:hover {
+            background: var(--dtavo-gold-glow) !important;
+            color: #FFFFFF !important;
+            border-color: var(--dtavo-hover) !important;
+        }
+
         /* Clases de compatibilidad */
-        .bg-brand-blue { background-color: #FFFFFF !important; color: var(--text-primary); border: 1px solid var(--brand-border); }
+        .bg-brand-blue { background-color: var(--dtavo-card-bg) !important; color: var(--dtavo-text-main); border: 1px solid var(--dtavo-border); }
         .bg-brand-pink { background: var(--brand-gradient) !important; color: #FFFFFF !important; }
-        .bg-brand-white { background-color: #FFFFFF !important; color: var(--text-primary); border: 1px solid var(--brand-border); }
+        .bg-brand-white { background-color: var(--dtavo-card-bg) !important; color: var(--dtavo-text-main); border: 1px solid var(--dtavo-border); }
         
-        .text-brand-black { color: var(--text-primary) !important; }
-        .text-brand-pink { color: var(--brand-primary) !important; }
-        .text-brand-blue { color: var(--brand-secondary) !important; }
+        .text-brand-black { color: var(--dtavo-text-main) !important; }
+        .text-brand-pink { color: var(--dtavo-primary) !important; }
+        .text-brand-blue { color: var(--dtavo-hover) !important; }
         
         .btn-brand-blue, .btn-pink {
-            background-color: var(--brand-primary) !important;
+            background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%) !important;
             color: #FFFFFF !important;
             font-weight: 600;
-            border: 1px solid var(--brand-primary) !important;
-            border-radius: 10px;
+            border: 1px solid var(--dtavo-primary) !important;
+            border-radius: 0.75rem;
             transition: all 0.2s ease-in-out;
         }
         .btn-brand-blue:hover, .btn-pink:hover {
-            background-color: var(--brand-secondary) !important;
-            border-color: var(--brand-secondary) !important;
+            background: #A6824D !important;
+            border-color: #A6824D !important;
             color: #FFFFFF !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(118, 188, 33, 0.3);
+            box-shadow: 0 8px 20px var(--dtavo-gold-glow);
         }
 
         .btn-blue {
-            background-color: var(--brand-dark) !important;
+            background-color: #1A1A1A !important;
             color: #FFFFFF !important;
             font-weight: 600;
-            border: 1px solid var(--brand-dark) !important;
-            border-radius: 10px;
+            border: 1px solid var(--dtavo-border) !important;
+            border-radius: 0.75rem;
             transition: all 0.2s ease-in-out;
         }
         .btn-blue:hover {
-            background-color: #000000 !important;
+            background-color: #262626 !important;
+            border-color: var(--dtavo-primary) !important;
             color: #FFFFFF !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 14px rgba(197, 159, 96, 0.15);
         }
 
-        /* Navbar: 100% White Canvas con Borde Verde Suave y Soporte PWA Notch */
+        /* Navbar: Obsidian Dark con Delimitadores Finos y Soporte PWA Notch */
         .navbar-custom {
-            background-color: #FFFFFF !important;
-            border-bottom: 2px solid var(--brand-border);
+            background-color: var(--dtavo-bg) !important;
+            border-bottom: 1px solid var(--dtavo-border);
             padding: 0.85rem 0;
             padding-top: calc(0.85rem + env(safe-area-inset-top, 0px));
-            box-shadow: 0 2px 12px rgba(118, 188, 33, 0.05);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
             z-index: 1030;
         }
 
-        /* Botón de las 3 Líneas (Hamburguesa) Optimizado para Móvil / PWA */
+        /* Botón Hamburguesa Optimizado */
         .navbar-toggler-btn {
             position: relative;
             z-index: 1045;
             background: transparent;
-            border: none;
+            border: 1px solid var(--dtavo-border);
             padding: 8px 12px;
             border-radius: 10px;
             cursor: pointer;
@@ -147,101 +206,114 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.15s ease, transform 0.1s ease;
+            transition: all 0.2s ease;
+        }
+        .navbar-toggler-btn i {
+            color: var(--dtavo-primary) !important;
+        }
+        .navbar-toggler-btn:hover {
+            border-color: var(--dtavo-primary);
+            background: var(--dtavo-gold-glow);
         }
         .navbar-toggler-btn:active {
-            background: rgba(118, 188, 33, 0.15);
             transform: scale(0.94);
         }
         
         .navbar-custom .navbar-brand {
             font-weight: 800;
-            color: var(--brand-dark) !important;
+            color: var(--dtavo-text-main) !important;
             font-size: 1.35rem;
             letter-spacing: -0.5px;
             pointer-events: auto;
         }
 
         .navbar-custom .nav-link {
-            color: var(--text-primary);
+            color: var(--dtavo-text-sec);
             font-weight: 500;
             margin-left: 1rem;
             transition: color 0.2s;
         }
 
         .navbar-custom .nav-link:hover {
-            color: var(--brand-primary);
+            color: var(--dtavo-primary);
         }
 
-        /* Superficies Claras y Limpias (100% White Canvas) */
-        .card, .card-custom {
-            background-color: #FFFFFF !important;
-            border: 1px solid var(--brand-border) !important;
+        /* Tarjetas y Contenedores Luxury Dark */
+        .card, .card-custom, .card-dtavo {
+            background-color: var(--dtavo-card-bg) !important;
+            border: 1px solid var(--dtavo-border) !important;
             border-radius: 16px;
             box-shadow: var(--card-shadow);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            color: var(--dtavo-text-main);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
-        .card-custom:hover {
+        .card:hover, .card-custom:hover, .card-dtavo:hover {
             box-shadow: var(--card-shadow-hover);
+            border-color: rgba(197, 159, 96, 0.4) !important;
         }
 
-        /* Inputs y Formularios White Canvas */
+        /* Inputs y Formularios Dark */
         .form-control, .form-select {
-            background-color: #FFFFFF !important;
-            border: 1px solid var(--brand-border) !important;
-            color: var(--text-primary) !important;
+            background-color: var(--dtavo-input-bg) !important;
+            border: 1px solid var(--dtavo-border) !important;
+            color: var(--dtavo-text-main) !important;
             border-radius: 10px;
             transition: all 0.2s ease;
         }
         .form-control:focus, .form-select:focus {
-            background-color: #FFFFFF !important;
-            border-color: var(--brand-primary) !important;
-            box-shadow: 0 0 0 0.25rem rgba(118, 188, 33, 0.2) !important;
-            color: var(--text-primary) !important;
+            background-color: #1a1a1a !important;
+            border-color: var(--dtavo-primary) !important;
+            box-shadow: 0 0 0 0.25rem var(--dtavo-gold-glow) !important;
+            color: #FFFFFF !important;
+        }
+        .form-control::placeholder {
+            color: #555555 !important;
         }
 
-        /* Tablas */
-        .table, .table-custom {
-            background-color: #FFFFFF !important;
-            color: var(--text-primary);
+        /* Tablas DTAVO */
+        .table, .table-custom, .table-dtavo {
+            background-color: var(--dtavo-card-bg) !important;
+            color: var(--dtavo-text-main);
+            border-color: var(--dtavo-border);
         }
-        .table thead th, .table-custom thead th {
-            background-color: #FFFFFF !important;
-            color: var(--text-secondary) !important;
-            border-bottom: 2px solid var(--brand-primary) !important;
+        .table thead th, .table-custom thead th, .table-dtavo thead th {
+            background-color: rgba(197, 159, 96, 0.08) !important;
+            color: var(--dtavo-primary) !important;
+            border-bottom: 2px solid var(--dtavo-primary) !important;
             text-transform: uppercase;
             font-size: 0.75rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             padding: 1rem 0.85rem;
         }
-        .table tbody td, .table-custom tbody td {
-            background-color: #FFFFFF !important;
+        .table tbody td, .table-custom tbody td, .table-dtavo tbody td {
+            background-color: transparent !important;
+            color: var(--dtavo-text-main);
             padding: 1rem 0.85rem;
             vertical-align: middle;
-            border-bottom: 1px solid #F4F4F6;
+            border-bottom: 1px solid var(--dtavo-border);
         }
         .table-hover tbody tr:hover td {
-            background-color: rgba(118, 188, 33, 0.03) !important;
+            background-color: rgba(197, 159, 96, 0.05) !important;
         }
 
-        /* Sidebar Offcanvas Premium y Optimizado para Móvil / PWA */
+        /* Sidebar Offcanvas Obsidian Dark */
         .offcanvas {
-            background-color: #FFFFFF !important;
-            color: var(--text-primary) !important;
-            border-right: 1px solid var(--brand-border) !important;
-            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.15) !important;
+            background-color: var(--dtavo-bg) !important;
+            color: var(--dtavo-text-main) !important;
+            border-right: 1px solid var(--dtavo-border) !important;
+            box-shadow: 8px 0 32px rgba(0, 0, 0, 0.8) !important;
             max-width: 85vw !important;
             z-index: 1055 !important;
         }
         .offcanvas-header {
-            background: linear-gradient(135deg, #112314 0%, #17381b 100%) !important;
-            border-bottom: 2px solid var(--brand-primary) !important;
+            background: linear-gradient(135deg, #0A0A0A 0%, #161616 100%) !important;
+            border-bottom: 1px solid var(--dtavo-border) !important;
             padding: 1.25rem 1.25rem;
             padding-top: calc(1.25rem + env(safe-area-inset-top, 0px));
         }
         .offcanvas-header .offcanvas-title {
-            color: #FFFFFF !important;
+            color: var(--dtavo-text-main) !important;
             font-size: 1rem;
             letter-spacing: 0.03em;
         }
@@ -250,8 +322,9 @@
             opacity: 0.85;
         }
         .offcanvas-body {
+            background-color: var(--dtavo-bg) !important;
             scrollbar-width: thin;
-            scrollbar-color: #D1D5DB transparent;
+            scrollbar-color: #333333 transparent;
         }
         .offcanvas-body::-webkit-scrollbar {
             width: 5px;
@@ -260,11 +333,11 @@
             background: transparent;
         }
         .offcanvas-body::-webkit-scrollbar-thumb {
-            background-color: #E2E8F0;
+            background-color: #222222;
             border-radius: 20px;
         }
         .offcanvas-body::-webkit-scrollbar-thumb:hover {
-            background-color: var(--brand-primary);
+            background-color: var(--dtavo-primary);
         }
 
         /* Buscador rápido del Menú */
@@ -276,21 +349,23 @@
             font-size: 0.82rem;
             padding: 0.5rem 0.75rem 0.5rem 2.1rem;
             border-radius: 10px;
-            border: 1px solid #E2E8F0;
-            background: #F8FAFC;
+            border: 1px solid var(--dtavo-border);
+            background: var(--dtavo-input-bg);
+            color: var(--dtavo-text-main);
             transition: all 0.2s ease;
         }
         .sidebar-search-box input:focus {
-            background: #FFFFFF;
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px rgba(118, 188, 33, 0.15);
+            background: #1C1C1C;
+            border-color: var(--dtavo-primary);
+            box-shadow: 0 0 0 3px var(--dtavo-gold-glow);
+            color: #FFFFFF;
         }
         .sidebar-search-box i {
             position: absolute;
             left: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #94A3B8;
+            color: #777777;
             font-size: 0.82rem;
         }
 
@@ -299,8 +374,8 @@
             font-size: 0.68rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #94A3B8;
+            letter-spacing: 0.12em;
+            color: var(--dtavo-primary);
             padding: 0.75rem 0.75rem 0.35rem 0.75rem;
             margin-top: 0.5rem;
             display: flex;
@@ -311,12 +386,12 @@
             content: "";
             flex: 1;
             height: 1px;
-            background: #F1F5F9;
+            background: var(--dtavo-border);
         }
 
         /* Links de navegación */
         .offcanvas-body .sidebar-link {
-            color: #334155 !important;
+            color: var(--dtavo-text-sec) !important;
             font-size: 0.88rem;
             font-weight: 600;
             padding: 0.6rem 0.85rem;
@@ -328,27 +403,27 @@
             border: 1px solid transparent;
         }
         .offcanvas-body .sidebar-link:hover {
-            background: #F4FBF0 !important;
-            color: #1E5622 !important;
-            border-color: rgba(118, 188, 33, 0.25);
+            background: rgba(197, 159, 96, 0.08) !important;
+            color: #FFFFFF !important;
+            border-color: rgba(197, 159, 96, 0.25);
             transform: translateX(3px);
         }
         .offcanvas-body .sidebar-link.active {
-            background: linear-gradient(90deg, rgba(118, 188, 33, 0.15), rgba(118, 188, 33, 0.05)) !important;
-            color: #1E5622 !important;
-            border-left: 3px solid var(--brand-primary);
+            background: linear-gradient(90deg, rgba(197, 159, 96, 0.15), rgba(197, 159, 96, 0.03)) !important;
+            color: #FFFFFF !important;
+            border-left: 3px solid var(--dtavo-primary);
         }
         .sidebar-icon {
             width: 22px;
             text-align: center;
             margin-right: 0.75rem;
             font-size: 0.95rem;
-            color: var(--brand-primary) !important;
+            color: var(--dtavo-primary) !important;
             transition: transform 0.2s, color 0.2s;
         }
         .offcanvas-body .sidebar-link:hover .sidebar-icon,
         .offcanvas-body .sidebar-accordion-btn:hover .sidebar-icon {
-            color: var(--brand-secondary) !important;
+            color: #FFFFFF !important;
             transform: scale(1.1);
         }
 
@@ -357,7 +432,7 @@
             width: 100%;
             background: transparent;
             border: 1px solid transparent;
-            color: #334155;
+            color: var(--dtavo-text-sec);
             font-size: 0.88rem;
             font-weight: 600;
             padding: 0.6rem 0.85rem;
@@ -369,36 +444,36 @@
             transition: all 0.2s ease;
         }
         .sidebar-accordion-btn:hover {
-            background: #F8FAFC;
-            color: #0F172A;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--dtavo-text-main);
         }
         .sidebar-accordion-btn[aria-expanded="true"] {
-            background: #F4FBF0;
-            color: #1E5622;
-            border-color: rgba(118, 188, 33, 0.2);
+            background: rgba(197, 159, 96, 0.08);
+            color: #FFFFFF;
+            border-color: rgba(197, 159, 96, 0.25);
         }
         .sidebar-accordion-btn[aria-expanded="true"] .sidebar-icon {
-            color: var(--brand-primary) !important;
+            color: var(--dtavo-primary) !important;
         }
         .sidebar-accordion-btn .chevron-arrow {
             font-size: 0.75rem;
-            color: #94A3B8;
+            color: #666666;
             transition: transform 0.2s ease;
         }
         .sidebar-accordion-btn[aria-expanded="true"] .chevron-arrow {
             transform: rotate(180deg);
-            color: var(--brand-primary);
+            color: var(--dtavo-primary);
         }
 
         .sidebar-submenu {
-            background: #F8FAFC;
+            background: #141414;
             border-radius: 10px;
             padding: 0.35rem 0.45rem;
             margin: 0.25rem 0 0.5rem 0.75rem;
-            border-left: 2px solid var(--brand-primary);
+            border-left: 2px solid var(--dtavo-primary);
         }
         .sidebar-submenu .sidebar-sublink {
-            color: #475569;
+            color: #888888;
             font-size: 0.82rem;
             font-weight: 500;
             padding: 0.45rem 0.65rem;
@@ -409,13 +484,13 @@
             transition: all 0.15s ease;
         }
         .sidebar-submenu .sidebar-sublink i {
-            color: var(--brand-primary) !important;
+            color: var(--dtavo-primary) !important;
             transition: transform 0.15s ease;
         }
         .sidebar-submenu .sidebar-sublink:hover {
-            background: #FFFFFF;
-            color: var(--brand-primary);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            background: #1E1E1E;
+            color: #FFFFFF;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
             transform: translateX(2px);
         }
         .sidebar-submenu .sidebar-sublink:hover i {
@@ -447,10 +522,12 @@
             <!-- Brand Logo (Centro) -->
             <a class="navbar-brand d-flex align-items-center fw-bold m-0 position-absolute start-50 translate-middle-x text-decoration-none" href="{{ url_for('index') }}" style="max-width: calc(100% - 100px); overflow: hidden;">
                 <div class="d-flex align-items-center">
-                    <img src="{{ url_for('static', filename='img/tutienda.png') }}" alt="Tu Tienda Tecnológica" style="height: 38px; width: auto; object-fit: contain;" class="me-2">
+                    <span class="d-flex align-items-center justify-content-center me-2" style="width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%); color: #0A0A0A; font-weight: 900; font-size: 1.1rem; box-shadow: 0 2px 10px rgba(197, 159, 96, 0.4);">
+                        D
+                    </span>
                     <div class="d-flex flex-column text-start">
-                        <span class="brand-title" style="font-size: 1.15rem; line-height: 1.1;">TU TIENDA TECNOLÓGICA</span>
-                        <span class="brand-subtitle d-none d-sm-inline" style="font-size: 0.6rem; line-height: 1.2;">VENTA DE CELULARES &amp; TECNOLOGÍA</span>
+                        <span class="brand-title" style="font-size: 1.25rem; line-height: 1.1; letter-spacing: -0.5px;">DTAVO</span>
+                        <span class="brand-subtitle d-none d-sm-inline" style="font-size: 0.62rem; line-height: 1.2;">TERMINAL POS &amp; RETAIL</span>
                     </div>
                 </div>
             </a>
@@ -461,18 +538,18 @@
     </nav>
 
     {% if current_user.is_authenticated %}
-    <!-- Offcanvas Menú Lateral (Sidebar Optimizado y Categorizado) -->
-    <div class="offcanvas offcanvas-start border-0 shadow" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="width: 300px;">
+    <!-- Offcanvas Menú Lateral DTAVO -->
+    <div class="offcanvas offcanvas-start border-0 shadow" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="width: 310px;">
         <div class="offcanvas-header">
             <div class="d-flex align-items-center gap-2">
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(118,188,33,0.2); border: 1px solid rgba(118,188,33,0.4); color: #76BC21;">
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(197, 159, 96, 0.15); border: 1px solid rgba(197, 159, 96, 0.4); color: var(--dtavo-primary);">
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <div>
                     <h6 class="offcanvas-title fw-bold mb-0 text-white" id="offcanvasNavbarLabel">
                         {{ current_user.nombre or current_user.email.split('@')[0] | capitalize }}
                     </h6>
-                    <span class="badge" style="background: rgba(118,188,33,0.25); color: #76BC21; font-size: 0.65rem; border: 1px solid rgba(118,188,33,0.4);">
+                    <span class="badge" style="background: rgba(197, 159, 96, 0.18); color: var(--dtavo-primary); font-size: 0.65rem; border: 1px solid rgba(197, 159, 96, 0.35);">
                         ROL: {{ current_user.rol | upper }}
                     </span>
                 </div>
@@ -484,7 +561,7 @@
             <!-- Buscador Rápido de Módulos -->
             <div class="sidebar-search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="sidebarSearchInput" class="form-control" placeholder="Buscar módulo o acción..." autocomplete="off">
+                <input type="text" id="sidebarSearchInput" class="form-control" placeholder="Buscar módulo o terminal..." autocomplete="off">
             </div>
 
             <div class="flex-grow-1 px-3 py-2 overflow-y-auto" id="sidebarMenuContainer">
@@ -493,143 +570,143 @@
                     <div class="sidebar-section-label">General</div>
                     <a class="sidebar-link" href="/admin/dashboard">
                         <i class="fa-solid fa-chart-pie sidebar-icon"></i>
-                        <span>Dashboard Principal</span>
+                        <span>Panel de Control Ejecutivo</span>
                     </a>
 
-                    <!-- SECCIÓN: VENTAS -->
-                    <div class="sidebar-section-label">Ventas</div>
+                    <!-- SECCIÓN: VENTAS / DTAVO TERMINAL -->
+                    <div class="sidebar-section-label">DTAVO Terminal POS</div>
                     <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupCaja" aria-expanded="true">
-                        <span><i class="fa-solid fa-cash-register sidebar-icon"></i> Ventas</span>
+                        <span><i class="fa-solid fa-cash-register sidebar-icon"></i> Terminal POS</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
                     <div class="collapse show" id="groupCaja">
                         <div class="sidebar-submenu">
                             <a class="sidebar-sublink" href="/sales/caja_visual">
-                                <i class="fa-solid fa-store me-2" style="width: 16px;"></i> Caja Rápida Visual
+                                <i class="fa-solid fa-store me-2" style="width: 16px;"></i> DTAVO Terminal POS
                             </a>
                             <a class="sidebar-sublink" href="/sales/catalogo">
-                                <i class="fa-solid fa-book-open me-2" style="width: 16px;"></i> Catálogo Tienda
+                                <i class="fa-solid fa-book-open me-2" style="width: 16px;"></i> Catálogo Corporativo
                             </a>
                             <a class="sidebar-sublink" href="/arqueo/nuevo">
-                                <i class="fa-solid fa-calculator me-2" style="width: 16px;"></i> Arqueo de Caja
+                                <i class="fa-solid fa-vault me-2" style="width: 16px;"></i> DTAVO Vault / Arqueo de Caja
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('arqueo_bp.log_sobrantes') }}">
-                                <i class="fa-solid fa-scale-unbalanced-flip me-2" style="width: 16px;"></i> Log de Sobrantes
+                                <i class="fa-solid fa-scale-unbalanced-flip me-2" style="width: 16px;"></i> Auditoría de Sobrantes
                             </a>
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: COMPRAS -->
-                    <div class="sidebar-section-label">Compras</div>
+                    <!-- SECCIÓN: OPERACIONES Y COMPRAS -->
+                    <div class="sidebar-section-label">Operaciones &amp; Suministro</div>
                     <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupOperaciones" aria-expanded="false">
-                        <span><i class="fa-solid fa-cart-flatbed sidebar-icon"></i> Compras</span>
+                        <span><i class="fa-solid fa-cart-flatbed sidebar-icon"></i> Compras &amp; Cadena</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
                     <div class="collapse" id="groupOperaciones">
                         <div class="sidebar-submenu">
                             <a class="sidebar-sublink" href="{{ url_for('purchases_bp.index') }}">
-                                <i class="fa-solid fa-file-circle-plus me-2" style="width: 16px;"></i> Compras (Ingresos)
+                                <i class="fa-solid fa-file-circle-plus me-2" style="width: 16px;"></i> Ingreso de Activos (Compras)
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('providers_bp.list_providers') }}">
                                 <i class="fa-solid fa-truck-fast me-2" style="width: 16px;"></i> Directorio Proveedores
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('warranties_bp.index') }}">
-                                <i class="fa-solid fa-shield-halved me-2" style="width: 16px;"></i> Garantías &amp; Soporte
+                                <i class="fa-solid fa-shield-halved me-2" style="width: 16px;"></i> Soporte &amp; Garantías DTAVO
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('celulares_bp.clientes') }}">
-                                <i class="fa-solid fa-address-book me-2" style="width: 16px;"></i> Directorio Clientes
+                                <i class="fa-solid fa-address-book me-2" style="width: 16px;"></i> Cartera de Clientes
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('celulares_bp.historial_ventas') }}">
-                                <i class="fa-solid fa-clock-rotate-left me-2" style="width: 16px;"></i> Historial de Ventas
+                                <i class="fa-solid fa-clock-rotate-left me-2" style="width: 16px;"></i> Registro Transaccional
                             </a>
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: ADMINISTRATIVO (INVENTARIO + EQUIPO & FINANZAS) -->
-                    <div class="sidebar-section-label">Administrativo</div>
+                    <!-- SECCIÓN: DTAVO MATRIX / CONTROL DE ACTIVOS -->
+                    <div class="sidebar-section-label">DTAVO Matrix / Activos</div>
                     <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupAdministrativo" aria-expanded="false">
-                        <span><i class="fa-solid fa-boxes-stacked sidebar-icon"></i> Administrativo</span>
+                        <span><i class="fa-solid fa-boxes-stacked sidebar-icon"></i> Control de Activos</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
                     <div class="collapse" id="groupAdministrativo">
                         <div class="sidebar-submenu">
                             <!-- Inventario & Stock -->
                             <a class="sidebar-sublink" href="{{ url_for('celulares_bp.inventario') }}">
-                                <i class="fa-solid fa-mobile-screen-button me-2" style="width: 16px;"></i> Inventario Celulares
+                                <i class="fa-solid fa-mobile-screen-button me-2" style="width: 16px;"></i> Matrix Celulares &amp; Dispositivos
                             </a>
                             <a class="sidebar-sublink" href="/inventory">
-                                <i class="fa-solid fa-box-open me-2" style="width: 16px;"></i> Inventario Accesorios
+                                <i class="fa-solid fa-box-open me-2" style="width: 16px;"></i> Matrix Accesorios &amp; Partes
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario') }}">
-                                <i class="fa-solid fa-truck-ramp-box me-2" style="width: 16px;"></i> Celulares Externos
+                                <i class="fa-solid fa-truck-ramp-box me-2" style="width: 16px;"></i> Dispositivos Externos
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('externos_bp.inventario_accesorios') }}">
                                 <i class="fa-solid fa-headphones-simple me-2" style="width: 16px;"></i> Accesorios Externos
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('retomas_bp.cuarentena') }}">
-                                <i class="fa-solid fa-recycle me-2" style="width: 16px;"></i> Retomas / Cuarentena
+                                <i class="fa-solid fa-recycle me-2" style="width: 16px;"></i> Retomas / Trade-In (Cuarentena)
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('celulares_bp.trazabilidad') }}">
-                                <i class="fa-solid fa-timeline me-2" style="width: 16px;"></i> Trazabilidad IMEI
+                                <i class="fa-solid fa-timeline me-2" style="width: 16px;"></i> Trazabilidad &amp; Auditoría IMEI
                             </a>
 
-                            <!-- Equipo & Finanzas (Integrado en Administrativo) -->
+                            <!-- Equipo & Finanzas -->
                             <a class="sidebar-sublink" href="{{ url_for('admin_bp.asesores') }}">
-                                <i class="fa-solid fa-user-tie me-2" style="width: 16px;"></i> Asesores de Venta
+                                <i class="fa-solid fa-user-tie me-2" style="width: 16px;"></i> Asesores Comerciales
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('admin_bp.ventas_vendedores') }}">
-                                <i class="fa-solid fa-chart-line me-2" style="width: 16px;"></i> Rendimiento Asesores
+                                <i class="fa-solid fa-chart-line me-2" style="width: 16px;"></i> Rendimiento y Comisiones
                             </a>
                             <a class="sidebar-sublink" href="/admin/vendedores">
-                                <i class="fa-solid fa-users-gear me-2" style="width: 16px;"></i> Perfiles &amp; Usuarios
+                                <i class="fa-solid fa-users-gear me-2" style="width: 16px;"></i> Credenciales &amp; Operadores
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('admin_bp.aprobaciones') }}">
                                 <i class="fa-solid fa-tags me-2" style="width: 16px;"></i> Aprobaciones Especiales
                             </a>
                             <a class="sidebar-sublink" href="/gastos">
-                                <i class="fa-solid fa-money-bill-transfer me-2" style="width: 16px;"></i> Control de Gastos
+                                <i class="fa-solid fa-money-bill-transfer me-2" style="width: 16px;"></i> Egresos Operativos
                             </a>
                             <a class="sidebar-sublink" href="/admin/maneos">
-                                <i class="fa-solid fa-handshake me-2" style="width: 16px;"></i> Maneos
+                                <i class="fa-solid fa-handshake me-2" style="width: 16px;"></i> Maneos &amp; Acuerdos
                             </a>
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: BANCOS (INDEPENDIENTE) -->
-                    <div class="sidebar-section-label">Finanzas</div>
+                    <!-- SECCIÓN: FINANZAS / BANCOS -->
+                    <div class="sidebar-section-label">Finanzas &amp; Liquidación</div>
                     <a class="sidebar-link" href="{{ url_for('bancos_bp.index') }}">
                         <i class="fa-solid fa-building-columns sidebar-icon"></i>
-                        <span>Bancos</span>
+                        <span>Bancos &amp; Cuentas DTAVO</span>
                     </a>
 
                     <!-- SECCIÓN: INTELIGENCIA ARTIFICIAL -->
                     <div class="sidebar-section-label">Inteligencia Artificial</div>
-                    <a class="sidebar-link" href="/zenic" style="background: rgba(118, 188, 33, 0.08); border: 1px solid rgba(118, 188, 33, 0.3); color: #1E5622 !important;">
-                        <i class="fa-solid fa-robot sidebar-icon" style="color: var(--brand-primary) !important;"></i>
-                        <span>ZENIC Asistente</span>
-                        <span class="ms-auto badge" style="background: var(--brand-primary); color: #fff; font-size: 0.6rem; border-radius: 20px; padding: 2px 7px;">IA</span>
+                    <a class="sidebar-link" href="/zenic" style="background: rgba(197, 159, 96, 0.08); border: 1px solid rgba(197, 159, 96, 0.3); color: #FFFFFF !important;">
+                        <i class="fa-solid fa-brain sidebar-icon" style="color: var(--dtavo-primary) !important;"></i>
+                        <span>DTAVO Core AI</span>
+                        <span class="ms-auto badge" style="background: var(--dtavo-primary); color: #0A0A0A; font-weight: 800; font-size: 0.6rem; border-radius: 20px; padding: 2px 7px;">IA</span>
                     </a>
 
                 {% elif current_user.rol == 'vendedor' %}
                     <!-- SECCIÓN: CAJERO / VENDEDOR -->
-                    <div class="sidebar-section-label">Punto de Venta</div>
+                    <div class="sidebar-section-label">DTAVO Terminal POS</div>
                     <a class="sidebar-link" href="/sales/caja_visual">
                         <i class="fa-solid fa-store sidebar-icon"></i>
-                        <span>Caja Rápida Visual</span>
+                        <span>DTAVO Terminal POS</span>
                     </a>
                     <a class="sidebar-link" href="/sales/catalogo">
                         <i class="fa-solid fa-book-open sidebar-icon"></i>
-                        <span>Catálogo Tienda</span>
+                        <span>Catálogo Comercial</span>
                     </a>
                     <a class="sidebar-link" href="/sales/ventas_hoy">
                         <i class="fa-solid fa-list-check sidebar-icon"></i>
-                        <span>Ventas del Día</span>
+                        <span>Ventas del Turno</span>
                     </a>
 
-                    <div class="sidebar-section-label">Gestión</div>
+                    <div class="sidebar-section-label">DTAVO Vault &amp; Control</div>
                     <a class="sidebar-link" href="/arqueo/nuevo">
-                        <i class="fa-solid fa-calculator sidebar-icon"></i>
-                        <span>Arqueo de Caja</span>
+                        <i class="fa-solid fa-vault sidebar-icon"></i>
+                        <span>DTAVO Vault / Arqueo</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bancos_bp.index') }}">
                         <i class="fa-solid fa-building-columns sidebar-icon"></i>
@@ -637,15 +714,15 @@
                     </a>
                     <a class="sidebar-link" href="{{ url_for('arqueo_bp.log_sobrantes') }}">
                         <i class="fa-solid fa-scale-unbalanced-flip sidebar-icon"></i>
-                        <span>Log de Sobrantes</span>
+                        <span>Auditoría de Sobrantes</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('warranties_bp.index') }}">
                         <i class="fa-solid fa-shield-halved sidebar-icon"></i>
-                        <span>Garantías</span>
+                        <span>Soporte &amp; Garantías</span>
                     </a>
                     <a class="sidebar-link" href="/gastos">
                         <i class="fa-solid fa-money-bill-transfer sidebar-icon"></i>
-                        <span>Gastos</span>
+                        <span>Egresos Operativos</span>
                     </a>
                     <a class="sidebar-link" href="/admin/maneos">
                         <i class="fa-solid fa-handshake sidebar-icon"></i>
@@ -654,24 +731,24 @@
 
                 {% elif current_user.rol == 'bodega' %}
                     <!-- SECCIÓN: BODEGA -->
-                    <div class="sidebar-section-label">Control Bodega</div>
+                    <div class="sidebar-section-label">DTAVO Matrix / Bodega</div>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.dashboard') }}">
                         <i class="fa-solid fa-boxes-stacked sidebar-icon"></i>
-                        <span>Panel Bodega</span>
+                        <span>Panel Central Bodega</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('inventory_bp.index') }}">
                         <i class="fa-solid fa-box sidebar-icon"></i>
-                        <span>Mi Inventario</span>
+                        <span>Control de Activos</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.caja_rapida') }}">
                         <i class="fa-solid fa-store sidebar-icon"></i>
-                        <span>Caja Rápida (POS)</span>
+                        <span>DTAVO Terminal POS</span>
                     </a>
 
                     <div class="sidebar-section-label">Clientes &amp; Pagos</div>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.clientes') }}">
                         <i class="fa-solid fa-address-book sidebar-icon"></i>
-                        <span>Directorio Clientes</span>
+                        <span>Cartera de Clientes</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.nuevo_cliente') }}">
                         <i class="fa-solid fa-user-plus sidebar-icon"></i>
@@ -679,7 +756,7 @@
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.nueva_factura') }}">
                         <i class="fa-solid fa-file-invoice sidebar-icon"></i>
-                        <span>Factura Manual</span>
+                        <span>Comprobante Manual</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.modulo_abonos') }}">
                         <i class="fa-solid fa-money-bill-transfer sidebar-icon"></i>
@@ -691,17 +768,17 @@
                     <div class="sidebar-section-label">Operación Bodega</div>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.dashboard') }}">
                         <i class="fa-solid fa-house-chimney sidebar-icon"></i>
-                        <span>Mi Panel</span>
+                        <span>Panel Operativo</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.caja_rapida') }}">
                         <i class="fa-solid fa-store sidebar-icon"></i>
-                        <span>Caja Rápida (POS)</span>
+                        <span>DTAVO Terminal POS</span>
                     </a>
 
                     <div class="sidebar-section-label">Clientes &amp; Facturación</div>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.clientes') }}">
                         <i class="fa-solid fa-address-book sidebar-icon"></i>
-                        <span>Mis Clientes</span>
+                        <span>Cartera de Clientes</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.nuevo_cliente') }}">
                         <i class="fa-solid fa-user-plus sidebar-icon"></i>
@@ -709,7 +786,7 @@
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.nueva_factura') }}">
                         <i class="fa-solid fa-file-invoice sidebar-icon"></i>
-                        <span>Factura Manual</span>
+                        <span>Comprobante Manual</span>
                     </a>
                     <a class="sidebar-link" href="{{ url_for('bodega_bp.modulo_abonos') }}">
                         <i class="fa-solid fa-money-bill-transfer sidebar-icon"></i>
@@ -719,10 +796,10 @@
             </div>
             
             <!-- Interfaz de Desconexión / Fin de Turno al final del sidebar -->
-            <div class="p-3 border-top mt-auto" style="background: #FAFAFA; border-color: #E2E8F0 !important;">
-                <a class="btn btn-outline-danger w-100 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 py-2" href="{{ url_for('auth_bp.logout') }}" style="font-size: 0.85rem;">
+            <div class="p-3 border-top mt-auto" style="background: #111111; border-color: var(--dtavo-border) !important;">
+                <a class="btn btn-outline-danger w-100 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2 py-2" href="{{ url_for('auth_bp.logout') }}" style="font-size: 0.85rem; border-color: rgba(239, 68, 68, 0.4);">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    <span>Cerrar Sesión</span>
+                    <span>Cerrar Turno / Salir</span>
                 </a>
             </div>
         </div>

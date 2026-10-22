@@ -20,10 +20,10 @@
 
         <div class="card p-4 p-md-5 shadow-sm mb-4">
             <!-- Encabezado del comprobante -->
-            <div class="row border-bottom pb-4 mb-4">
+            <div class="row border-bottom pb-4 mb-4" style="border-color: var(--dtavo-border) !important;">
                 <div class="col-md-6">
-                    <h5 class="fw-bold mb-2">Tu Tienda Tecnológica</h5>
-                    <p class="text-muted small mb-1">VENTA DE CELULARES &amp; TECNOLOGÍA</p>
+                    <h5 class="fw-bold mb-2">DTAVO · Control de Activos</h5>
+                    <p class="small mb-1" style="color: var(--dtavo-primary); letter-spacing: 0.08em; font-weight: 700;">PRECISIÓN COMERCIAL EN CADA MOVIMIENTO</p>
                     <p class="text-muted small mb-0"><strong>Registrado por:</strong> {{ compra.usuario.nombre }}</p>
                     <p class="text-muted small mb-0"><strong>Fecha y Hora:</strong> {{ compra.fecha_compra.strftime('%d/%m/%Y %H:%M') }}</p>
                 </div>
@@ -110,8 +110,8 @@
                 </table>
             </div>
 
-            <div class="text-center text-muted small pt-3 border-top">
-                Documento generado por el Sistema POS &bull; Tu Tienda Tecnológica
+            <div class="text-center text-muted small pt-3 border-top" style="border-color: var(--dtavo-border) !important;">
+                Documento generado por DTAVO Terminal &bull; Ecosistema Comercial DTAVO
             </div>
         </div>
     </div>
