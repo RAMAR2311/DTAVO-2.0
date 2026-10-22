@@ -1,19 +1,162 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-5">
+<style>
+    /* Estilos Ultra-Premium para las Tarjetas del Dashboard y Destellos Dorados */
+    .dashboard-header-badge {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--dtavo-hover);
+        background: rgba(197, 159, 96, 0.12);
+        padding: 5px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(197, 159, 96, 0.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Tarjeta Bancaria y Módulos con Destello Dorado */
+    .card-gold-premium {
+        background: #FFFFFF !important;
+        border: 1px solid rgba(197, 159, 96, 0.35) !important;
+        border-radius: 20px !important;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 0 15px rgba(197, 159, 96, 0.05);
+    }
+
+    /* Efecto Destello Dorado (Shimmer & Sparkle Halo) */
+    .card-gold-premium::before {
+        content: "";
+        position: absolute;
+        top: -60%;
+        left: -60%;
+        width: 220%;
+        height: 220%;
+        background: radial-gradient(circle, rgba(197, 159, 96, 0.15) 0%, rgba(197, 159, 96, 0.03) 40%, transparent 70%);
+        pointer-events: none;
+        opacity: 0.6;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .card-gold-premium::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            115deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0) 30%, 
+            rgba(255, 235, 190, 0.45) 50%, 
+            rgba(197, 159, 96, 0.35) 55%, 
+            transparent 70%
+        );
+        transform: skewX(-25deg);
+        pointer-events: none;
+        transition: left 0.85s ease-in-out;
+    }
+
+    .card-gold-premium:hover {
+        transform: translateY(-5px);
+        border-color: var(--dtavo-primary) !important;
+        box-shadow: 0 16px 36px rgba(197, 159, 96, 0.22), 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .card-gold-premium:hover::after {
+        left: 200%;
+    }
+
+    .card-gold-premium:hover::before {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+
+    /* Ícono con contenedor dorado */
+    .gold-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(197, 159, 96, 0.16) 0%, rgba(166, 130, 77, 0.22) 100%);
+        border: 1px solid rgba(197, 159, 96, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dtavo-hover);
+        font-size: 1.25rem;
+        box-shadow: 0 4px 14px rgba(197, 159, 96, 0.15);
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .card-gold-premium:hover .gold-icon-box {
+        transform: rotate(5deg) scale(1.1);
+        background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%);
+        color: #FFFFFF;
+        box-shadow: 0 6px 18px rgba(197, 159, 96, 0.4);
+    }
+
+    /* Destello Sparkle flotante decorativo */
+    .sparkle-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        color: #C59F60;
+        font-size: 0.9rem;
+        animation: sparkleAnim 3s infinite ease-in-out;
+        pointer-events: none;
+    }
+
+    @keyframes sparkleAnim {
+        0%, 100% { opacity: 0.4; transform: scale(0.9) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.25) rotate(15deg); filter: drop-shadow(0 0 6px rgba(197, 159, 96, 0.8)); }
+    }
+
+    /* Sub-tarjetas bancarias pequeñas dentro del módulo */
+    .bank-subcard {
+        background: #FFFFFF;
+        border: 1px solid rgba(197, 159, 96, 0.25);
+        border-radius: 14px;
+        padding: 0.85rem 1rem;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .bank-subcard:hover {
+        border-color: var(--dtavo-primary);
+        box-shadow: 0 6px 16px rgba(197, 159, 96, 0.18);
+        transform: translateY(-2px);
+    }
+</style>
+
+<!-- Header Operativo DTAVO -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
-        <h2 class="fw-bold text-brand-black mb-0">Dashboard Operativo</h2>
-        <p class="text-muted">¡Bienvenido al panel central, {{ current_user.nombre }}!</p>
+        <div class="mb-1">
+            <span class="dashboard-header-badge">
+                <i class="fa-solid fa-sparkles"></i> DTAVO Core &bull; Control Central
+            </span>
+        </div>
+        <h2 class="fw-bold mb-0" style="color: var(--dtavo-text-main); font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.5px;">
+            Dashboard Operativo
+        </h2>
+        <p class="small mb-0" style="color: var(--dtavo-text-sec);">
+            ¡Bienvenido al panel central ejecutivo, <strong>{{ current_user.nombre }}</strong>! Precisión comercial en cada movimiento.
+        </p>
     </div>
-    <div>
-        <form method="GET" action="{{ url_for('admin_bp.dashboard') }}" class="d-inline-flex align-items-center me-3 bg-white border rounded-pill px-3 py-2 shadow-sm">
-            <i class="fa-regular fa-calendar text-brand-pink me-2"></i>
-            <span class="fw-bold text-brand-black me-2 small">Mes:</span>
-            <input type="month" name="mes" class="form-control form-control-sm border-0 shadow-none bg-transparent p-0 text-brand-black fw-bold" style="max-width: 180px; outline: none; cursor: pointer;" value="{{ mes_filtro }}" onchange="this.form.submit()">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <form method="GET" action="{{ url_for('admin_bp.dashboard') }}" class="d-inline-flex align-items-center bg-white border rounded-pill px-3 py-2 shadow-sm" style="border-color: rgba(197, 159, 96, 0.3) !important;">
+            <i class="fa-regular fa-calendar me-2" style="color: var(--dtavo-primary);"></i>
+            <span class="fw-bold me-2 small" style="color: var(--dtavo-text-main);">Mes:</span>
+            <input type="month" name="mes" class="form-control form-control-sm border-0 shadow-none bg-transparent p-0 fw-bold" style="max-width: 150px; outline: none; cursor: pointer; color: var(--dtavo-text-main);" value="{{ mes_filtro }}" onchange="this.form.submit()">
         </form>
-        <button type="button" class="btn btn-dark rounded-pill fw-bold shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalBalance">
-            <i class="fa-solid fa-scale-balanced text-brand-pink me-2"></i>Generar Balance
+        <button type="button" class="btn btn-dtavo rounded-pill px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalBalance">
+            <i class="fa-solid fa-scale-balanced me-2"></i>Generar Balance
         </button>
     </div>
 </div>
@@ -23,131 +166,351 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow-lg rounded-4">
       <div class="modal-header border-bottom-0 pb-0">
-        <h5 class="fw-bold text-brand-black"><i class="fa-solid fa-file-invoice-dollar me-2 text-brand-pink"></i>Balance Financiero y General</h5>
+        <h5 class="fw-bold" style="color: var(--dtavo-text-main);"><i class="fa-solid fa-file-invoice-dollar me-2" style="color: var(--dtavo-primary);"></i>Balance Financiero y General</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{{ url_for('admin_bp.balance_financiero') }}" method="GET">
           <div class="modal-body">
-              <p class="text-muted small">Selecciona el rango de fechas para cruzar las ventas e ingresos totales contra el Costo Directo y los Gastos Registrados.</p>
+              <p class="small" style="color: var(--dtavo-text-sec);">Selecciona el rango de fechas para cruzar las ventas e ingresos totales contra el Costo Directo y los Gastos Registrados.</p>
               <div class="mb-3">
-                  <label class="form-label fw-bold text-brand-black small">Fecha de Inicio</label>
+                  <label class="form-label fw-bold small" style="color: var(--dtavo-text-main);">Fecha de Inicio</label>
                   <input type="date" name="fecha_inicio" class="form-control" required>
               </div>
               <div class="mb-4">
-                  <label class="form-label fw-bold text-brand-black small">Fecha de Fin</label>
+                  <label class="form-label fw-bold small" style="color: var(--dtavo-text-main);">Fecha de Fin</label>
                   <input type="date" name="fecha_fin" class="form-control" required>
               </div>
           </div>
           <div class="modal-footer border-top-0 pt-0">
             <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-dark rounded-pill px-4 fw-bold"><i class="fa-solid fa-file-pdf text-brand-pink me-1"></i> Calcular y Validar</button>
+            <button type="submit" class="btn btn-dtavo rounded-pill px-4 fw-bold"><i class="fa-solid fa-file-pdf me-1"></i> Calcular y Validar</button>
           </div>
       </form>
     </div>
   </div>
 </div>
 
-<!-- Layout de Tarjetas (Fila de 4 Elementos) -->
+<!-- ========================================================================= -->
+<!-- SECCIÓN EXCLUSIVA: MÓDULO DE BANCOS Y LIQUIDEZ (SUPER PREMIUM WHITE & GOLD) -->
+<!-- ========================================================================= -->
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center gap-2">
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(197, 159, 96, 0.15); color: var(--dtavo-primary);">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div>
+                <h5 class="fw-bold mb-0" style="color: var(--dtavo-text-main); letter-spacing: -0.3px;">
+                    Módulo de Bancos &amp; Tesorería
+                </h5>
+                <span class="small" style="color: var(--dtavo-text-sec); font-size: 0.78rem;">Saldos consolidados en vivo, cajas y cuentas operativas DTAVO</span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('bancos_bp.index') }}" class="btn btn-dtavo-outline rounded-pill px-3 py-1 btn-sm fw-bold">
+                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Abrir Módulo Completo
+            </a>
+        </div>
+    </div>
+
+    <!-- 3 Tarjetas Principales de Bancos con Destellos Dorados -->
+    <div class="row g-3">
+        <!-- 1. Saldo Global Consolidado -->
+        <div class="col-12 col-md-4">
+            <div class="card card-gold-premium p-4 h-100">
+                <i class="fa-solid fa-sparkle sparkle-badge"></i>
+                <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                    <div>
+                        <span class="brand-subtitle d-block mb-1" style="font-size: 0.65rem;">Tesorería DTAVO</span>
+                        <h6 class="fw-bold mb-0" style="color: var(--dtavo-text-main);">Saldo Total Consolidado</h6>
+                    </div>
+                    <div class="gold-icon-box">
+                        <i class="fa-solid fa-vault"></i>
+                    </div>
+                </div>
+                <div class="position-relative" style="z-index: 2;">
+                    <h2 class="fw-bolder mb-1 price-display font-mono" style="font-size: 2rem;">${{ (total_global_bancos or 0)|cop }}</h2>
+                    <p class="small mb-3" style="color: var(--dtavo-text-sec); font-size: 0.78rem;">
+                        <i class="fa-solid fa-shield-check me-1" style="color: var(--dtavo-primary);"></i> Liquidez total (Efectivo + Cuentas Digitales)
+                    </p>
+                    <div class="pt-2 border-top" style="border-color: rgba(197, 159, 96, 0.25) !important;">
+                        <a href="{{ url_for('bancos_bp.index') }}" class="btn btn-dtavo w-100 btn-sm rounded-pill fw-bold">
+                            <i class="fa-solid fa-arrow-right-arrow-left me-1"></i> Gestionar Movimientos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Efectivo en Caja Mayor -->
+        <div class="col-12 col-md-4">
+            <div class="card card-gold-premium p-4 h-100">
+                <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 1s;"></i>
+                <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                    <div>
+                        <span class="brand-subtitle d-block mb-1" style="font-size: 0.65rem;">Fondo en Tienda</span>
+                        <h6 class="fw-bold mb-0" style="color: var(--dtavo-text-main);">Efectivo Caja Mayor</h6>
+                    </div>
+                    <div class="gold-icon-box">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                    </div>
+                </div>
+                <div class="position-relative" style="z-index: 2;">
+                    <h2 class="fw-bolder mb-1 font-mono" style="color: var(--dtavo-text-main); font-size: 2rem;">${{ (total_efectivo or 0)|cop }}</h2>
+                    <p class="small mb-3" style="color: var(--dtavo-text-sec); font-size: 0.78rem;">
+                        <i class="fa-solid fa-store me-1" style="color: var(--dtavo-primary);"></i> Efectivo físico acumulado y disponible
+                    </p>
+                    <div class="pt-2 border-top" style="border-color: rgba(197, 159, 96, 0.25) !important;">
+                        <a href="{{ url_for('arqueo_bp.nuevo_arqueo') }}" class="btn btn-dtavo-outline w-100 btn-sm rounded-pill fw-bold">
+                            <i class="fa-solid fa-cash-register me-1"></i> DTAVO Vault / Arqueo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Cuentas Digitales & Desglose -->
+        <div class="col-12 col-md-4">
+            <div class="card card-gold-premium p-4 h-100">
+                <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 2s;"></i>
+                <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                    <div>
+                        <span class="brand-subtitle d-block mb-1" style="font-size: 0.65rem;">Banca Digital</span>
+                        <h6 class="fw-bold mb-0" style="color: var(--dtavo-text-main);">Cuentas Bancarias</h6>
+                    </div>
+                    <div class="gold-icon-box">
+                        <i class="fa-solid fa-mobile-screen-button"></i>
+                    </div>
+                </div>
+                <div class="position-relative" style="z-index: 2;">
+                    <h2 class="fw-bolder mb-1 font-mono" style="color: var(--dtavo-hover); font-size: 2rem;">${{ (total_en_bancos or 0)|cop }}</h2>
+                    <p class="small mb-3" style="color: var(--dtavo-text-sec); font-size: 0.78rem;">
+                        <i class="fa-solid fa-building-columns me-1" style="color: var(--dtavo-primary);"></i> Bancolombia, Nequi, Daviplata y otros
+                    </p>
+                    <div class="pt-2 border-top" style="border-color: rgba(197, 159, 96, 0.25) !important;">
+                        <button class="btn btn-dtavo-outline w-100 btn-sm rounded-pill fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBancosDashboard" aria-expanded="false" aria-controls="collapseBancosDashboard">
+                            <i class="fa-solid fa-layer-group me-1"></i> Desglose por Banco <i class="fa-solid fa-chevron-down ms-1 small"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desglose Desplegable de Cuentas Bancarias -->
+    <div class="collapse mt-3" id="collapseBancosDashboard">
+        <div class="card card-custom p-3 border-0 shadow-sm" style="background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F5 100%); border: 1px solid rgba(197, 159, 96, 0.3) !important;">
+            <div class="d-flex align-items-center justify-content-between mb-2 px-1">
+                <span class="fw-bold small" style="color: var(--dtavo-text-main);">
+                    <i class="fa-solid fa-wallet me-1" style="color: var(--dtavo-primary);"></i> Cuentas Digitales Operativas:
+                </span>
+                <span class="badge" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover); border: 1px solid rgba(197, 159, 96, 0.3);">
+                    {{ cuentas_bancos|length - 1 if cuentas_bancos else 0 }} métodos
+                </span>
+            </div>
+            <div class="row g-2">
+                {% if cuentas_bancos %}
+                    {% for c in cuentas_bancos %}
+                    {% if c.codigo != 'efectivo' %}
+                    <div class="col-6 col-md-3">
+                        <div class="bank-subcard">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <span class="fw-bold text-truncate" style="font-size: 0.8rem; color: var(--dtavo-text-main);" title="{{ c.nombre }}">
+                                    <i class="fa-solid {{ c.icono or 'fa-building-columns' }} me-1" style="color: var(--dtavo-primary);"></i>{{ c.nombre }}
+                                </span>
+                                <a href="{{ url_for('bancos_bp.index', account_id=c.id) }}" class="btn btn-sm btn-light p-0 d-flex align-items-center justify-content-center rounded-circle" style="width: 20px; height: 20px;" title="Ver movimientos">
+                                    <i class="fa-solid fa-arrow-right" style="font-size: 0.6rem; color: var(--dtavo-primary);"></i>
+                                </a>
+                            </div>
+                            <div class="fw-bold font-mono price-display" style="font-size: 1.05rem;">
+                                ${{ c.saldo_actual|cop }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- MÉTRICAS OPERATIVAS GLOBALES DTAVO (TARJETAS CON DESTELLOS DORADOS) -->
+<!-- ========================================================================= -->
+<div class="d-flex align-items-center gap-2 mb-3">
+    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(197, 159, 96, 0.15); color: var(--dtavo-primary);">
+        <i class="fa-solid fa-chart-line"></i>
+    </div>
+    <h5 class="fw-bold mb-0" style="color: var(--dtavo-text-main); letter-spacing: -0.3px;">
+        Indicadores Comerciales &amp; Stock
+    </h5>
+</div>
+
 <div class="row g-3 mb-4">
-    <!-- 1. Tarjeta: Ingresos Totales (Botones/Textos Azul Turquesa / .btn-blue) -->
+    <!-- 1. Tarjeta: Ingresos Mensuales -->
     <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-sack-dollar fs-1 text-brand-pink"></i>
-                <span class="badge bg-dark rounded-pill">{{ texto_periodo }}</span>
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+                <span class="badge rounded-pill" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover); border: 1px solid rgba(197, 159, 96, 0.35);">
+                    {{ texto_periodo }}
+                </span>
             </div>
-            <h5 class="text-brand-black fw-bold">Ingresos (Mensual)</h5>
-            <h2 class="fw-bolder text-brand-black">${{ (total_ventas)|cop }}</h2>
-            <p class="text-muted small mb-0"><i class="fa-solid fa-receipt text-brand-pink me-1"></i> {{ conteo_ventas }} ventas realizadas</p>
-            <div class="mt-auto pt-3">
-                <a href="{{ url_for('sales_bp.historial') }}" class="btn btn-dark w-100 rounded-pill fw-bold"><i class="fa-solid fa-file-invoice-dollar text-brand-pink me-2"></i> Ver Historial</a>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Ingresos (Mensual)</h6>
+                <h2 class="fw-bolder font-mono price-display mb-1">${{ (total_ventas)|cop }}</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">
+                    <i class="fa-solid fa-receipt me-1" style="color: var(--dtavo-primary);"></i> {{ conteo_ventas }} ventas registradas
+                </p>
+                <div class="mt-4 pt-2">
+                    <a href="{{ url_for('sales_bp.historial') }}" class="btn btn-dtavo w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-file-invoice-dollar me-2"></i> Ver Historial
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. Tarjeta: Productos en Catálogo (Rosa Pastel / .btn-pink) -->
+    <!-- 2. Tarjeta: Productos en Catálogo -->
     <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-cubes fs-1 text-brand-pink"></i>
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 0.5s;"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-cubes"></i>
+                </div>
+                <span class="brand-subtitle" style="font-size: 0.65rem;">Matriz</span>
             </div>
-            <h5 class="text-brand-black fw-bold">Productos en Catálogo</h5>
-            <h2 class="fw-bolder text-brand-black">{{ total_productos }} uds.</h2>
-            <div class="mt-auto pt-4">
-                <a href="/inventory/" class="btn btn-dark w-100 rounded-pill text-white fw-bold"><i class="fa-solid fa-sliders text-brand-pink me-2"></i> Gestionar Inventario</a>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Productos en Catálogo</h6>
+                <h2 class="fw-bolder font-mono mb-1" style="color: var(--dtavo-text-main);">{{ total_productos }} uds.</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">Equipos, accesorios y repuestos</p>
+                <div class="mt-4 pt-2">
+                    <a href="/inventory/" class="btn btn-dtavo-outline w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-sliders me-2"></i> Gestionar Inventario
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 3. Tarjeta: Alertas de Stock (Danger Colors / Bootstrap Nativo) -->
+    <!-- 3. Tarjeta: Alertas de Stock -->
     <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-triangle-exclamation fs-1 text-brand-pink"></i>
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 1.2s;"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #EF4444;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <span class="badge bg-danger rounded-pill">Crítico</span>
             </div>
-            <h5 class="text-brand-black fw-bold">Alertas Críticas de Stock</h5>
-            <h2 class="fw-bolder text-brand-pink">{{ productos_bajo_stock }} productos</h2>
-            <p class="text-muted small">Tienen existencias limitadas (10 o menos unidades).</p>
-            <div class="mt-auto pt-3">
-                <a href="/inventory/" class="btn btn-outline-dark w-100 rounded-pill fw-bold"><i class="fa-solid fa-eye text-brand-pink me-2"></i> Revisar Urgencias</a>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Alertas de Stock</h6>
+                <h2 class="fw-bolder font-mono mb-1 text-danger">{{ productos_bajo_stock }} productos</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">Existencias limitadas (&le; 10 uds.)</p>
+                <div class="mt-4 pt-2">
+                    <a href="/inventory/" class="btn btn-outline-danger w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-eye me-2"></i> Revisar Urgencias
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- 4. Tarjeta: Maneos de Mercancía -->
     <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-handshake fs-1 text-brand-pink"></i>
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 1.8s;"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-handshake"></i>
+                </div>
+                <span class="badge rounded-pill" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover); border: 1px solid rgba(197, 159, 96, 0.35);">
+                    Pendientes
+                </span>
             </div>
-            <h5 class="text-brand-black fw-bold">Maneos Activos</h5>
-            <h2 class="fw-bolder text-brand-black">{{ maneos_activos }} docs.</h2>
-            <p class="text-muted small">Préstamos vecinos esperando resolución.</p>
-            <div class="mt-auto pt-3">
-                <a href="{{ url_for('admin_bp.maneos') }}" class="btn btn-outline-dark text-dark w-100 rounded-pill fw-bold"><i class="fa-solid fa-eye text-brand-pink me-2"></i> Ver Maneos</a>
-            </div>
-        </div>
-    </div>
-    <!-- 5. Tarjeta: Proveedores -->
-    <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-truck-fast fs-1 text-brand-pink"></i>
-            </div>
-            <h5 class="text-brand-black fw-bold">Proveedores Activos</h5>
-            <h2 class="fw-bolder text-brand-black">{{ proveedores_activos }} cuentas</h2>
-            <p class="text-muted small">Cuentas por pagar a proveedores.</p>
-            <div class="mt-auto pt-3">
-                <a href="{{ url_for('providers_bp.list_providers') }}" class="btn btn-outline-dark text-dark w-100 rounded-pill fw-bold"><i class="fa-solid fa-eye text-brand-pink me-2"></i> Ver Cuentas</a>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Maneos Activos</h6>
+                <h2 class="fw-bolder font-mono mb-1" style="color: var(--dtavo-text-main);">{{ maneos_activos }} docs.</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">Préstamos a vecinos pendientes</p>
+                <div class="mt-4 pt-2">
+                    <a href="{{ url_for('admin_bp.maneos') }}" class="btn btn-dtavo-outline w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-eye me-2"></i> Ver Maneos
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 6. Tarjeta: Garantías -->
-    <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-shield-halved fs-1 text-brand-pink"></i>
+    <!-- 5. Tarjeta: Proveedores Activos -->
+    <div class="col-md-4">
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 0.7s;"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <span class="brand-subtitle" style="font-size: 0.65rem;">Cadena</span>
             </div>
-            <h5 class="text-brand-black fw-bold">Garantías Pendientes</h5>
-            <h2 class="fw-bolder text-brand-black">{{ garantias_pendientes }} reportes</h2>
-            <p class="text-muted small">Equipos en proceso de soporte.</p>
-            <div class="mt-auto pt-3">
-                <a href="{{ url_for('warranties_bp.index') }}" class="btn btn-outline-dark text-dark w-100 rounded-pill fw-bold"><i class="fa-solid fa-eye text-brand-pink me-2"></i> Gestionar</a>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Proveedores Activos</h6>
+                <h2 class="fw-bolder font-mono mb-1" style="color: var(--dtavo-text-main);">{{ proveedores_activos }} cuentas</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">Cuentas y compras de suministro</p>
+                <div class="mt-4 pt-2">
+                    <a href="{{ url_for('providers_bp.list_providers') }}" class="btn btn-dtavo-outline w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-eye me-2"></i> Ver Proveedores
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    <!-- 7. Tarjeta: Aprobaciones -->
-    <div class="col-md-3">
-        <div class="card card-custom h-100 p-4 border border-dark border-2">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-                <i class="fa-solid fa-tags fs-1 text-brand-pink"></i>
+
+    <!-- 6. Tarjeta: Garantías Pendientes -->
+    <div class="col-md-4">
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 1.4s;"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="brand-subtitle" style="font-size: 0.65rem;">Soporte</span>
             </div>
-            <h5 class="text-brand-black fw-bold">Aprobaciones Precio</h5>
-            <h2 class="fw-bolder text-brand-black">{{ aprobaciones_pendientes }} solicitudes</h2>
-            <p class="text-muted small">Descuentos esperando autorización.</p>
-            <div class="mt-auto pt-3">
-                <a href="{{ url_for('admin_bp.aprobaciones') }}" class="btn btn-outline-dark text-dark w-100 rounded-pill fw-bold"><i class="fa-solid fa-eye text-brand-pink me-2"></i> Ver Solicitudes</a>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Garantías en Proceso</h6>
+                <h2 class="fw-bolder font-mono mb-1" style="color: var(--dtavo-text-main);">{{ garantias_pendientes }} reportes</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">Equipos en revisión técnica</p>
+                <div class="mt-4 pt-2">
+                    <a href="{{ url_for('warranties_bp.index') }}" class="btn btn-dtavo-outline w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-screwdriver-wrench me-2"></i> Gestionar Soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. Tarjeta: Aprobaciones de Precio -->
+    <div class="col-md-4">
+        <div class="card card-gold-premium h-100 p-4">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 2.2s;"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index: 2;">
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-tags"></i>
+                </div>
+                <span class="brand-subtitle" style="font-size: 0.65rem;">Auditoría</span>
+            </div>
+            <div class="position-relative" style="z-index: 2;">
+                <h6 class="fw-bold mb-1" style="color: var(--dtavo-text-main);">Aprobaciones de Precio</h6>
+                <h2 class="fw-bolder font-mono mb-1" style="color: var(--dtavo-text-main);">{{ aprobaciones_pendientes }} solicitudes</h2>
+                <p class="small mb-0" style="color: var(--dtavo-text-sec);">Descuentos y autorizaciones especiales</p>
+                <div class="mt-4 pt-2">
+                    <a href="{{ url_for('admin_bp.aprobaciones') }}" class="btn btn-dtavo-outline w-100 rounded-pill btn-sm fw-bold">
+                        <i class="fa-solid fa-check-double me-2"></i> Ver Solicitudes
+                    </a>
+                </div>
             </div>
         </div>
     </div>

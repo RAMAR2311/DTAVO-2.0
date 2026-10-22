@@ -139,10 +139,16 @@ def dashboard():
     total_ventas = db.session.query(func.sum(Sale.monto_total)).filter(Sale.fecha_venta >= inicio_periodo, Sale.fecha_venta < fin_periodo).scalar() or 0.0
     conteo_ventas = Sale.query.filter(Sale.fecha_venta >= inicio_periodo, Sale.fecha_venta < fin_periodo).count()
 
-    from models import Provider, Warranty, PriceApproval
+    from models import Provider, Warranty, PriceApproval, BankAccount
     proveedores_activos = Provider.query.count()
     garantias_pendientes = Warranty.query.filter_by(resolution='Pendiente').count()
     aprobaciones_pendientes = PriceApproval.query.filter_by(estado='pendiente').count()
+
+    # Cuentas bancarias y balances financieros en vivo para el Dashboard
+    cuentas_bancos = BankAccount.query.filter_by(activo=True).order_by(BankAccount.id.asc()).all()
+    total_en_bancos = sum((c.saldo_actual for c in cuentas_bancos if c.codigo != 'efectivo'), Decimal('0.00'))
+    total_efectivo = sum((c.saldo_actual for c in cuentas_bancos if c.codigo == 'efectivo'), Decimal('0.00'))
+    total_global_bancos = sum((c.saldo_actual for c in cuentas_bancos), Decimal('0.00'))
 
     return render_template('admin/dashboard.html', 
                            total_productos=total_productos,
@@ -154,7 +160,11 @@ def dashboard():
                            maneos_activos=maneos_activos,
                            proveedores_activos=proveedores_activos,
                            garantias_pendientes=garantias_pendientes,
-                           aprobaciones_pendientes=aprobaciones_pendientes)
+                           aprobaciones_pendientes=aprobaciones_pendientes,
+                           cuentas_bancos=cuentas_bancos,
+                           total_en_bancos=total_en_bancos,
+                           total_efectivo=total_efectivo,
+                           total_global_bancos=total_global_bancos)
 
 @admin_bp.route('/aprobaciones')
 @login_required
