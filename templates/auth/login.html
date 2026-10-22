@@ -2,10 +2,11 @@
 
 {% block content %}
 <style>
-    /* Estructura Fullscreen Luxury Dark Split */
+    /* Estructura Fullscreen Luxury White & Gold Split */
     body {
-        background-color: var(--dtavo-bg) !important;
-        background-image: none !important;
+        background-color: #FFFFFF !important;
+        background-image: radial-gradient(#F1F5F9 1px, transparent 1px) !important;
+        background-size: 24px 24px !important;
         overflow-x: hidden;
     }
 
@@ -22,20 +23,20 @@
     }
 
     .login-master-card {
-        background: var(--dtavo-card-bg);
-        border: 1px solid var(--dtavo-border);
+        background: #FFFFFF;
+        border: 1px solid rgba(197, 159, 96, 0.35);
         border-radius: 24px;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(197, 159, 96, 0.08);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 35px var(--dtavo-gold-glow);
         overflow: hidden;
         width: 100%;
         max-width: 980px;
         transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
-    /* Panel Izquierdo: Branding & Logo Luxury Dark */
+    /* Panel Izquierdo: Branding & Logo Luxury White & Gold */
     .brand-side {
-        background: linear-gradient(155deg, #0A0A0A 0%, #141414 50%, #0d0d0d 100%);
-        color: #FFFFFF;
+        background: linear-gradient(155deg, #FFFFFF 0%, #FAF8F5 50%, #F5EFE6 100%);
+        color: var(--dtavo-text-main);
         position: relative;
         overflow: hidden;
         display: flex;
@@ -52,7 +53,7 @@
         left: -80px;
         width: 260px;
         height: 260px;
-        background: radial-gradient(circle, rgba(197, 159, 96, 0.18) 0%, rgba(197, 159, 96, 0) 70%);
+        background: radial-gradient(circle, rgba(197, 159, 96, 0.25) 0%, rgba(197, 159, 96, 0) 70%);
         border-radius: 50%;
         pointer-events: none;
     }
@@ -64,20 +65,20 @@
         right: -60px;
         width: 240px;
         height: 240px;
-        background: radial-gradient(circle, rgba(197, 159, 96, 0.12) 0%, rgba(197, 159, 96, 0) 70%);
+        background: radial-gradient(circle, rgba(197, 159, 96, 0.18) 0%, rgba(197, 159, 96, 0) 70%);
         border-radius: 50%;
         pointer-events: none;
     }
 
     .brand-logo-glow {
-        background: #111111;
-        border: 1px solid var(--dtavo-border);
+        background: #FFFFFF;
+        border: 1px solid rgba(197, 159, 96, 0.35);
         padding: 16px 22px;
         border-radius: 18px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px var(--dtavo-gold-glow);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05), 0 0 25px var(--dtavo-gold-glow);
         margin-bottom: 2rem;
     }
 
@@ -86,7 +87,7 @@
         height: 48px;
         border-radius: 12px;
         background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%);
-        color: #0A0A0A;
+        color: #FFFFFF;
         font-family: 'Plus Jakarta Sans', sans-serif;
         font-weight: 900;
         font-size: 1.6rem;
@@ -100,20 +101,21 @@
         display: inline-flex;
         align-items: center;
         gap: 0.65rem;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #FFFFFF;
+        border: 1px solid var(--dtavo-border);
         padding: 0.55rem 1rem;
         border-radius: 999px;
         font-size: 0.8rem;
         color: var(--dtavo-text-sec);
         margin-bottom: 0.65rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
     }
 
     .feature-pill:hover {
-        background: rgba(197, 159, 96, 0.1);
-        border-color: rgba(197, 159, 96, 0.35);
-        color: #FFFFFF;
+        background: rgba(197, 159, 96, 0.08);
+        border-color: var(--dtavo-primary);
+        color: var(--dtavo-hover);
         transform: translateX(4px);
     }
 
@@ -121,10 +123,10 @@
         color: var(--dtavo-primary);
     }
 
-    /* Panel Derecho: Formulario */
+    /* Panel Derecho: Formulario Blanco Puro */
     .form-side {
         padding: 3.5rem 3.5rem;
-        background: var(--dtavo-card-bg);
+        background: #FFFFFF;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -136,7 +138,7 @@
     }
 
     .form-side .input-group-text {
-        background: var(--dtavo-input-bg) !important;
+        background: #F8FAFC !important;
         border: 1px solid var(--dtavo-border) !important;
         border-right: none !important;
         color: var(--dtavo-primary) !important;
@@ -147,25 +149,25 @@
     }
 
     .form-side .form-control {
-        background: var(--dtavo-input-bg) !important;
+        background: #F8FAFC !important;
         border: 1px solid var(--dtavo-border) !important;
         border-left: none !important;
         border-radius: 0 12px 12px 0 !important;
         font-size: 0.95rem;
         padding: 0.85rem 1rem 0.85rem 0.2rem;
-        color: #FFFFFF !important;
+        color: var(--dtavo-text-main) !important;
         transition: all 0.2s ease;
     }
 
     .login-input-group:focus-within .input-group-text {
         border-color: var(--dtavo-primary) !important;
-        color: #FFFFFF !important;
-        background: #1C1C1C !important;
+        color: var(--dtavo-hover) !important;
+        background: #FFFFFF !important;
     }
 
     .login-input-group:focus-within .form-control {
         border-color: var(--dtavo-primary) !important;
-        background: #1C1C1C !important;
+        background: #FFFFFF !important;
         box-shadow: none !important;
     }
 
@@ -179,7 +181,7 @@
         border: none !important;
         border-radius: 12px;
         padding: 0.95rem 1.5rem;
-        box-shadow: 0 8px 24px rgba(197, 159, 96, 0.25);
+        box-shadow: 0 8px 24px rgba(197, 159, 96, 0.35);
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         display: inline-flex;
         align-items: center;
@@ -190,7 +192,7 @@
     .btn-login-premium:hover {
         background: #A6824D !important;
         transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(197, 159, 96, 0.35);
+        box-shadow: 0 12px 28px rgba(197, 159, 96, 0.45);
         color: #FFFFFF !important;
     }
 
@@ -205,7 +207,7 @@
         font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.08em;
-        color: var(--dtavo-primary);
+        color: var(--dtavo-hover);
         background: rgba(197, 159, 96, 0.12);
         padding: 4px 10px;
         border-radius: 20px;
@@ -263,7 +265,7 @@
                              style="max-height: 80px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(197, 159, 96, 0.25)); border-radius: 8px;">
                     </div>
 
-                    <h2 class="brand-title text-white mb-2" style="font-size: 1.55rem; letter-spacing: -0.5px;">
+                    <h2 class="brand-title mb-2" style="color: var(--dtavo-text-main); font-size: 1.55rem; letter-spacing: -0.5px;">
                         El pulso inteligente <br class="d-none d-lg-block">de tu negocio
                     </h2>
                     <p class="brand-subtitle mb-4" style="letter-spacing: 0.12em;">
@@ -299,7 +301,7 @@
                     <span class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.12em; color: var(--dtavo-primary) !important;">
                         Acceso al Panel
                     </span>
-                    <h3 class="fw-bold mt-1 mb-2 text-white" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.75rem; letter-spacing: -0.5px;">
+                    <h3 class="fw-bold mt-1 mb-2" style="color: var(--dtavo-text-main); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.75rem; letter-spacing: -0.5px;">
                         Credenciales Operativas
                     </h3>
                     <p class="small mb-0" style="color: var(--dtavo-text-sec);">

@@ -16,7 +16,7 @@
     <meta name="apple-mobile-web-app-title" content="DTAVO">
     <meta name="application-name" content="DTAVO">
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icons/icon-192x192.png') }}?v=6">
-    <meta name="theme-color" content="#0A0A0A">
+    <meta name="theme-color" content="#FFFFFF">
 
     <!-- Google Fonts: Plus Jakarta Sans, Outfit, Inter, JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,28 +28,28 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* DESIGN TOKENS OFICIALES DTAVO (Luxury Dark & Champagne Gold) */
+        /* DESIGN TOKENS OFICIALES DTAVO (Luxury White & Champagne Gold) */
         :root {
-            /* Fondo y Superficies Obsidian */
-            --dtavo-bg: #0A0A0A;          /* Fondo base ultra oscuro */
-            --dtavo-card-bg: #111111;     /* Tarjetas, modales, paneles y sidebars */
-            --dtavo-input-bg: #161616;    /* Campos de formulario */
-            --dtavo-border: #222222;      /* Bordes estructurales sutiles */
+            /* Fondo y Superficies Luxury White */
+            --dtavo-bg: #FFFFFF;          /* Fondo base blanco puro */
+            --dtavo-card-bg: #FFFFFF;     /* Tarjetas, modales, paneles y sidebars */
+            --dtavo-input-bg: #F8FAFC;    /* Campos de formulario */
+            --dtavo-border: #E2E8F0;      /* Bordes estructurales sutiles */
 
             /* Acentos Champagne Gold */
-            --dtavo-primary: #C59F60;     /* Color primario corporativo */
-            --dtavo-hover: #A6824D;       /* Hover de botones y elementos interactivos */
-            --dtavo-gold-glow: rgba(197, 159, 96, 0.15); /* Halos y sombras de foco */
+            --dtavo-primary: #C59F60;     /* Color primario corporativo dorado */
+            --dtavo-hover: #A6824D;       /* Hover de botones y elementos dorados */
+            --dtavo-gold-glow: rgba(197, 159, 96, 0.22); /* Halos y sombras de foco doradas */
 
-            /* Tipografía y Textos */
-            --dtavo-text-main: #FFFFFF;   /* Títulos, precios y cifras destacadas */
-            --dtavo-text-sec: #A0A0A0;    /* Textos secundarios y metadatos */
+            /* Tipografía y Textos de Alto Contraste */
+            --dtavo-text-main: #0F172A;   /* Títulos, cifras y texto principal oscuro */
+            --dtavo-text-sec: #64748B;    /* Textos secundarios y metadatos */
 
             /* Estados Funcionales */
             --dtavo-success: #10B981;     /* Venta exitosa / balance cuadrado */
             --dtavo-warning: #F59E0B;     /* Stock crítico / retoma pendiente */
             --dtavo-danger: #EF4444;      /* Anulaciones / faltante en caja */
-            --dtavo-info: #3B82F6;        /* IMEI / datos de sistema */
+            --dtavo-info: #0284C7;        /* IMEI / datos de sistema */
 
             /* Compatibilidad retroactiva con clases existentes */
             --brand-bg: var(--dtavo-bg);
@@ -57,18 +57,18 @@
             --brand-border: var(--dtavo-border);
             --brand-primary: var(--dtavo-primary);
             --brand-secondary: var(--dtavo-hover);
-            --brand-dark: #050505;
+            --brand-dark: #0F172A;
             --brand-red: var(--dtavo-danger);
-            --brand-black: #0A0A0A;
+            --brand-black: #0F172A;
             --brand-white: #FFFFFF;
             
             --text-primary: var(--dtavo-text-main);
             --text-secondary: var(--dtavo-text-sec);
-            --divider: #1A1A1A;
+            --divider: #E2E8F0;
             
             --brand-gradient: linear-gradient(135deg, #C59F60 0%, #A6824D 100%);
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
-            --card-shadow-hover: 0 8px 28px rgba(197, 159, 96, 0.12);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+            --card-shadow-hover: 0 10px 25px rgba(197, 159, 96, 0.2), 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
         body {
@@ -135,9 +135,10 @@
             padding: 0.55rem 1.15rem;
             transition: all 0.2s ease;
         }
+        /* Meta y Theme-color */
         .btn-dtavo-outline:hover {
             background: var(--dtavo-gold-glow) !important;
-            color: #FFFFFF !important;
+            color: var(--dtavo-hover) !important;
             border-color: var(--dtavo-hover) !important;
         }
 
@@ -167,28 +168,28 @@
         }
 
         .btn-blue {
-            background-color: #1A1A1A !important;
-            color: #FFFFFF !important;
+            background-color: #FFFFFF !important;
+            color: var(--dtavo-text-main) !important;
             font-weight: 600;
             border: 1px solid var(--dtavo-border) !important;
             border-radius: 0.75rem;
             transition: all 0.2s ease-in-out;
         }
         .btn-blue:hover {
-            background-color: #262626 !important;
+            background-color: #F8FAFC !important;
             border-color: var(--dtavo-primary) !important;
-            color: #FFFFFF !important;
+            color: var(--dtavo-primary) !important;
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(197, 159, 96, 0.15);
+            box-shadow: 0 4px 14px var(--dtavo-gold-glow);
         }
 
-        /* Navbar: Obsidian Dark con Delimitadores Finos y Soporte PWA Notch */
+        /* Navbar: Fondo Blanco con Borde Dorado y Sombra Sutil */
         .navbar-custom {
-            background-color: var(--dtavo-bg) !important;
-            border-bottom: 1px solid var(--dtavo-border);
+            background-color: #FFFFFF !important;
+            border-bottom: 2px solid rgba(197, 159, 96, 0.35);
             padding: 0.85rem 0;
             padding-top: calc(0.85rem + env(safe-area-inset-top, 0px));
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             z-index: 1030;
         }
 
@@ -196,7 +197,7 @@
         .navbar-toggler-btn {
             position: relative;
             z-index: 1045;
-            background: transparent;
+            background: #FFFFFF;
             border: 1px solid var(--dtavo-border);
             padding: 8px 12px;
             border-radius: 10px;
@@ -207,13 +208,15 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
         }
         .navbar-toggler-btn i {
             color: var(--dtavo-primary) !important;
         }
         .navbar-toggler-btn:hover {
             border-color: var(--dtavo-primary);
-            background: var(--dtavo-gold-glow);
+            background: rgba(197, 159, 96, 0.08);
+            box-shadow: 0 0 12px var(--dtavo-gold-glow);
         }
         .navbar-toggler-btn:active {
             transform: scale(0.94);
@@ -238,9 +241,9 @@
             color: var(--dtavo-primary);
         }
 
-        /* Tarjetas y Contenedores Luxury Dark */
+        /* Tarjetas y Contenedores Luxury White con Acento Dorado */
         .card, .card-custom, .card-dtavo {
-            background-color: var(--dtavo-card-bg) !important;
+            background-color: #FFFFFF !important;
             border: 1px solid var(--dtavo-border) !important;
             border-radius: 16px;
             box-shadow: var(--card-shadow);
@@ -249,10 +252,10 @@
         }
         .card:hover, .card-custom:hover, .card-dtavo:hover {
             box-shadow: var(--card-shadow-hover);
-            border-color: rgba(197, 159, 96, 0.4) !important;
+            border-color: var(--dtavo-primary) !important;
         }
 
-        /* Inputs y Formularios Dark */
+        /* Inputs y Formularios */
         .form-control, .form-select {
             background-color: var(--dtavo-input-bg) !important;
             border: 1px solid var(--dtavo-border) !important;
@@ -261,24 +264,24 @@
             transition: all 0.2s ease;
         }
         .form-control:focus, .form-select:focus {
-            background-color: #1a1a1a !important;
+            background-color: #FFFFFF !important;
             border-color: var(--dtavo-primary) !important;
             box-shadow: 0 0 0 0.25rem var(--dtavo-gold-glow) !important;
-            color: #FFFFFF !important;
+            color: var(--dtavo-text-main) !important;
         }
         .form-control::placeholder {
-            color: #555555 !important;
+            color: #94A3B8 !important;
         }
 
         /* Tablas DTAVO */
         .table, .table-custom, .table-dtavo {
-            background-color: var(--dtavo-card-bg) !important;
+            background-color: #FFFFFF !important;
             color: var(--dtavo-text-main);
             border-color: var(--dtavo-border);
         }
         .table thead th, .table-custom thead th, .table-dtavo thead th {
             background-color: rgba(197, 159, 96, 0.08) !important;
-            color: var(--dtavo-primary) !important;
+            color: var(--dtavo-hover) !important;
             border-bottom: 2px solid var(--dtavo-primary) !important;
             text-transform: uppercase;
             font-size: 0.75rem;
@@ -294,20 +297,20 @@
             border-bottom: 1px solid var(--dtavo-border);
         }
         .table-hover tbody tr:hover td {
-            background-color: rgba(197, 159, 96, 0.05) !important;
+            background-color: rgba(197, 159, 96, 0.06) !important;
         }
 
-        /* Sidebar Offcanvas Obsidian Dark */
+        /* Sidebar Offcanvas Blanco & Dorado */
         .offcanvas {
-            background-color: var(--dtavo-bg) !important;
+            background-color: #FFFFFF !important;
             color: var(--dtavo-text-main) !important;
             border-right: 1px solid var(--dtavo-border) !important;
-            box-shadow: 8px 0 32px rgba(0, 0, 0, 0.8) !important;
+            box-shadow: 10px 0 35px rgba(0, 0, 0, 0.1) !important;
             max-width: 85vw !important;
             z-index: 1055 !important;
         }
         .offcanvas-header {
-            background: linear-gradient(135deg, #0A0A0A 0%, #161616 100%) !important;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F5 100%) !important;
             border-bottom: 1px solid var(--dtavo-border) !important;
             padding: 1.25rem 1.25rem;
             padding-top: calc(1.25rem + env(safe-area-inset-top, 0px));
@@ -318,13 +321,13 @@
             letter-spacing: 0.03em;
         }
         .offcanvas-header .btn-close {
-            filter: invert(1) brightness(1.5);
-            opacity: 0.85;
+            filter: none;
+            opacity: 0.7;
         }
         .offcanvas-body {
-            background-color: var(--dtavo-bg) !important;
+            background-color: #FFFFFF !important;
             scrollbar-width: thin;
-            scrollbar-color: #333333 transparent;
+            scrollbar-color: #CBD5E1 transparent;
         }
         .offcanvas-body::-webkit-scrollbar {
             width: 5px;
@@ -333,7 +336,7 @@
             background: transparent;
         }
         .offcanvas-body::-webkit-scrollbar-thumb {
-            background-color: #222222;
+            background-color: #E2E8F0;
             border-radius: 20px;
         }
         .offcanvas-body::-webkit-scrollbar-thumb:hover {
@@ -350,22 +353,22 @@
             padding: 0.5rem 0.75rem 0.5rem 2.1rem;
             border-radius: 10px;
             border: 1px solid var(--dtavo-border);
-            background: var(--dtavo-input-bg);
+            background: #F8FAFC;
             color: var(--dtavo-text-main);
             transition: all 0.2s ease;
         }
         .sidebar-search-box input:focus {
-            background: #1C1C1C;
+            background: #FFFFFF;
             border-color: var(--dtavo-primary);
             box-shadow: 0 0 0 3px var(--dtavo-gold-glow);
-            color: #FFFFFF;
+            color: var(--dtavo-text-main);
         }
         .sidebar-search-box i {
             position: absolute;
             left: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #777777;
+            color: #94A3B8;
             font-size: 0.82rem;
         }
 
@@ -375,7 +378,7 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            color: var(--dtavo-primary);
+            color: var(--dtavo-hover);
             padding: 0.75rem 0.75rem 0.35rem 0.75rem;
             margin-top: 0.5rem;
             display: flex;
@@ -404,13 +407,13 @@
         }
         .offcanvas-body .sidebar-link:hover {
             background: rgba(197, 159, 96, 0.08) !important;
-            color: #FFFFFF !important;
-            border-color: rgba(197, 159, 96, 0.25);
+            color: var(--dtavo-hover) !important;
+            border-color: rgba(197, 159, 96, 0.3);
             transform: translateX(3px);
         }
         .offcanvas-body .sidebar-link.active {
-            background: linear-gradient(90deg, rgba(197, 159, 96, 0.15), rgba(197, 159, 96, 0.03)) !important;
-            color: #FFFFFF !important;
+            background: linear-gradient(90deg, rgba(197, 159, 96, 0.18), rgba(197, 159, 96, 0.04)) !important;
+            color: var(--dtavo-hover) !important;
             border-left: 3px solid var(--dtavo-primary);
         }
         .sidebar-icon {
@@ -423,7 +426,7 @@
         }
         .offcanvas-body .sidebar-link:hover .sidebar-icon,
         .offcanvas-body .sidebar-accordion-btn:hover .sidebar-icon {
-            color: #FFFFFF !important;
+            color: var(--dtavo-hover) !important;
             transform: scale(1.1);
         }
 
@@ -444,12 +447,12 @@
             transition: all 0.2s ease;
         }
         .sidebar-accordion-btn:hover {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(197, 159, 96, 0.06);
             color: var(--dtavo-text-main);
         }
         .sidebar-accordion-btn[aria-expanded="true"] {
-            background: rgba(197, 159, 96, 0.08);
-            color: #FFFFFF;
+            background: rgba(197, 159, 96, 0.1);
+            color: var(--dtavo-hover);
             border-color: rgba(197, 159, 96, 0.25);
         }
         .sidebar-accordion-btn[aria-expanded="true"] .sidebar-icon {
@@ -457,7 +460,7 @@
         }
         .sidebar-accordion-btn .chevron-arrow {
             font-size: 0.75rem;
-            color: #666666;
+            color: #94A3B8;
             transition: transform 0.2s ease;
         }
         .sidebar-accordion-btn[aria-expanded="true"] .chevron-arrow {
@@ -466,14 +469,14 @@
         }
 
         .sidebar-submenu {
-            background: #141414;
+            background: #F8FAFC;
             border-radius: 10px;
             padding: 0.35rem 0.45rem;
             margin: 0.25rem 0 0.5rem 0.75rem;
             border-left: 2px solid var(--dtavo-primary);
         }
         .sidebar-submenu .sidebar-sublink {
-            color: #888888;
+            color: #475569;
             font-size: 0.82rem;
             font-weight: 500;
             padding: 0.45rem 0.65rem;
@@ -488,9 +491,9 @@
             transition: transform 0.15s ease;
         }
         .sidebar-submenu .sidebar-sublink:hover {
-            background: #1E1E1E;
-            color: #FFFFFF;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            background: #FFFFFF;
+            color: var(--dtavo-hover);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             transform: translateX(2px);
         }
         .sidebar-submenu .sidebar-sublink:hover i {
@@ -544,10 +547,10 @@
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <div>
-                    <h6 class="offcanvas-title fw-bold mb-0 text-white" id="offcanvasNavbarLabel">
+                    <h6 class="offcanvas-title fw-bold mb-0" style="color: var(--dtavo-text-main);" id="offcanvasNavbarLabel">
                         {{ current_user.nombre or current_user.email.split('@')[0] | capitalize }}
                     </h6>
-                    <span class="badge" style="background: rgba(197, 159, 96, 0.18); color: var(--dtavo-primary); font-size: 0.65rem; border: 1px solid rgba(197, 159, 96, 0.35);">
+                    <span class="badge" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover); font-size: 0.65rem; border: 1px solid rgba(197, 159, 96, 0.35);">
                         ROL: {{ current_user.rol | upper }}
                     </span>
                 </div>
