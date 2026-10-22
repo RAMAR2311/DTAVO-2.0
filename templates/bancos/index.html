@@ -1,11 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .card-gold-premium {
+        background: #FFFFFF;
+        border: 1px solid rgba(197, 159, 96, 0.35);
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(197, 159, 96, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .card-gold-premium:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px rgba(197, 159, 96, 0.16), 0 4px 12px rgba(0, 0, 0, 0.06);
+        border-color: rgba(197, 159, 96, 0.65);
+    }
+    .card-gold-premium::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #9E7D47 0%, #C59F60 50%, #E8D3A7 100%);
+    }
+    .gold-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(197, 159, 96, 0.16) 0%, rgba(166, 130, 77, 0.22) 100%);
+        border: 1px solid rgba(197, 159, 96, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--dtavo-hover, #A6824D);
+        font-size: 1.25rem;
+        box-shadow: 0 4px 14px rgba(197, 159, 96, 0.15);
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .card-gold-premium:hover .gold-icon-box {
+        transform: rotate(5deg) scale(1.1);
+        background: linear-gradient(135deg, #C59F60 0%, #A6824D 100%);
+        color: #FFFFFF;
+        box-shadow: 0 6px 18px rgba(197, 159, 96, 0.4);
+    }
+    .sparkle-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        color: #C59F60;
+        font-size: 0.9rem;
+        animation: sparkleAnim 3s infinite ease-in-out;
+        pointer-events: none;
+    }
+    @keyframes sparkleAnim {
+        0%, 100% { opacity: 0.4; transform: scale(0.9) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.25) rotate(15deg); filter: drop-shadow(0 0 6px rgba(197, 159, 96, 0.8)); }
+    }
+    .bank-subcard {
+        background: #FFFFFF;
+        border: 1px solid rgba(197, 159, 96, 0.25);
+        border-radius: 14px;
+        padding: 0.85rem 1rem;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .bank-subcard:hover {
+        border-color: var(--dtavo-primary, #C59F60);
+        box-shadow: 0 6px 16px rgba(197, 159, 96, 0.18);
+        transform: translateY(-2px);
+    }
+</style>
+
 <!-- Cabecera y Acciones Rápidas -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover, #A6824D); border: 1px solid rgba(197, 159, 96, 0.3); font-weight: 700;">
+                DTAVO VAULT &amp; TREASURY
+            </span>
+        </div>
         <h2 class="fw-bold text-brand-black m-0 d-flex align-items-center gap-2">
-            <i class="fa-solid fa-building-columns text-success"></i> Bancos
+            <i class="fa-solid fa-building-columns" style="color: var(--dtavo-primary, #C59F60);"></i> Tesorería y Cuentas Bancarias
         </h2>
         <p class="text-muted small m-0">Gestión de efectivo en caja mayor, cuentas digitales e historial de transacciones.</p>
     </div>
@@ -14,18 +92,18 @@
     <div class="d-flex flex-wrap gap-2">
         {% if current_user.rol == 'admin' %}
         <!-- 1. Botón Transferir a Caja Mayor -->
-        <button type="button" class="btn btn-success rounded-pill px-3 py-2 fw-bold shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTransferirCajaMayor">
+        <button type="button" class="btn btn-dtavo rounded-pill px-3 py-2 fw-bold shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modalTransferirCajaMayor">
             <i class="fa-solid fa-money-bill-transfer"></i>
             <span>Transferir a Caja Mayor</span>
         </button>
 
-        <button type="button" class="btn btn-outline-success rounded-pill px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAjusteManual" title="Ajuste manual de saldo">
+        <button type="button" class="btn btn-dtavo-outline rounded-pill px-3 py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#modalAjusteManual" title="Ajuste manual de saldo">
             <i class="fa-solid fa-sliders me-1"></i> Ajuste
         </button>
         {% endif %}
 
         <!-- 2. Botón Realizar Abono a Proveedor -->
-        <a href="{{ url_for('providers_bp.list_providers') }}" class="btn btn-outline-primary rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm">
+        <a href="{{ url_for('providers_bp.list_providers') }}" class="btn btn-outline-dark rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2 shadow-sm">
             <i class="fa-solid fa-truck-fast"></i>
             <span>Realizar Abono Proveedor</span>
         </a>
@@ -46,77 +124,97 @@
 <div class="row g-3 mb-4">
     <!-- Tarjeta 1: Total Consolidado -->
     <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 border-0 shadow-sm h-100" style="border-left: 5px solid #198754 !important;">
+        <div class="card card-gold-premium p-4 h-100">
+            <i class="fa-solid fa-sparkle sparkle-badge"></i>
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-secondary fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Saldo Total Consolidado</span>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(25, 135, 84, 0.1); color: #198754;">
-                    <i class="fa-solid fa-vault fs-5"></i>
+                <div>
+                    <span class="text-uppercase small fw-bold" style="color: var(--dtavo-text-sec, #666); letter-spacing: 0.05em; font-size: 0.72rem;">Tesorería DTAVO</span>
+                    <h6 class="fw-bold mb-0 text-dark">Saldo Total Consolidado</h6>
+                </div>
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-vault"></i>
                 </div>
             </div>
-            <h2 class="fw-bolder m-0 text-success font-mono">${{ total_global|cop }}</h2>
-            <small class="text-muted mt-2 d-block">Suma total de Caja Mayor + Cuentas Digitales</small>
+            <h2 class="fw-bolder m-0 font-mono" style="color: var(--dtavo-hover, #A6824D); font-size: 2.1rem;">${{ total_global|cop }}</h2>
+            <small class="text-muted mt-2 d-block">
+                <i class="fa-solid fa-shield-check me-1" style="color: var(--dtavo-primary, #C59F60);"></i> Suma total de Caja Mayor + Cuentas Digitales
+            </small>
         </div>
     </div>
 
     <!-- Tarjeta 2: Efectivo Caja Mayor (Principal) -->
     <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 border-0 shadow-sm h-100" style="border-left: 5px solid #ffc107 !important;">
+        <div class="card card-gold-premium p-4 h-100">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 1s;"></i>
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-dark fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Efectivo Caja Mayor</span>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(255, 193, 7, 0.18); color: #b78103;">
-                    <i class="fa-solid fa-money-bill-wave fs-5"></i>
+                <div>
+                    <span class="text-uppercase small fw-bold" style="color: var(--dtavo-text-sec, #666); letter-spacing: 0.05em; font-size: 0.72rem;">Fondo Físico en Tienda</span>
+                    <h6 class="fw-bold mb-0 text-dark">Efectivo Caja Mayor</h6>
+                </div>
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-money-bill-wave"></i>
                 </div>
             </div>
-            <h2 class="fw-bolder m-0 text-dark font-mono">${{ total_efectivo|cop }}</h2>
-            <small class="text-muted mt-2 d-block">Fondo de efectivo acumulado en tienda</small>
+            <h2 class="fw-bolder m-0 text-dark font-mono" style="font-size: 2.1rem;">${{ total_efectivo|cop }}</h2>
+            <small class="text-muted mt-2 d-block">
+                <i class="fa-solid fa-store me-1" style="color: var(--dtavo-primary, #C59F60);"></i> Fondo físico disponible en tienda
+            </small>
         </div>
     </div>
 
     <!-- Tarjeta 3: Cuentas Digitales (Con Acordeón Desplegable Interno) -->
     <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 border-0 shadow-sm h-100 position-relative" style="border-left: 5px solid #0d6efd !important;">
+        <div class="card card-gold-premium p-4 h-100">
+            <i class="fa-solid fa-sparkle sparkle-badge" style="animation-delay: 2s;"></i>
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-secondary fw-bold text-uppercase small" style="letter-spacing: 0.05em;">Cuentas Digitales</span>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
-                    <i class="fa-solid fa-mobile-screen fs-5"></i>
+                <div>
+                    <span class="text-uppercase small fw-bold" style="color: var(--dtavo-text-sec, #666); letter-spacing: 0.05em; font-size: 0.72rem;">Banca Digital</span>
+                    <h6 class="fw-bold mb-0 text-dark">Cuentas Digitales</h6>
+                </div>
+                <div class="gold-icon-box">
+                    <i class="fa-solid fa-mobile-screen"></i>
                 </div>
             </div>
-            <h2 class="fw-bolder m-0 text-primary font-mono">${{ total_en_bancos|cop }}</h2>
+            <h2 class="fw-bolder m-0 font-mono" style="color: var(--dtavo-primary, #C59F60); font-size: 2.1rem;">${{ total_en_bancos|cop }}</h2>
             
-            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
-                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetalleBancos" aria-expanded="false" aria-controls="collapseDetalleBancos">
-                    <i class="fa-solid fa-layer-group me-1"></i> Ver desglose por cuenta <i class="fa-solid fa-chevron-down ms-1 small"></i>
+            <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center" style="border-color: rgba(197, 159, 96, 0.25) !important;">
+                <button class="btn btn-sm btn-dtavo-outline rounded-pill px-3 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetalleBancos" aria-expanded="false" aria-controls="collapseDetalleBancos">
+                    <i class="fa-solid fa-layer-group me-1"></i> Desglose por método <i class="fa-solid fa-chevron-down ms-1 small"></i>
                 </button>
-                <small class="text-muted">{{ cuentas|length - 1 }} cuentas</small>
+                <span class="badge" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover, #A6824D); border: 1px solid rgba(197, 159, 96, 0.3);">
+                    {{ cuentas|length - 1 }} métodos
+                </span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Desglose de Cuentas Digitales (Colapsado dentro de la vista para máxima limpieza) -->
+<!-- Desglose de Cuentas Digitales -->
 <div class="collapse mb-4" id="collapseDetalleBancos">
-    <div class="card card-custom p-4 border shadow-sm bg-light" style="border-radius: 20px;">
-        <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
-            <i class="fa-solid fa-wallet text-primary"></i> Saldos en cada Cuenta Digital:
+    <div class="card p-4 border-0 shadow-sm" style="background: linear-gradient(135deg, #FFFFFF 0%, #FAF8F5 100%); border-radius: 20px; border: 1px solid rgba(197, 159, 96, 0.3) !important;">
+        <h6 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color: var(--dtavo-text-main, #1F1F1F);">
+            <i class="fa-solid fa-wallet" style="color: var(--dtavo-primary, #C59F60);"></i> Saldos en cada Método / Cuenta Digital:
         </h6>
         <div class="row g-3">
             {% for c in cuentas %}
             {% if c.codigo != 'efectivo' %}
             <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                <div class="card p-3 border-0 shadow-sm rounded-3 bg-white h-100">
+                <div class="bank-subcard h-100">
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <div class="d-flex align-items-center gap-2">
-                            <i class="fa-solid {{ c.icono or 'fa-building-columns' }} text-success"></i>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background: rgba(197, 159, 96, 0.15); color: var(--dtavo-primary, #C59F60);">
+                                <i class="fa-solid {{ c.icono or 'fa-building-columns' }}" style="font-size: 0.85rem;"></i>
+                            </div>
                             <span class="fw-bold text-dark small">{{ c.nombre }}</span>
                         </div>
                         <a href="{{ url_for('bancos_bp.index', account_id=c.id) }}" class="btn btn-sm btn-light border rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px;" title="Filtrar movimientos">
                             <i class="fa-solid fa-filter text-secondary" style="font-size: 0.65rem;"></i>
                         </a>
                     </div>
-                    <h5 class="fw-bold font-mono mb-0 {{ 'text-success' if c.saldo_actual >= 0 else 'text-danger' }}">
+                    <h5 class="fw-bold font-mono mb-1 {{ 'text-success' if c.saldo_actual >= 0 else 'text-danger' }}">
                         ${{ c.saldo_actual|cop }}
                     </h5>
-                    <small class="text-muted" style="font-size: 0.7rem;">{{ c.movimientos|length }} movimientos registrados</small>
+                    <small class="text-muted" style="font-size: 0.72rem;">{{ c.movimientos|length }} movimientos registrados</small>
                 </div>
             </div>
             {% endif %}
