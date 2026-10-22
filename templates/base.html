@@ -567,29 +567,29 @@
 
             <div class="flex-grow-1 px-3 py-2 overflow-y-auto" id="sidebarMenuContainer">
                 {% if current_user.rol == 'admin' %}
-                    <!-- SECCIÓN: VISTA GENERAL -->
+                    <!-- 1. VISTA GENERAL -->
                     <div class="sidebar-section-label">General</div>
                     <a class="sidebar-link" href="/admin/dashboard">
                         <i class="fa-solid fa-chart-pie sidebar-icon"></i>
                         <span>Panel de Control Ejecutivo</span>
                     </a>
 
-                    <!-- SECCIÓN: VENTAS / DTAVO TERMINAL -->
-                    <div class="sidebar-section-label">DTAVO Terminal POS</div>
+                    <!-- 2. VENTAS Y TERMINAL POS -->
+                    <div class="sidebar-section-label">Ventas &amp; Caja</div>
                     <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupCaja" aria-expanded="true">
-                        <span><i class="fa-solid fa-cash-register sidebar-icon"></i> Terminal POS</span>
+                        <span><i class="fa-solid fa-cash-register sidebar-icon"></i> Terminal POS &amp; Caja</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
                     <div class="collapse show" id="groupCaja">
                         <div class="sidebar-submenu">
                             <a class="sidebar-sublink" href="/sales/caja_visual">
-                                <i class="fa-solid fa-store me-2" style="width: 16px;"></i> DTAVO Terminal POS
+                                <i class="fa-solid fa-store me-2" style="width: 16px;"></i> Terminal POS (Ventas)
                             </a>
                             <a class="sidebar-sublink" href="/sales/catalogo">
-                                <i class="fa-solid fa-book-open me-2" style="width: 16px;"></i> Catálogo Corporativo
+                                <i class="fa-solid fa-book-open me-2" style="width: 16px;"></i> Catálogo de Productos
                             </a>
                             <a class="sidebar-sublink" href="/arqueo/nuevo">
-                                <i class="fa-solid fa-vault me-2" style="width: 16px;"></i> DTAVO Vault / Arqueo de Caja
+                                <i class="fa-solid fa-vault me-2" style="width: 16px;"></i> Arqueo de Caja (DTAVO Vault)
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('arqueo_bp.log_sobrantes') }}">
                                 <i class="fa-solid fa-scale-unbalanced-flip me-2" style="width: 16px;"></i> Auditoría de Sobrantes
@@ -597,38 +597,14 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: OPERACIONES Y COMPRAS -->
-                    <div class="sidebar-section-label">Operaciones &amp; Suministro</div>
-                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupOperaciones" aria-expanded="false">
-                        <span><i class="fa-solid fa-cart-flatbed sidebar-icon"></i> Compras &amp; Cadena</span>
-                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
-                    </button>
-                    <div class="collapse" id="groupOperaciones">
-                        <div class="sidebar-submenu">
-                            <a class="sidebar-sublink" href="{{ url_for('purchases_bp.index') }}">
-                                <i class="fa-solid fa-file-circle-plus me-2" style="width: 16px;"></i> Ingreso de Activos (Compras)
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('providers_bp.list_providers') }}">
-                                <i class="fa-solid fa-truck-fast me-2" style="width: 16px;"></i> Directorio Proveedores
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('warranties_bp.index') }}">
-                                <i class="fa-solid fa-shield-halved me-2" style="width: 16px;"></i> Soporte &amp; Garantías DTAVO
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.clientes') }}">
-                                <i class="fa-solid fa-address-book me-2" style="width: 16px;"></i> Cartera de Clientes
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- SECCIÓN: DTAVO MATRIX / CONTROL DE ACTIVOS -->
-                    <div class="sidebar-section-label">DTAVO Matrix / Activos</div>
-                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupAdministrativo" aria-expanded="false">
+                    <!-- 3. INVENTARIO Y STOCK -->
+                    <div class="sidebar-section-label">Inventario &amp; Stock</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupInventario" aria-expanded="false">
                         <span><i class="fa-solid fa-boxes-stacked sidebar-icon"></i> Control de Activos</span>
                         <i class="fa-solid fa-chevron-down chevron-arrow"></i>
                     </button>
-                    <div class="collapse" id="groupAdministrativo">
+                    <div class="collapse" id="groupInventario">
                         <div class="sidebar-submenu">
-                            <!-- Inventario & Stock -->
                             <a class="sidebar-sublink" href="{{ url_for('celulares_bp.inventario') }}">
                                 <i class="fa-solid fa-mobile-screen-button me-2" style="width: 16px;"></i> Inventario Tecnología
                             </a>
@@ -639,27 +615,50 @@
                                 <i class="fa-solid fa-headphones-simple me-2" style="width: 16px;"></i> Accesorios Externos
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('retomas_bp.cuarentena') }}">
-                                <i class="fa-solid fa-recycle me-2" style="width: 16px;"></i> Retomas / Trade-In (Cuarentena)
+                                <i class="fa-solid fa-recycle me-2" style="width: 16px;"></i> Retomas / Cuarentena
                             </a>
                             <a class="sidebar-sublink" href="{{ url_for('celulares_bp.trazabilidad') }}">
-                                <i class="fa-solid fa-timeline me-2" style="width: 16px;"></i> Trazabilidad &amp; Auditoría IMEI
+                                <i class="fa-solid fa-timeline me-2" style="width: 16px;"></i> Trazabilidad IMEI
                             </a>
+                        </div>
+                    </div>
 
-                            <!-- Equipo & Finanzas -->
-                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.asesores') }}">
-                                <i class="fa-solid fa-user-tie me-2" style="width: 16px;"></i> Asesores Comerciales
+                    <!-- 4. COMPRAS Y PROVEEDORES -->
+                    <div class="sidebar-section-label">Compras &amp; Proveedores</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupCompras" aria-expanded="false">
+                        <span><i class="fa-solid fa-truck-fast sidebar-icon"></i> Compras &amp; Cadena</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse" id="groupCompras">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="{{ url_for('purchases_bp.index') }}">
+                                <i class="fa-solid fa-file-circle-plus me-2" style="width: 16px;"></i> Registrar Compra (Facturas)
                             </a>
-                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.ventas_vendedores') }}">
-                                <i class="fa-solid fa-chart-line me-2" style="width: 16px;"></i> Rendimiento y Comisiones
+                            <a class="sidebar-sublink" href="{{ url_for('providers_bp.list_providers') }}">
+                                <i class="fa-solid fa-address-book me-2" style="width: 16px;"></i> Directorio de Proveedores
                             </a>
-                            <a class="sidebar-sublink" href="/admin/vendedores">
-                                <i class="fa-solid fa-users-gear me-2" style="width: 16px;"></i> Credenciales &amp; Operadores
+                            <a class="sidebar-sublink" href="{{ url_for('warranties_bp.index') }}">
+                                <i class="fa-solid fa-shield-halved me-2" style="width: 16px;"></i> Soporte &amp; Garantías
                             </a>
-                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.aprobaciones') }}">
-                                <i class="fa-solid fa-tags me-2" style="width: 16px;"></i> Aprobaciones Especiales
+                            <a class="sidebar-sublink" href="{{ url_for('celulares_bp.clientes') }}">
+                                <i class="fa-solid fa-users me-2" style="width: 16px;"></i> Cartera de Clientes
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 5. FINANZAS Y BANCOS -->
+                    <div class="sidebar-section-label">Tesorería &amp; Finanzas</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupFinanzas" aria-expanded="false">
+                        <span><i class="fa-solid fa-building-columns sidebar-icon"></i> Bancos &amp; Finanzas</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse" id="groupFinanzas">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="{{ url_for('bancos_bp.index') }}">
+                                <i class="fa-solid fa-wallet me-2" style="width: 16px;"></i> Cuentas Bancarias &amp; Digitales
                             </a>
                             <a class="sidebar-sublink" href="/gastos">
-                                <i class="fa-solid fa-money-bill-transfer me-2" style="width: 16px;"></i> Egresos Operativos
+                                <i class="fa-solid fa-money-bill-transfer me-2" style="width: 16px;"></i> Egresos &amp; Gastos
                             </a>
                             <a class="sidebar-sublink" href="/admin/maneos">
                                 <i class="fa-solid fa-handshake me-2" style="width: 16px;"></i> Maneos &amp; Acuerdos
@@ -667,16 +666,32 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: FINANZAS / BANCOS -->
-                    <div class="sidebar-section-label">Finanzas &amp; Liquidación</div>
-                    <a class="sidebar-link" href="{{ url_for('bancos_bp.index') }}">
-                        <i class="fa-solid fa-building-columns sidebar-icon"></i>
-                        <span>Bancos &amp; Cuentas DTAVO</span>
-                    </a>
+                    <!-- 6. GESTIÓN DE EQUIPO -->
+                    <div class="sidebar-section-label">Equipo &amp; Operación</div>
+                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupEquipo" aria-expanded="false">
+                        <span><i class="fa-solid fa-users-gear sidebar-icon"></i> Equipo &amp; Asesores</span>
+                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
+                    </button>
+                    <div class="collapse" id="groupEquipo">
+                        <div class="sidebar-submenu">
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.asesores') }}">
+                                <i class="fa-solid fa-user-tie me-2" style="width: 16px;"></i> Asesores Comerciales
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.ventas_vendedores') }}">
+                                <i class="fa-solid fa-chart-line me-2" style="width: 16px;"></i> Comisiones &amp; Rendimiento
+                            </a>
+                            <a class="sidebar-sublink" href="/admin/vendedores">
+                                <i class="fa-solid fa-id-badge me-2" style="width: 16px;"></i> Credenciales &amp; Acceso
+                            </a>
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.aprobaciones') }}">
+                                <i class="fa-solid fa-tags me-2" style="width: 16px;"></i> Aprobaciones Especiales
+                            </a>
+                        </div>
+                    </div>
 
-                    <!-- SECCIÓN: INTELIGENCIA ARTIFICIAL -->
+                    <!-- 7. INTELIGENCIA ARTIFICIAL -->
                     <div class="sidebar-section-label">Inteligencia Artificial</div>
-                    <a class="sidebar-link" href="/zenic" style="background: rgba(197, 159, 96, 0.08); border: 1px solid rgba(197, 159, 96, 0.3); color: #FFFFFF !important;">
+                    <a class="sidebar-link mb-2" href="/zenic" style="background: rgba(197, 159, 96, 0.08); border: 1px solid rgba(197, 159, 96, 0.3); color: #FFFFFF !important;">
                         <i class="fa-solid fa-brain sidebar-icon" style="color: var(--dtavo-primary) !important;"></i>
                         <span>DTAVO Core AI</span>
                         <span class="ms-auto badge" style="background: var(--dtavo-primary); color: #0A0A0A; font-weight: 800; font-size: 0.6rem; border-radius: 20px; padding: 2px 7px;">IA</span>
