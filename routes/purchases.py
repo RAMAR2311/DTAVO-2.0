@@ -4,7 +4,7 @@ from datetime import datetime
 import pytz
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from models import db, Product, ProductVariant, Provider, PurchaseOrder, PurchaseOrderItem, obtener_hora_bogota
+from models import db, Product, ProductVariant, Provider, PurchaseOrder, PurchaseOrderItem, ProviderInvoice, obtener_hora_bogota
 from decorators import admin_required
 
 purchases_bp = Blueprint('purchases_bp', __name__)
@@ -300,9 +300,36 @@ def guardar():
             db.session.add(item_compra)
 
         compra.total_costo = total_costo
+
+        # Vincular automáticamente la factura a la cuenta del proveedor si fue seleccionado
+        cargar_proveedor = request.form.get('cargar_a_cuenta_proveedor')
+        # Si se seleccionó proveedor y está marcada la opción (o no viene explícita pero hay proveedor)
+        if provider_id and (cargar_proveedor == '1' or cargar_proveedor is None):
+            proveedor_obj = Provider.query.get(provider_id)
+            if proveedor_obj and total_costo > 0:
+                ref_factura = numero_factura if numero_factura else f"COMPRA #{compra.id:04d}"
+                desc_factura = f"Compra #{compra.id:04d} ({tipo_inventario.capitalize()}): {len(items)} items ingresados"
+                if observaciones:
+                    desc_factura += f" - {observaciones[:80]}"
+
+                factura_proveedor = ProviderInvoice(
+                    provider_id=provider_id,
+                    monto_total=total_costo,
+                    numero_factura=ref_factura,
+                    descripcion=desc_factura,
+                    fecha_factura=compra.fecha_compra
+                )
+                db.session.add(factura_proveedor)
+
         db.session.commit()
 
-        flash(f'Compra #{compra.id} registrada con éxito. Se incrementó el inventario correspondiente.', 'success')
+        if provider_id:
+            proveedor_obj = Provider.query.get(provider_id)
+            nombre_prov = proveedor_obj.nombre if proveedor_obj else "Proveedor"
+            flash(f'Compra #{compra.id} registrada con éxito. Se incrementó el inventario y se cargó la factura por ${total_costo:,.2f} a la cuenta de {nombre_prov}.', 'success')
+        else:
+            flash(f'Compra #{compra.id} registrada con éxito. Se incrementó el inventario correspondiente.', 'success')
+
         return redirect(url_for('purchases_bp.detalle', id=compra.id))
 
     except Exception as e:

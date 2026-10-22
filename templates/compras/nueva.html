@@ -158,9 +158,22 @@
                         <h2 class="mb-0 fw-bold price-display font-mono" id="resumenCostoTotal">$0</h2>
                     </div>
 
-                    <div class="alert alert-light border small text-muted mb-4" style="border-color: var(--brand-border) !important;">
+                    <div class="alert alert-light border small text-muted mb-3" style="border-color: var(--brand-border) !important;">
                         <i class="fa-solid fa-circle-info text-primary me-1"></i>
                         Al confirmar el ingreso, las unidades ingresadas se sumarán directamente al stock del producto o variante seleccionada.
+                    </div>
+
+                    <!-- Vincular Factura a Cuenta del Proveedor -->
+                    <div class="p-3 rounded-3 mb-4 border" style="background: rgba(197, 159, 96, 0.08); border-color: rgba(197, 159, 96, 0.3) !important;">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" role="switch" name="cargar_a_cuenta_proveedor" id="cargar_a_cuenta_proveedor" value="1" checked style="cursor: pointer;">
+                            <label class="form-check-label fw-bold small text-dark" for="cargar_a_cuenta_proveedor" style="cursor: pointer;">
+                                <i class="fa-solid fa-file-invoice-dollar me-1" style="color: var(--dtavo-primary);"></i> Cargar factura a la cuenta del proveedor
+                            </label>
+                        </div>
+                        <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                            Registra automáticamente esta compra en el historial de facturas por pagar del proveedor seleccionado.
+                        </small>
                     </div>
 
                     <div class="d-grid gap-2">

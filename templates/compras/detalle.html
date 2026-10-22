@@ -49,6 +49,13 @@
                         {% if compra.proveedor and compra.proveedor.telefono %}
                             <small class="text-muted d-block">Teléfono: {{ compra.proveedor.telefono }}</small>
                         {% endif %}
+                        {% if compra.proveedor %}
+                            <div class="mt-2 pt-2 border-top">
+                                <a href="{{ url_for('providers_bp.detail', id=compra.proveedor.id) }}" class="btn btn-sm btn-dtavo-outline rounded-pill px-3 py-1 fw-bold">
+                                    <i class="fa-solid fa-file-invoice-dollar me-1"></i> Ver Cuenta de Proveedor
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="col-md-6">
