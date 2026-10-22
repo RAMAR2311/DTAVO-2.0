@@ -5,14 +5,11 @@
     <div class="col-12 d-flex justify-content-between align-items-center mb-2">
         <div>
             <h2 class="brand-title mb-1"><i class="fa-solid fa-cart-flatbed me-2" style="color: var(--brand-primary);"></i> Módulo de Compras</h2>
-            <p class="brand-subtitle mb-0">INGRESO DE MERCANCÍA &bull; CELULARES Y ACCESORIOS</p>
+            <p class="brand-subtitle mb-0">INGRESO DE MERCANCÍA &bull; CELULARES Y DISPOSITIVOS</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ url_for('purchases_bp.nueva', tipo='accesorios') }}" class="btn btn-pink px-3 py-2 fw-bold shadow-sm">
-                <i class="fa-solid fa-boxes-stacked me-1"></i> + Compra Accesorios
-            </a>
-            <a href="{{ url_for('purchases_bp.nueva', tipo='celulares') }}" class="btn btn-blue px-3 py-2 fw-bold shadow-sm">
-                <i class="fa-solid fa-mobile-screen-button me-1"></i> + Compra Celulares
+            <a href="{{ url_for('purchases_bp.nueva', tipo='celulares') }}" class="btn btn-dtavo rounded-pill px-4 py-2 fw-bold shadow-sm">
+                <i class="fa-solid fa-mobile-screen-button me-1"></i> + Ingreso de Celulares (IMEI)
             </a>
         </div>
     </div>

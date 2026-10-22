@@ -21,7 +21,7 @@ def index():
 @login_required
 @admin_required
 def nueva():
-    tipo = request.args.get('tipo', 'accesorios')
+    tipo = request.args.get('tipo', 'celulares')
     proveedores = Provider.query.order_by(Provider.nombre.asc()).all()
     return render_template('compras/nueva.html', tipo=tipo, proveedores=proveedores)
 
@@ -36,7 +36,7 @@ def detalle(id):
 @login_required
 @admin_required
 def api_buscar_productos():
-    tipo = request.args.get('tipo', 'accesorios')
+    tipo = request.args.get('tipo', 'celulares')
     q = request.args.get('q', '').strip()
 
     query = Product.query
