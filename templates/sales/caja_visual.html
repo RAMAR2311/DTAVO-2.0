@@ -1,74 +1,209 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row h-100 g-4">
-    <!-- Panel Izquierdo: Catálogo de Productos -->
-    <div class="col-lg-8 d-flex flex-column h-100">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold m-0" style="font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.5px;">
-                <i class="fa-solid fa-cash-register me-2" style="color: var(--dtavo-primary);"></i> DTAVO Terminal POS
-            </h2>
-            <button class="btn btn-dtavo-outline rounded-3 px-3 shadow-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalProductoExterno" title="Ingresar Producto Externo">
-                <i class="fa-solid fa-mobile-screen-button me-1"></i> Dispositivo Externo
-            </button>
-            <button class="btn btn-dtavo-outline rounded-3 px-3 shadow-sm ms-2" type="button" data-bs-toggle="modal" data-bs-target="#modalAccesorioExterno" title="Ingresar Accesorio Externo">
-                <i class="fa-solid fa-headphones me-1"></i> Acc. Externo
-            </button>
-        </div>
+<style>
+    .pos-search-wrapper {
+        background: #FFFFFF;
+        border: 2px solid rgba(197, 159, 96, 0.4);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(197, 159, 96, 0.1);
+        transition: all 0.25s ease;
+    }
+    .pos-search-wrapper:focus-within {
+        border-color: var(--dtavo-primary, #C59F60);
+        box-shadow: 0 10px 30px rgba(197, 159, 96, 0.22);
+    }
+    .pos-product-item {
+        background: #FFFFFF;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 14px;
+        padding: 0.9rem 1.15rem;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: pointer;
+        position: relative;
+    }
+    .pos-product-item:hover {
+        border-color: var(--dtavo-primary, #C59F60);
+        background: #FAF8F5;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(197, 159, 96, 0.14);
+    }
+    .pos-product-item.active-focus {
+        border-color: var(--dtavo-primary, #C59F60);
+        background: #FAF5EB;
+        box-shadow: 0 0 0 3px rgba(197, 159, 96, 0.25);
+    }
+    .pos-icon-badge {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(197, 159, 96, 0.14) 0%, rgba(166, 130, 77, 0.22) 100%);
+        border: 1px solid rgba(197, 159, 96, 0.35);
+        color: var(--dtavo-hover, #A6824D);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+    }
+    .badge-imei-pill {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        background: rgba(0, 0, 0, 0.05);
+        color: #2D3748;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+    }
+    .badge-imei-pill strong {
+        color: var(--dtavo-hover, #A6824D);
+    }
+</style>
 
-        <!-- Buscador de productos -->
-        <div class="mb-4">
-            <div class="input-group input-group-lg shadow-sm rounded-pill border">
-                <span class="input-group-text bg-white border-0 ps-4"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                <input type="text" id="productSearch" class="form-control border-0 bg-white shadow-none ps-2" placeholder="Buscar producto por nombre, SKU o IMEI..." style="border-radius: 0 50px 50px 0;">
+<div class="row h-100 g-4">
+    <!-- Panel Izquierdo: Catálogo y Búsqueda Inteligente -->
+    <div class="col-lg-8 d-flex flex-column h-100">
+        <!-- Cabecera de la Terminal -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+                <span class="badge" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover, #A6824D); border: 1px solid rgba(197, 159, 96, 0.3); font-weight: 700; font-size: 0.7rem; letter-spacing: 0.05em;">
+                    DTAVO SMART POS
+                </span>
+                <h2 class="fw-bold m-0 d-flex align-items-center gap-2" style="font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: -0.5px;">
+                    <i class="fa-solid fa-cash-register" style="color: var(--dtavo-primary, #C59F60);"></i> Terminal Operativa POS
+                </h2>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-dtavo-outline rounded-pill px-3 py-2 shadow-sm btn-sm fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#modalProductoExterno" title="Ingresar Producto Externo">
+                    <i class="fa-solid fa-mobile-screen-button me-1"></i> Dispositivo Externo
+                </button>
+                <button class="btn btn-dtavo-outline rounded-pill px-3 py-2 shadow-sm btn-sm fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#modalAccesorioExterno" title="Ingresar Accesorio Externo">
+                    <i class="fa-solid fa-headphones me-1"></i> Acc. Externo
+                </button>
             </div>
         </div>
 
-        <!-- Grilla de productos -->
-        <div class="row g-3 overflow-auto pb-4" id="productsGrid" style="max-height: calc(100vh - 250px);">
-            {% for p in productos %}
-            {% set total_stock = p.cantidad_stock %}
-            {% set vars_data = [] %}
-            {% if p.variantes %}
-                {% set total_stock = p.variantes | sum(attribute='cantidad_stock') %}
-                {% for v in p.variantes %}
-                    {% set _ = vars_data.append({"id": v.id, "nombre": v.nombre_variante, "stock": v.cantidad_stock, "precio_sugerido": v.precio_sugerido or p.precio_sugerido or 0}) %}
-                {% endfor %}
-            {% endif %}
-            <div class="col-6 col-md-4 col-xl-3 product-card-container" data-name="{{ p.nombre|lower }}" data-sku="{{ p.sku|lower }}" data-imei="{{ p.imei|lower if p.imei else '' }}" data-imei2="{{ p.imei2|lower if p.imei2 else '' }}">
-                <div class="card h-100 border-0 shadow-sm cursor-pointer product-card" 
+        <!-- Barra de Búsqueda Inteligente (IMEI / SKU / Nombre) -->
+        <div class="mb-3">
+            <div class="pos-search-wrapper p-2 d-flex align-items-center gap-3">
+                <div class="ps-2" style="color: var(--dtavo-primary, #C59F60); font-size: 1.25rem;">
+                    <i class="fa-solid fa-barcode"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <input type="text" id="productSearch" 
+                           class="form-control border-0 bg-transparent shadow-none p-0 fw-semibold" 
+                           placeholder="Escanear o escribir IMEI, Serial, SKU o nombre de producto... [ENTER para agregar directo]" 
+                           autocomplete="off"
+                           autofocus
+                           style="font-size: 1.05rem; color: #1F1F1F;">
+                </div>
+                <div class="d-flex align-items-center gap-2 pe-1">
+                    <span class="badge rounded-pill bg-light text-secondary border px-2 py-1 small" id="search_count_badge">
+                        {{ productos|length }} disponibles
+                    </span>
+                    <button type="button" class="btn btn-sm btn-light rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;" onclick="limpiarBuscador()" title="Limpiar búsqueda">
+                        <i class="fa-solid fa-xmark text-muted small"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2 px-1 text-muted" style="font-size: 0.76rem;">
+                <span><i class="fa-solid fa-wand-magic-sparkles me-1 text-warning"></i> <strong>Modo Rápido:</strong> Si escaneas o ingresas un IMEI o SKU exacto, se agrega automáticamente al carrito con [ENTER].</span>
+                <span id="searchStatusMsg" class="fw-semibold text-secondary"></span>
+            </div>
+        </div>
+
+        <!-- Lista Inteligente de Productos (Sin fotos, Ultra rápida y ejecutiva) -->
+        <div class="overflow-auto pb-4 pe-1 flex-grow-1" id="productsGrid" style="max-height: calc(100vh - 270px);">
+            <div class="d-flex flex-column gap-2" id="productsListContainer">
+                {% for p in productos %}
+                {% set total_stock = p.cantidad_stock %}
+                {% set vars_data = [] %}
+                {% if p.variantes %}
+                    {% set total_stock = p.variantes | sum(attribute='cantidad_stock') %}
+                    {% for v in p.variantes %}
+                        {% set _ = vars_data.append({"id": v.id, "nombre": v.nombre_variante, "stock": v.cantidad_stock, "precio_sugerido": v.precio_sugerido or p.precio_sugerido or 0}) %}
+                    {% endfor %}
+                {% endif %}
+                <div class="pos-product-item product-card-container" 
+                     data-name="{{ p.nombre|lower }}" 
+                     data-sku="{{ p.sku|lower }}" 
+                     data-imei="{{ p.imei|lower if p.imei else '' }}" 
+                     data-imei2="{{ p.imei2|lower if p.imei2 else '' }}"
                      data-product='{{ {"id": p.id, "nombre": p.nombre, "sku": p.sku, "precio_sugerido": p.precio_sugerido or 0, "cantidad_stock": total_stock, "tipo_inventario": p.tipo_inventario, "imei": p.imei, "imei2": p.imei2, "inventario": p.inventario}|tojson|safe }}'
                      data-variants='{{ vars_data|tojson|safe }}'
                      onclick="handleProductClick(this)">
-                    <div class="ratio ratio-1x1 bg-light rounded-top d-flex align-items-center justify-content-center overflow-hidden">
-                        {% if p.imagen %}
-                            <img src="{{ url_for('static', filename='uploads/' + p.imagen) }}" alt="{{ p.nombre }}" style="object-fit: cover; width: 100%; height: 100%;">
-                        {% else %}
-                            <span class="text-muted small text-center pt-4"><i class="fa-solid fa-image fa-2x mb-2 text-black-50"></i><br>Sin Imagen</span>
-                        {% endif %}
-                    </div>
-                    <div class="card-body p-3 text-center d-flex flex-column justify-content-between">
-                        <div>
-                            <h6 class="card-title fw-bold text-dark text-truncate mb-1" title="{{ p.nombre }}">{{ p.nombre }}</h6>
-                            {% if p.tipo_inventario == 'celulares' and p.imei %}
-                                <small class="text-muted d-block mb-2">IMEI: {{ p.imei }}</small>
-                            {% else %}
-                                <small class="text-muted d-block mb-2">{{ p.sku }}</small>
-                            {% endif %}
+                    <div class="d-flex align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3 flex-grow-1 overflow-hidden">
+                            <!-- Ícono según tipo -->
+                            <div class="pos-icon-badge">
+                                {% if p.tipo_inventario == 'celulares' %}
+                                    <i class="fa-solid fa-mobile-screen"></i>
+                                {% elif p.tipo_inventario == 'externos' %}
+                                    <i class="fa-solid fa-truck-ramp-box"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-box-open"></i>
+                                {% endif %}
+                            </div>
+                            <!-- Datos del producto -->
+                            <div class="overflow-hidden flex-grow-1">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <h6 class="fw-bold mb-0 text-dark text-truncate" title="{{ p.nombre }}">
+                                        {{ p.nombre }}
+                                    </h6>
+                                    {% if p.tipo_inventario == 'celulares' %}
+                                        <span class="badge" style="background: rgba(197, 159, 96, 0.15); color: var(--dtavo-hover, #A6824D); font-size: 0.68rem; font-weight: 700;">CELULAR</span>
+                                    {% elif p.tipo_inventario == 'externos' %}
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.68rem; font-weight: 700;">EXTERNO</span>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    {% if p.imei %}
+                                        <span class="badge-imei-pill"><i class="fa-solid fa-fingerprint me-1" style="color: var(--dtavo-primary, #C59F60);"></i>IMEI 1: <strong>{{ p.imei }}</strong></span>
+                                    {% endif %}
+                                    {% if p.imei2 %}
+                                        <span class="badge-imei-pill">IMEI 2: <strong>{{ p.imei2 }}</strong></span>
+                                    {% endif %}
+                                    {% if p.sku %}
+                                        <span class="badge-imei-pill text-muted">SKU: {{ p.sku }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="fw-bolder mb-1" style="color: var(--brand-pink);">${{ p.precio_sugerido|cop }}</h5>
-                            <small class="text-muted"><i class="fa-solid fa-box text-secondary"></i> {{ total_stock }} en stock</small>
+
+                        <!-- Precio y Stock -->
+                        <div class="text-end ps-2 flex-shrink-0">
+                            <div class="fw-bold font-mono" style="color: var(--dtavo-hover, #A6824D); font-size: 1.25rem;">
+                                ${{ p.precio_sugerido|cop }}
+                            </div>
+                            <div>
+                                {% if total_stock > 0 %}
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 fw-bold" style="font-size: 0.72rem;">
+                                        <i class="fa-solid fa-check-circle me-1"></i>{{ total_stock }} en stock
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2 py-1 fw-bold" style="font-size: 0.72rem;">
+                                        Agotado
+                                    </span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <div class="text-center py-5 bg-white rounded-4 border">
+                    <i class="fa-solid fa-box-open fa-3x text-muted mb-3 opacity-50"></i>
+                    <h5 class="text-muted fw-bold">No hay productos en inventario</h5>
+                    <p class="text-secondary small">Los productos disponibles en tienda aparecerán aquí automáticamente.</p>
+                </div>
+                {% endfor %}
             </div>
-            {% else %}
-            <div class="col-12 text-center py-5">
-                <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">No hay productos en tienda.</h5>
+
+            <!-- Mensaje cuando la búsqueda no arroja resultados -->
+            <div id="noSearchResults" class="text-center py-5 bg-white rounded-4 border mt-2" style="display: none;">
+                <i class="fa-solid fa-magnifying-glass fa-2x text-muted mb-2 opacity-50"></i>
+                <h6 class="text-dark fw-bold">Sin coincidencias</h6>
+                <p class="text-muted small mb-0">No encontramos ningún producto con ese IMEI, SKU o nombre.</p>
             </div>
-            {% endfor %}
         </div>
     </div>
 
@@ -123,8 +258,8 @@
             <!-- Toggle: Pago Único vs Pago Dividido -->
             <!-- Selector de Asesor (Obligatorio) -->
             <div class="mb-3">
-                <label class="form-label fw-bold text-brand-black small text-uppercase mb-2"><i class="fa-solid fa-user-tie me-1"></i> Asesor de Venta</label>
-                <select id="asesor-vendedor" class="form-select form-select-lg border-0 shadow-sm bg-light" required style="cursor: pointer;">
+                <label class="form-label fw-bold small text-uppercase mb-2" style="color: var(--dtavo-text-main, #1F1F1F);"><i class="fa-solid fa-user-tie me-1" style="color: var(--dtavo-primary, #C59F60);"></i> Asesor de Venta</label>
+                <select id="asesor-vendedor" class="form-select form-select-lg border shadow-sm bg-white" required style="cursor: pointer; border-radius: 12px;">
                     <option value="" disabled selected>-- Seleccionar Asesor --</option>
                     {% for a in asesores %}
                         <option value="{{ a.id }}">{{ a.nombre }}</option>
@@ -132,14 +267,12 @@
                 </select>
             </div>
 
-            <!-- Selector de Proveedor removido -->
-
             <!-- Método de Pago -->
             <div class="mb-3">
-                <div class="d-flex align-items-center gap-3 mb-3">
-                    <label class="form-label fw-bold text-brand-black small text-uppercase m-0">Método de Pago</label>
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <label class="form-label fw-bold small text-uppercase m-0" style="color: var(--dtavo-text-main, #1F1F1F);">Método de Pago</label>
                     <div class="form-check form-switch ms-auto">
-                        <input class="form-check-input" type="checkbox" id="toggle_pago_mixto" style="cursor: pointer; width: 3rem; height: 1.5rem;">
+                        <input class="form-check-input" type="checkbox" id="toggle_pago_mixto" style="cursor: pointer; width: 2.8rem; height: 1.4rem;">
                         <label class="form-check-label fw-bold small text-muted" for="toggle_pago_mixto" style="cursor: pointer;">Dividir Pago</label>
                     </div>
                 </div>
@@ -147,27 +280,30 @@
 
             <!-- Modo 1: Pago Único (por defecto) -->
             <div id="pago_unico_section">
-                <select id="metodo-pago" class="form-select form-select-lg border-0 shadow-sm bg-light mb-3" style="cursor: pointer;">
-                    <option value="efectivo">💵 Efectivo</option>
+                <select id="metodo-pago" class="form-select form-select-lg border shadow-sm bg-white mb-3" style="cursor: pointer; border-radius: 12px;">
+                    <option value="efectivo">💵 Efectivo en Caja</option>
                     <option value="bancolombia">🏦 Bancolombia</option>
+                    <option value="nequi">📱 Nequi</option>
                     <option value="daviplata">📲 Daviplata</option>
-                    <option value="tarjeta_credito">💳 T. Crédito</option>
+                    <option value="tarjeta_credito">💳 Tarjeta de Crédito / Datafono</option>
                     <option value="addi">🛒 Addi</option>
-                    <option value="sitecredito">💳 Sitecredito</option>
+                    <option value="sitecredito">💳 Sitecrédito</option>
+                    <option value="davivienda">🏦 Davivienda</option>
+                    <option value="transferencia">🔄 Transferencia Bancaria</option>
                 </select>
             </div>
 
             <!-- Modo 2: Pago Dividido/Mixto (oculto por defecto) -->
             <div id="pago_mixto_section" style="display: none;">
                 <!-- Indicador visual del saldo restante -->
-                <div class="alert border-0 shadow-sm py-2 px-3 mb-3" id="saldo_restante_alert" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                <div class="alert border-0 shadow-sm py-2 px-3 mb-3" id="saldo_restante_alert" style="background: linear-gradient(135deg, #FAF8F5 0%, #F5EFE6 100%); border-radius: 12px;">
                     <div class="d-flex justify-content-between align-items-center">
-                        <small class="fw-bold text-muted text-uppercase"><i class="fa-solid fa-scale-balanced me-1"></i> Saldo por cubrir:</small>
-                        <span class="fw-bolder fs-5" id="saldo_restante" style="color: var(--brand-blue);">$0</span>
+                        <small class="fw-bold text-muted text-uppercase"><i class="fa-solid fa-scale-balanced me-1" style="color: var(--dtavo-primary, #C59F60);"></i> Saldo por cubrir:</small>
+                        <span class="fw-bolder fs-5" id="saldo_restante" style="color: var(--dtavo-hover, #A6824D);">$0</span>
                     </div>
                     <!-- Barra de progreso visual -->
                     <div class="progress mt-2" style="height: 6px; border-radius: 10px;">
-                        <div class="progress-bar" id="barra_progreso_pago" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #A3D8DE, #7BC8D0); border-radius: 10px;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar" id="barra_progreso_pago" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #C59F60, #9E7D47); border-radius: 10px;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
                 </div>
 
@@ -183,10 +319,10 @@
 
             <!-- Botón de Cobro Masivo -->
             <div class="d-grid gap-2 mt-auto">
-                <button type="button" class="btn btn-blue btn-lg rounded-3 py-3 shadow-sm text-uppercase" id="btn_process_sale">
-                    <i class="fa-solid fa-credit-card me-2"></i> Procesar Cobro
+                <button type="button" class="btn btn-dtavo btn-lg rounded-pill py-3 shadow text-uppercase fw-bold" id="btn_process_sale" style="font-size: 1rem; letter-spacing: 0.05em;">
+                    <i class="fa-solid fa-receipt me-2"></i> Procesar y Emitir Ticket
                 </button>
-                <button type="button" class="btn btn-light mt-2 fw-bold text-muted" id="btn_clear_cart">
+                <button type="button" class="btn btn-light mt-2 fw-bold text-secondary rounded-pill" id="btn_clear_cart">
                     Limpiar Venta
                 </button>
             </div>
@@ -531,32 +667,109 @@
 
     let pagosMixtos = [];
     const METODOS_DISPONIBLES = [
-        { value: 'efectivo',        label: '💵 Efectivo' },
+        { value: 'efectivo',        label: '💵 Efectivo en Caja' },
         { value: 'bancolombia',     label: '🏦 Bancolombia' },
+        { value: 'nequi',           label: '📱 Nequi' },
         { value: 'daviplata',       label: '📲 Daviplata' },
-        { value: 'tarjeta_credito', label: '💳 T. Crédito' },
+        { value: 'tarjeta_credito', label: '💳 Tarjeta de Crédito / Datafono' },
         { value: 'addi',            label: '🛒 Addi' },
-        { value: 'sitecredito',     label: '💳 Sitecredito' }
+        { value: 'sitecredito',     label: '💳 Sitecrédito' },
+        { value: 'davivienda',      label: '🏦 Davivienda' },
+        { value: 'transferencia',   label: '🔄 Transferencia Bancaria' }
     ];
 
     function formatoCOP(valor) {
         return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(valor);
     }
 
-    document.getElementById('productSearch').addEventListener('keyup', function(e) {
-        const query = e.target.value.toLowerCase();
+    function limpiarBuscador() {
+        const searchInput = document.getElementById('productSearch');
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            searchInput.focus();
+        }
+    }
+
+    const searchInput = document.getElementById('productSearch');
+    const searchCountBadge = document.getElementById('search_count_badge');
+    const searchStatusMsg = document.getElementById('searchStatusMsg');
+    const noResultsEl = document.getElementById('noSearchResults');
+
+    function filtrarProductos(query) {
+        query = (query || '').trim().toLowerCase();
+        let visibles = 0;
+        let primerVisibleCard = null;
+
         document.querySelectorAll('.product-card-container').forEach(card => {
-            const name = card.dataset.name;
-            const sku = card.dataset.sku;
+            const name = card.dataset.name || '';
+            const sku = card.dataset.sku || '';
             const imei = card.dataset.imei || '';
             const imei2 = card.dataset.imei2 || '';
-            if (name.includes(query) || sku.includes(query) || imei.includes(query) || imei2.includes(query)) {
+
+            const matchExactoImei = (imei && imei === query) || (imei2 && imei2 === query);
+            const matchExactoSku = (sku && sku === query);
+            const matchParcial = name.includes(query) || sku.includes(query) || imei.includes(query) || imei2.includes(query);
+
+            if (!query || matchParcial || matchExactoImei || matchExactoSku) {
                 card.style.display = 'block';
+                visibles++;
+                if (!primerVisibleCard) {
+                    primerVisibleCard = card;
+                }
+                if (matchExactoImei || matchExactoSku) {
+                    card.classList.add('active-focus');
+                } else {
+                    card.classList.remove('active-focus');
+                }
             } else {
                 card.style.display = 'none';
+                card.classList.remove('active-focus');
             }
         });
-    });
+
+        if (searchCountBadge) {
+            searchCountBadge.textContent = `${visibles} resultado${visibles === 1 ? '' : 's'}`;
+        }
+        if (noResultsEl) {
+            noResultsEl.style.display = visibles === 0 ? 'block' : 'none';
+        }
+        if (searchStatusMsg) {
+            if (query && visibles === 1) {
+                searchStatusMsg.innerHTML = '<span class="text-success"><i class="fa-solid fa-bullseye me-1"></i> Coincidencia única lista para cobrar [ENTER]</span>';
+            } else if (query && visibles > 1) {
+                searchStatusMsg.textContent = `${visibles} coincidencias encontradas`;
+            } else {
+                searchStatusMsg.textContent = '';
+            }
+        }
+
+        return { visibles, primerVisibleCard };
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            filtrarProductos(e.target.value);
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim().toLowerCase();
+                if (!query) return;
+
+                const { visibles, primerVisibleCard } = filtrarProductos(query);
+
+                // Si hay una coincidencia exacta de IMEI o un solo resultado, agregar de inmediato al carrito
+                if (primerVisibleCard) {
+                    handleProductClick(primerVisibleCard);
+                    this.value = '';
+                    filtrarProductos('');
+                    this.focus();
+                }
+            }
+        });
+    }
 
     function handleProductClick(el) {
         const pData = JSON.parse(el.dataset.product);
