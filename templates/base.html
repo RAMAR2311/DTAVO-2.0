@@ -637,6 +637,9 @@
                             <a class="sidebar-sublink" href="{{ url_for('providers_bp.list_providers') }}">
                                 <i class="fa-solid fa-address-book me-2" style="width: 16px;"></i> Directorio de Proveedores
                             </a>
+                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.aprobaciones') }}">
+                                <i class="fa-solid fa-tags me-2" style="width: 16px;"></i> Aprobaciones Especiales
+                            </a>
                             <a class="sidebar-sublink" href="{{ url_for('warranties_bp.index') }}">
                                 <i class="fa-solid fa-shield-halved me-2" style="width: 16px;"></i> Soporte &amp; Garantías
                             </a>
@@ -668,26 +671,10 @@
 
                     <!-- 6. GESTIÓN DE EQUIPO -->
                     <div class="sidebar-section-label">Equipo &amp; Operación</div>
-                    <button class="sidebar-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#groupEquipo" aria-expanded="false">
-                        <span><i class="fa-solid fa-users-gear sidebar-icon"></i> Equipo &amp; Asesores</span>
-                        <i class="fa-solid fa-chevron-down chevron-arrow"></i>
-                    </button>
-                    <div class="collapse" id="groupEquipo">
-                        <div class="sidebar-submenu">
-                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.asesores') }}">
-                                <i class="fa-solid fa-user-tie me-2" style="width: 16px;"></i> Asesores Comerciales
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.ventas_vendedores') }}">
-                                <i class="fa-solid fa-chart-line me-2" style="width: 16px;"></i> Comisiones &amp; Rendimiento
-                            </a>
-                            <a class="sidebar-sublink" href="/admin/vendedores">
-                                <i class="fa-solid fa-id-badge me-2" style="width: 16px;"></i> Credenciales &amp; Acceso
-                            </a>
-                            <a class="sidebar-sublink" href="{{ url_for('admin_bp.aprobaciones') }}">
-                                <i class="fa-solid fa-tags me-2" style="width: 16px;"></i> Aprobaciones Especiales
-                            </a>
-                        </div>
-                    </div>
+                    <a class="sidebar-link" href="/admin/vendedores">
+                        <i class="fa-solid fa-id-badge sidebar-icon"></i>
+                        <span>Credenciales &amp; Acceso</span>
+                    </a>
 
                     <!-- 7. INTELIGENCIA ARTIFICIAL -->
                     <div class="sidebar-section-label">Inteligencia Artificial</div>
