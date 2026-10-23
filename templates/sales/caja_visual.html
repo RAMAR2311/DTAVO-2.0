@@ -256,17 +256,6 @@
             {% endif %}
 
             <!-- Toggle: Pago Único vs Pago Dividido -->
-            <!-- Selector de Asesor (Obligatorio) -->
-            <div class="mb-3">
-                <label class="form-label fw-bold small text-uppercase mb-2" style="color: var(--dtavo-text-main, #1F1F1F);"><i class="fa-solid fa-user-tie me-1" style="color: var(--dtavo-primary, #C59F60);"></i> Asesor de Venta</label>
-                <select id="asesor-vendedor" class="form-select form-select-lg border shadow-sm bg-white" required style="cursor: pointer; border-radius: 12px;">
-                    <option value="" disabled selected>-- Seleccionar Asesor --</option>
-                    {% for a in asesores %}
-                        <option value="{{ a.id }}">{{ a.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
             <!-- Método de Pago -->
             <div class="mb-3">
                 <div class="d-flex align-items-center gap-3 mb-2">
@@ -1354,13 +1343,6 @@
 
 
     async function procesarPagoGlobal(datosCliente = null) {
-        const asesorSelect = document.getElementById('asesor-vendedor');
-        const asesorId = asesorSelect ? asesorSelect.value : null;
-
-        if (!asesorId) {
-            return alert('⚠️ Por favor, selecciona el asesor que realizó la venta antes de continuar.');
-        }
-
         const esMixto = document.getElementById('toggle_pago_mixto').checked;
         const granTotal = obtenerGranTotal();
         let pagosPayload = [];
@@ -1391,7 +1373,7 @@
         }
 
         const payload = {
-            asesor_id: parseInt(asesorId),
+            asesor_id: null,
             provider_id: null,
             items: carrito.map(item => ({
                 product_id: item.product_id,

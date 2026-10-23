@@ -115,17 +115,6 @@
 
             <hr class="mb-4">
 
-            <!-- Selector de Asesor (Obligatorio) -->
-            <div class="mb-3">
-                <label class="form-label fw-bold text-brand-black small text-uppercase mb-2"><i class="fa-solid fa-user-tie me-1"></i> Asesor de Venta</label>
-                <select id="asesor-vendedor" class="form-select form-select-lg border-0 shadow-sm bg-light" required style="cursor: pointer;">
-                    <option value="" disabled selected>-- Seleccionar Asesor --</option>
-                    {% for a in asesores %}
-                        <option value="{{ a.id }}">{{ a.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
             <!-- Selector de Proveedor removido para evitar asociar ventas de inventario interno -->
 
             <!-- Toggle: Pago Único vs Pago Dividido -->
@@ -1292,13 +1281,6 @@
     // Evento Transaccional JSON de Salida
     async function procesarPago(datosCliente = null) {
 
-        const asesorSelect = document.getElementById('asesor-vendedor');
-        const asesorId = asesorSelect ? asesorSelect.value : null;
-
-        if (!asesorId) {
-            return alert('⚠️ Por favor, selecciona el asesor que realizó la venta antes de continuar.');
-        }
-
         const esMixto = document.getElementById('toggle_pago_mixto').checked;
 
         // Construir el payload de pagos
@@ -1335,7 +1317,7 @@
         }
 
         const payload = {
-            asesor_id: parseInt(asesorId),
+            asesor_id: null,
             provider_id: null,
             items: carrito.map(item => {
                 const base = {
