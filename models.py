@@ -704,3 +704,21 @@ class BankTransaction(db.Model):
     def __init__(self, **kwargs):
         super(BankTransaction, self).__init__(**kwargs)
 
+
+class DeviceReference(db.Model):
+    """Modelo para almacenar referencias/modelos de dispositivos por marca creados dinámicamente."""
+    __tablename__ = 'device_references'
+
+    id = db.Column(db.Integer, primary_key=True)
+    marca = db.Column(db.String(100), nullable=False, index=True)
+    nombre = db.Column(db.String(150), nullable=False)
+    categoria = db.Column(db.String(100), nullable=True, default='Referencias Agregadas')
+    fecha_creacion = db.Column(db.DateTime, default=obtener_hora_bogota)
+
+    __table_args__ = (
+        db.UniqueConstraint('marca', 'nombre', name='uq_marca_modelo_ref'),
+    )
+
+    def __init__(self, **kwargs):
+        super(DeviceReference, self).__init__(**kwargs)
+

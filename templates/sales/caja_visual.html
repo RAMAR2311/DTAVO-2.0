@@ -58,6 +58,27 @@
     .badge-imei-pill strong {
         color: var(--dtavo-hover, #A6824D);
     }
+    /* Ajuste responsivo de inputs de carrito para que números grandes no se desborden */
+    .cart-price-input::-webkit-outer-spin-button,
+    .cart-price-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .cart-price-input[type=number] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+        letter-spacing: -0.2px;
+        min-width: 0;
+    }
+    .cart-cant-input::-webkit-outer-spin-button,
+    .cart-cant-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .cart-cant-input[type=number] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
 </style>
 
 <div class="row h-100 g-4">
@@ -646,6 +667,36 @@
     </div>
 </div>
 
+<!-- Modal Factura / Ticket para PWA y Navegadores -->
+<div class="modal fade" id="modalTicketPWA" tabindex="-1" aria-labelledby="modalTicketPWALabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-dark text-white border-0 py-3">
+                <h5 class="modal-title fw-bold m-0" id="modalTicketPWALabel" style="font-size: 1.05rem;">
+                    <i class="fa-solid fa-receipt text-warning me-2"></i> Comprobante de Venta
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0 bg-light" style="min-height: 480px; max-height: 75vh; overflow-y: auto;">
+                <iframe id="iframeTicketPWA" src="about:blank" style="width: 100%; height: 500px; border: none; display: block; background: #fff;"></iframe>
+            </div>
+            <div class="modal-footer border-0 bg-white py-3 d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
+                    Seguir Vendiendo
+                </button>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-dark rounded-pill px-3 fw-bold" onclick="imprimirIframeTicket()">
+                        <i class="fa-solid fa-print me-1"></i> Imprimir
+                    </button>
+                    <a id="btnAbrirTicketPestana" href="#" target="_blank" class="btn btn-primary rounded-pill px-3 fw-bold shadow-sm">
+                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Abrir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const csrf_token = "{{ csrf_token() }}";
     let carrito = [];
@@ -934,14 +985,14 @@
                         </button>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                    <div class="input-group input-group-sm flex-grow-1 me-2" style="max-width: 110px;">
-                        <span class="input-group-text bg-light text-muted border-0 px-2">Cant</span>
-                        <input type="number" class="form-control text-center fw-bold border-0 bg-light px-1" value="${item.cantidad}" onchange="updateCartItem(${index}, this.value)">
+                <div class="d-flex justify-content-between align-items-center mt-2 gap-2">
+                    <div class="input-group input-group-sm flex-shrink-0" style="width: 88px;">
+                        <span class="input-group-text bg-light text-muted border-0 px-2 fw-semibold" style="font-size: 0.72rem;">Cant</span>
+                        <input type="number" class="form-control text-center fw-bold border-0 bg-light px-1 cart-cant-input" style="font-size: 0.85rem;" value="${item.cantidad}" min="1" onchange="updateCartItem(${index}, this.value)">
                     </div>
-                    <div class="input-group input-group-sm flex-grow-1" style="max-width: 140px;">
-                        <span class="input-group-text bg-light text-muted border-0 px-2">$</span>
-                        <input type="number" class="form-control text-end fw-bold border-0 bg-light px-2 text-brand-black" value="${Math.round(item.precio_final)}" onchange="updateCartItemPrice(${index}, this.value)" ${precioInputState}>
+                    <div class="input-group input-group-sm flex-grow-1" style="min-width: 140px;">
+                        <span class="input-group-text bg-light text-muted border-0 px-2 fw-bold text-brand-black" style="font-size: 0.8rem;">$</span>
+                        <input type="number" class="form-control text-end fw-bold border-0 bg-light px-2 text-brand-black cart-price-input" style="font-size: 0.95rem; font-family: 'JetBrains Mono', monospace;" value="${Math.round(item.precio_final)}" onchange="updateCartItemPrice(${index}, this.value)" ${precioInputState}>
                     </div>
                 </div>
             `;
@@ -1392,12 +1443,17 @@
         btnProcess.disabled = true;
         btnProcess.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Procesando...';
 
-        // Abrir pestaña emergente INMEDIATAMENTE durante la interacción del usuario para evitar bloqueos en Chrome/Safari
+        // Detectar si está ejecutándose como PWA standalone
+        const esPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        // Si NO es PWA, pre-abrir ventana para evitar bloqueador de popups en navegador estándar
         let reciboWindow = null;
-        try {
-            reciboWindow = window.open('about:blank', '_blank');
-        } catch(err) {
-            console.warn('Pop-up bloqueado al crear ventana en blanco:', err);
+        if (!esPWA) {
+            try {
+                reciboWindow = window.open('about:blank', '_blank');
+            } catch(err) {
+                console.warn('Pop-up bloqueado:', err);
+            }
         }
 
         try {
@@ -1419,13 +1475,16 @@
 
             if (response.ok && data.success && data.sale_id) {
                 const reciboUrl = `/sales/recibo/${data.sale_id}`;
+
+                // 1. Mostrar comprobante siempre en el modal integrado (ideal para PWA sin pestañas)
+                mostrarTicketModal(reciboUrl, data.sale_id);
+
+                // 2. Si se abrió ventana previa en navegador web tradicional, redirigirla
                 if (reciboWindow && !reciboWindow.closed) {
                     reciboWindow.location.href = reciboUrl;
-                } else {
-                    window.open(reciboUrl, '_blank');
                 }
 
-                // Limpiar la caja en la pestaña principal para seguir facturando inmediatamente
+                // Limpiar la caja en la terminal para la siguiente venta
                 carrito = [];
                 retomasLista = [];
                 pagosMixtos = [];
@@ -1439,22 +1498,40 @@
                 renderCart();
 
                 btnProcess.disabled = false;
-                btnProcess.innerHTML = '<i class="fa-solid fa-credit-card me-2"></i> Procesar Cobro';
-
-                alert(`✅ ¡Venta #${data.sale_id} Procesada! La factura se abrió en una nueva pestaña para su impresión.`);
+                btnProcess.innerHTML = '<i class="fa-solid fa-receipt me-2"></i> Procesar y Emitir Ticket';
                 return;
             } else {
                 if (reciboWindow && !reciboWindow.closed) reciboWindow.close();
                 alert(`⚠️ Error al procesar la venta: ${data.error || 'Verifica los datos de la venta'}`);
                 btnProcess.disabled = false;
-                btnProcess.innerHTML = '<i class="fa-solid fa-credit-card me-2"></i> Procesar Cobro';
+                btnProcess.innerHTML = '<i class="fa-solid fa-receipt me-2"></i> Procesar y Emitir Ticket';
             }
         } catch (e) {
             console.error('Error al procesar cobro:', e);
             if (reciboWindow && !reciboWindow.closed) reciboWindow.close();
             alert(`⚠️ Error de conexión o red: ${e.message || e}`);
             btnProcess.disabled = false;
-            btnProcess.innerHTML = '<i class="fa-solid fa-credit-card me-2"></i> Procesar Cobro';
+            btnProcess.innerHTML = '<i class="fa-solid fa-receipt me-2"></i> Procesar y Emitir Ticket';
+        }
+    }
+
+    function mostrarTicketModal(url, saleId) {
+        const iframe = document.getElementById('iframeTicketPWA');
+        const btnAbrir = document.getElementById('btnAbrirTicketPestana');
+        if (iframe) iframe.src = url;
+        if (btnAbrir) btnAbrir.href = url;
+
+        const modalEl = document.getElementById('modalTicketPWA');
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        if (!modal) modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+
+    function imprimirIframeTicket() {
+        const iframe = document.getElementById('iframeTicketPWA');
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
         }
     }
 

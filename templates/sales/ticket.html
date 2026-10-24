@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --ticket-font-mono: 'JetBrains Mono', 'Courier New', Courier, Consolas, monospace;
@@ -381,6 +382,18 @@
 <body>
 
 <div class="ticket-wrapper">
+    <!-- Barra Superior de Navegación Rápida -->
+    <div class="d-print-none" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+        <a href="{{ url_for('sales_bp.caja_visual') }}" 
+           class="btn-action btn-back-pos" 
+           style="padding: 10px 16px; font-size: 0.88rem; width: auto; display: inline-flex; align-items: center; gap: 8px; border-radius: 50px;">
+            <i class="fa-solid fa-arrow-left"></i> Volver al POS
+        </a>
+        <button class="btn-action btn-print-thermal" onclick="window.print()" style="padding: 10px 18px; font-size: 0.88rem; width: auto; display: inline-flex; align-items: center; gap: 8px; border-radius: 50px;">
+            <i class="fa-solid fa-print"></i> Imprimir
+        </button>
+    </div>
+
     <div class="ticket">
         <!-- Encabezado DTAVO -->
         <div class="header">
@@ -560,14 +573,6 @@
 
             <div class="warranty-text">
                 <strong>TÉRMINOS DE GARANTÍA DTAVO:</strong> Equipos nuevos cuentan con garantía de 1 año; equipos de exhibición / semi-nuevos con garantía de 8 meses según inspección. La remoción o alteración del sello de seguridad invalida la garantía inmediatamente. No cubre fallas causadas por humedad, golpes, sobretensiones eléctricas, manipulación de software no autorizado o intervención por terceros. Para radicar soporte técnico presente este comprobante digital o físico. Ley 1480 de 2011.
-            </div>
-
-            <!-- Código QR para Consulta Digital y Trazabilidad -->
-            <div class="qr-placeholder">
-                <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data={{ request.url|urlencode }}" alt="Código QR DTAVO">
-                <p style="font-size: 0.65rem; font-weight: 700; margin-top: 4px; text-transform: uppercase;">
-                    Escanee para consultar garantía y factura digital
-                </p>
             </div>
         </div>
     </div>

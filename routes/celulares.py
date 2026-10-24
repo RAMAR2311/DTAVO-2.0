@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app, send_file
 from flask_login import login_required, current_user
 from sqlalchemy import or_
-from models import db, Product, Sale, SaleDetail, SalePayment, ProductVariant, ArqueoCaja, Maneo, StockAdjustment
+from models import db, Product, Sale, SaleDetail, SalePayment, ProductVariant, ArqueoCaja, Maneo, StockAdjustment, DeviceReference
 from decorators import admin_required
 from datetime import datetime
 import pytz
@@ -153,10 +153,89 @@ def prestar_celular(id):
 
 from sqlalchemy.exc import IntegrityError
 
+
+@celulares_bp.route('/api/referencias', methods=['GET'])
+@login_required
+def api_obtener_referencias():
+    marca = request.args.get('marca', '').strip()
+    query = DeviceReference.query
+    if marca:
+        query = query.filter(DeviceReference.marca.ilike(marca))
+    referencias = query.order_by(DeviceReference.nombre.asc()).all()
+    return jsonify({
+        'success': True,
+        'referencias': [{'id': r.id, 'marca': r.marca, 'nombre': r.nombre, 'categoria': r.categoria} for r in referencias]
+    })
+
+
+@celulares_bp.route('/api/referencias/crear', methods=['POST'])
+@login_required
+@admin_required
+def api_crear_referencia():
+    data = request.get_json(silent=True) or request.form
+    marca = (data.get('marca') or '').strip()
+    nombre = (data.get('nombre') or '').strip()
+    categoria = (data.get('categoria') or 'Referencias Personalizadas').strip()
+
+    if not marca or not nombre:
+        return jsonify({'success': False, 'message': 'La marca y el nombre de la referencia son obligatorios.'}), 400
+
+    # Verificar si ya existe (case-insensitive)
+    existente = DeviceReference.query.filter(
+        DeviceReference.marca.ilike(marca),
+        DeviceReference.nombre.ilike(nombre)
+    ).first()
+
+    if existente:
+        return jsonify({
+            'success': True,
+            'message': 'La referencia ya existía.',
+            'referencia': {'id': existente.id, 'marca': existente.marca, 'nombre': existente.nombre, 'categoria': existente.categoria}
+        })
+
+    try:
+        nueva_ref = DeviceReference(
+            marca=marca,
+            nombre=nombre,
+            categoria=categoria
+        )
+        db.session.add(nueva_ref)
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': 'Referencia guardada exitosamente.',
+            'referencia': {'id': nueva_ref.id, 'marca': nueva_ref.marca, 'nombre': nueva_ref.nombre, 'categoria': nueva_ref.categoria}
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': f'Error al guardar la referencia: {str(e)}'}), 500
+
+
+def _obtener_marcas_disponibles():
+    # Marcas base
+    marcas = ['Apple', 'Samsung']
+    # Marcas existentes en productos
+    marcas_prod = db.session.query(Product.marca).filter(
+        Product.tipo_inventario == 'celulares',
+        Product.marca != None,
+        Product.marca != ''
+    ).distinct().all()
+    for m in marcas_prod:
+        if m[0] and m[0] not in marcas:
+            marcas.append(m[0])
+    # Marcas registradas en DeviceReference
+    marcas_ref = db.session.query(DeviceReference.marca).distinct().all()
+    for m in marcas_ref:
+        if m[0] and m[0] not in marcas:
+            marcas.append(m[0])
+    return sorted(marcas, key=lambda x: (x not in ['Apple', 'Samsung'], x))
+
+
 @celulares_bp.route('/nuevo', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def nuevo_celular():
+    marcas_disponibles = _obtener_marcas_disponibles()
     if request.method == 'POST':
         marca = request.form.get('marca', '').strip()
         modelo_celular = request.form.get('modelo_celular', '').strip()
@@ -168,11 +247,26 @@ def nuevo_celular():
         proveedor = request.form.get('proveedor', '').strip()
         inventario = request.form.get('inventario', '').strip()
 
+        # Si se ingresó una referencia, asegurarnos de que quede guardada en DeviceReference
+        if marca and modelo_celular:
+            ref_existente = DeviceReference.query.filter(
+                DeviceReference.marca.ilike(marca),
+                DeviceReference.nombre.ilike(modelo_celular)
+            ).first()
+            if not ref_existente:
+                nueva_ref = DeviceReference(
+                    marca=marca,
+                    nombre=modelo_celular,
+                    categoria='Referencias Agregadas'
+                )
+                db.session.add(nueva_ref)
+                db.session.flush()
+
         if imei:
             existente = Product.query.filter_by(imei=imei).first()
             if existente:
                 flash(f'El IMEI "{imei}" ya se encuentra registrado en el sistema (Producto: {existente.nombre}). No se pueden duplicar IMEIs.', 'danger')
-                return render_template('celulares/form_celular.html', celular=None)
+                return render_template('celulares/form_celular.html', celular=None, marcas_disponibles=marcas_disponibles)
         
         precio_costo_str = request.form.get('precio_costo', '0').replace(',', '')
         precio_sugerido_str = request.form.get('precio_sugerido', '0').replace(',', '')
@@ -231,7 +325,7 @@ def nuevo_celular():
             db.session.rollback()
             flash(f'Error al registrar el dispositivo: {str(e)}', 'danger')
 
-    return render_template('celulares/form_celular.html', celular=None)
+    return render_template('celulares/form_celular.html', celular=None, marcas_disponibles=marcas_disponibles)
 
 @celulares_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -242,6 +336,7 @@ def editar_celular(id):
         flash('El producto seleccionado no pertenece a este inventario.', 'danger')
         return redirect(url_for('celulares_bp.inventario'))
         
+    marcas_disponibles = _obtener_marcas_disponibles()
     if request.method == 'POST':
         imei_val = request.form.get('imei', '').strip() or None
         imei2_val = request.form.get('imei2', '').strip() or None
@@ -250,7 +345,7 @@ def editar_celular(id):
             existente = Product.query.filter(Product.imei == imei_val, Product.id != id).first()
             if existente:
                 flash(f'El IMEI "{imei_val}" ya pertenece a otro celular registrado ({existente.nombre}).', 'danger')
-                return render_template('celulares/form_celular.html', celular=celular)
+                return render_template('celulares/form_celular.html', celular=celular, marcas_disponibles=marcas_disponibles)
 
         celular.marca = request.form.get('marca', '').strip()
         celular.modelo_celular = request.form.get('modelo_celular', '').strip()
@@ -262,6 +357,21 @@ def editar_celular(id):
         celular.proveedor = request.form.get('proveedor', '').strip()
         celular.inventario = request.form.get('inventario', '').strip()
         
+        # Si se editó con una referencia que no existía, registrarla
+        if celular.marca and celular.modelo_celular:
+            ref_existente = DeviceReference.query.filter(
+                DeviceReference.marca.ilike(celular.marca),
+                DeviceReference.nombre.ilike(celular.modelo_celular)
+            ).first()
+            if not ref_existente:
+                nueva_ref = DeviceReference(
+                    marca=celular.marca,
+                    nombre=celular.modelo_celular,
+                    categoria='Referencias Agregadas'
+                )
+                db.session.add(nueva_ref)
+                db.session.flush()
+
         tipo_dispositivo = request.form.get('tipo_dispositivo', 'Celular').strip()
         if tipo_dispositivo and tipo_dispositivo != 'Otro':
             celular.nombre = f"{tipo_dispositivo} {celular.marca} {celular.modelo_celular} {celular.color} {celular.memoria}".strip()
@@ -298,7 +408,7 @@ def editar_celular(id):
             db.session.rollback()
             flash(f'Error al actualizar: {str(e)}', 'danger')
             
-    return render_template('celulares/form_celular.html', celular=celular)
+    return render_template('celulares/form_celular.html', celular=celular, marcas_disponibles=marcas_disponibles)
 
 @celulares_bp.route('/eliminar/<int:id>', methods=['POST'])
 @login_required

@@ -40,23 +40,51 @@
                         </select>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold small text-muted text-uppercase">Marca</label>
-                        <select name="marca" id="celular_marca" class="form-select fw-semibold" onchange="actualizarModelosCelular(this.value)" required>
-                            <option value="">-- Seleccione Marca --</option>
-                            <option value="Apple" {% if celular and celular.marca == 'Apple' %}selected{% endif %}>Apple</option>
-                            <option value="Samsung" {% if celular and celular.marca == 'Samsung' %}selected{% endif %}>Samsung</option>
-                            {% if celular and celular.marca and celular.marca not in ['Apple', 'Samsung'] %}
-                                <option value="{{ celular.marca }}" selected>{{ celular.marca }}</option>
-                            {% endif %}
-                        </select>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-bold small text-muted text-uppercase mb-0">Marca</label>
+                            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none fw-bold" onclick="abrirModalNuevaMarca()" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-plus-circle me-1"></i>Nueva Marca
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <select name="marca" id="celular_marca" class="form-select fw-semibold" onchange="actualizarModelosCelular(this.value)" required>
+                                <option value="">-- Seleccione Marca --</option>
+                                {% if marcas_disponibles %}
+                                    {% for m in marcas_disponibles %}
+                                        <option value="{{ m }}" {% if celular and celular.marca == m %}selected{% endif %}>{{ m }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option value="Apple" {% if celular and celular.marca == 'Apple' %}selected{% endif %}>Apple</option>
+                                    <option value="Samsung" {% if celular and celular.marca == 'Samsung' %}selected{% endif %}>Samsung</option>
+                                    <option value="Xiaomi" {% if celular and celular.marca == 'Xiaomi' %}selected{% endif %}>Xiaomi</option>
+                                    <option value="Motorola" {% if celular and celular.marca == 'Motorola' %}selected{% endif %}>Motorola</option>
+                                    {% if celular and celular.marca and celular.marca not in ['Apple', 'Samsung', 'Xiaomi', 'Motorola'] %}
+                                        <option value="{{ celular.marca }}" selected>{{ celular.marca }}</option>
+                                    {% endif %}
+                                {% endif %}
+                            </select>
+                            <button type="button" class="btn btn-outline-secondary" onclick="abrirModalNuevaMarca()" title="Agregar otra marca">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label class="form-label fw-bold small text-muted text-uppercase">Referencia (Modelo)</label>
-                        <select name="modelo_celular" id="celular_modelo" class="form-select fw-semibold" required>
-                            <option value="">-- Primero elige Marca --</option>
-                        </select>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-bold small text-muted text-uppercase mb-0">Referencia (Modelo)</label>
+                            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none fw-bold text-primary" onclick="abrirModalNuevaReferencia()" style="font-size: 0.75rem;">
+                                <i class="fa-solid fa-plus-circle me-1"></i>Agregar Referencia
+                            </button>
+                        </div>
+                        <div class="input-group">
+                            <select name="modelo_celular" id="celular_modelo" class="form-select fw-semibold" required>
+                                <option value="">-- Primero elige Marca --</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" onclick="abrirModalNuevaReferencia()" title="Agregar nueva referencia que no esté en la lista">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label fw-bold small text-muted text-uppercase">Capacidad / RAM</label>
                         <input type="text" name="memoria" class="form-control" value="{{ celular.memoria if celular else '' }}" placeholder="Ej: 128GB, 512GB SSD">
                     </div>
@@ -125,8 +153,69 @@
     </div>
 </div>
 
+<!-- Modal para Agregar Nueva Referencia -->
+<div class="modal fade" id="modalNuevaReferencia" tabindex="-1" aria-labelledby="modalNuevaReferenciaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-brand-black" id="modalNuevaReferenciaLabel">
+                    <i class="fa-solid fa-plus-circle text-primary me-2"></i>Agregar Nueva Referencia
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body py-3">
+                <p class="text-muted small mb-3">La nueva referencia se guardará en el catálogo y estará disponible inmediatamente para esta marca.</p>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Marca Seleccionada</label>
+                    <input type="text" id="modal_ref_marca" class="form-control fw-bold bg-light" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Nombre de la Referencia / Modelo <span class="text-danger">*</span></label>
+                    <input type="text" id="modal_ref_nombre" class="form-control fw-semibold" placeholder="Ej: Redmi Note 13 Pro+, iPhone 16 Pro Max 1TB" autofocus>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Categoría / Grupo (Opcional)</label>
+                    <input type="text" id="modal_ref_categoria" class="form-control" placeholder="Ej: Serie Redmi, Gama Alta" value="Referencias Agregadas">
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" id="btnGuardarReferenciaModal" onclick="guardarNuevaReferenciaModal()">
+                    <i class="fa-solid fa-check me-1"></i> Guardar y Seleccionar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Agregar Nueva Marca -->
+<div class="modal fade" id="modalNuevaMarca" tabindex="-1" aria-labelledby="modalNuevaMarcaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-brand-black" id="modalNuevaMarcaLabel">
+                    <i class="fa-solid fa-tags text-primary me-2"></i>Agregar Nueva Marca
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body py-3">
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted text-uppercase">Nombre de la Marca <span class="text-danger">*</span></label>
+                    <input type="text" id="modal_marca_nombre" class="form-control fw-semibold" placeholder="Ej: Xiaomi, Huawei, Motorola, Honor, Realme">
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm" onclick="guardarNuevaMarcaModal()">
+                    <i class="fa-solid fa-check me-1"></i> Agregar Marca
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Catálogo específico de Modelos para Apple y Samsung
+    // Catálogo base de modelos para Apple y Samsung
     const CATALOGO_PRODUCTOS_CELULAR = {
         'Apple': [
             {
@@ -193,11 +282,30 @@
         ]
     };
 
-    function actualizarModelosCelular(marca, modeloPreseleccionado = '') {
+    // Almacén en memoria de referencias dinámicas traídas del backend
+    const REFERENCIAS_BD = {};
+
+    async function cargarReferenciasBackend(marca) {
+        if (!marca) return [];
+        try {
+            const resp = await fetch(`/celulares/api/referencias?marca=${encodeURIComponent(marca)}`);
+            const data = await resp.json();
+            if (data.success && Array.isArray(data.referencias)) {
+                REFERENCIAS_BD[marca] = data.referencias;
+                return data.referencias;
+            }
+        } catch (e) {
+            console.warn('No se pudieron obtener referencias del backend:', e);
+        }
+        return REFERENCIAS_BD[marca] || [];
+    }
+
+    async function actualizarModelosCelular(marca, modeloPreseleccionado = '') {
         const sel = document.getElementById('celular_modelo');
         if (!sel) return;
-        sel.innerHTML = '';
-        if (!marca || !CATALOGO_PRODUCTOS_CELULAR[marca]) {
+        sel.innerHTML = '<option value="">Cargando referencias...</option>';
+
+        if (!marca) {
             sel.innerHTML = '<option value="">-- Primero elige Marca --</option>';
             if (modeloPreseleccionado) {
                 sel.innerHTML += `<option value="${modeloPreseleccionado}" selected>${modeloPreseleccionado}</option>`;
@@ -205,24 +313,59 @@
             return;
         }
 
-        sel.innerHTML = '<option value="">-- Seleccione Modelo / Referencia --</option>';
-        CATALOGO_PRODUCTOS_CELULAR[marca].forEach(grp => {
-            const optgroup = document.createElement('optgroup');
-            optgroup.label = grp.categoria;
-            grp.modelos.forEach(mod => {
-                const opt = document.createElement('option');
-                opt.value = mod;
-                opt.textContent = mod;
-                if (mod === modeloPreseleccionado) {
-                    opt.selected = true;
-                }
-                optgroup.appendChild(opt);
-            });
-            sel.appendChild(optgroup);
-        });
+        // Obtener referencias personalizadas guardadas en la BD para esta marca
+        const refsBD = await cargarReferenciasBackend(marca);
 
-        // Si el celular editado tenía un modelo personalizado
-        if (modeloPreseleccionado && !sel.value) {
+        sel.innerHTML = '<option value="">-- Seleccione Modelo / Referencia --</option>';
+        const modelosRegistradosSet = new Set();
+
+        // 1. Catálogo predefinido
+        if (CATALOGO_PRODUCTOS_CELULAR[marca]) {
+            CATALOGO_PRODUCTOS_CELULAR[marca].forEach(grp => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = grp.categoria;
+                grp.modelos.forEach(mod => {
+                    modelosRegistradosSet.add(mod.toLowerCase().trim());
+                    const opt = document.createElement('option');
+                    opt.value = mod;
+                    opt.textContent = mod;
+                    if (mod === modeloPreseleccionado) {
+                        opt.selected = true;
+                    }
+                    optgroup.appendChild(opt);
+                });
+                sel.appendChild(optgroup);
+            });
+        }
+
+        // 2. Referencias dinámicas creadas en la base de datos
+        if (refsBD && refsBD.length > 0) {
+            const optgroupBD = document.createElement('optgroup');
+            optgroupBD.label = '⭐ Referencias Agregadas';
+            let hayAgregadas = false;
+
+            refsBD.forEach(ref => {
+                const nombreLimpio = ref.nombre.trim();
+                if (!modelosRegistradosSet.has(nombreLimpio.toLowerCase())) {
+                    modelosRegistradosSet.add(nombreLimpio.toLowerCase());
+                    const opt = document.createElement('option');
+                    opt.value = nombreLimpio;
+                    opt.textContent = nombreLimpio;
+                    if (nombreLimpio === modeloPreseleccionado) {
+                        opt.selected = true;
+                    }
+                    optgroupBD.appendChild(opt);
+                    hayAgregadas = true;
+                }
+            });
+
+            if (hayAgregadas) {
+                sel.appendChild(optgroupBD);
+            }
+        }
+
+        // 3. Si el dispositivo editado tenía un modelo personalizado aún no listado
+        if (modeloPreseleccionado && !modelosRegistradosSet.has(modeloPreseleccionado.toLowerCase().trim())) {
             const optCustom = document.createElement('option');
             optCustom.value = modeloPreseleccionado;
             optCustom.textContent = modeloPreseleccionado;
@@ -230,6 +373,124 @@
             sel.appendChild(optCustom);
         }
     }
+
+    function abrirModalNuevaMarca() {
+        const modal = new bootstrap.Modal(document.getElementById('modalNuevaMarca'));
+        document.getElementById('modal_marca_nombre').value = '';
+        modal.show();
+        setTimeout(() => document.getElementById('modal_marca_nombre').focus(), 400);
+    }
+
+    function guardarNuevaMarcaModal() {
+        const input = document.getElementById('modal_marca_nombre');
+        const nombreMarca = input.value.trim();
+        if (!nombreMarca) {
+            alert('Por favor escribe el nombre de la marca.');
+            input.focus();
+            return;
+        }
+
+        const selMarca = document.getElementById('celular_marca');
+        let existe = false;
+        for (let opt of selMarca.options) {
+            if (opt.value.toLowerCase() === nombreMarca.toLowerCase()) {
+                selMarca.value = opt.value;
+                existe = true;
+                break;
+            }
+        }
+
+        if (!existe) {
+            const opt = document.createElement('option');
+            opt.value = nombreMarca;
+            opt.textContent = nombreMarca;
+            opt.selected = true;
+            selMarca.appendChild(opt);
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('modalNuevaMarca')).hide();
+        actualizarModelosCelular(nombreMarca);
+    }
+
+    function abrirModalNuevaReferencia() {
+        const marca = document.getElementById('celular_marca').value;
+        if (!marca) {
+            alert('Primero selecciona o agrega una marca antes de ingresar la referencia.');
+            document.getElementById('celular_marca').focus();
+            return;
+        }
+        document.getElementById('modal_ref_marca').value = marca;
+        document.getElementById('modal_ref_nombre').value = '';
+        const modal = new bootstrap.Modal(document.getElementById('modalNuevaReferencia'));
+        modal.show();
+        setTimeout(() => document.getElementById('modal_ref_nombre').focus(), 400);
+    }
+
+    async function guardarNuevaReferenciaModal() {
+        const marca = document.getElementById('modal_ref_marca').value.trim();
+        const nombreInput = document.getElementById('modal_ref_nombre');
+        const nombre = nombreInput.value.trim();
+        const categoria = (document.getElementById('modal_ref_categoria').value || 'Referencias Agregadas').trim();
+        const btn = document.getElementById('btnGuardarReferenciaModal');
+
+        if (!nombre) {
+            alert('Por favor ingresa el nombre de la referencia o modelo.');
+            nombreInput.focus();
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Guardando...';
+
+        try {
+            const csrfToken = document.querySelector('input[name="csrf_token"]') ? document.querySelector('input[name="csrf_token"]').value : '';
+            const resp = await fetch('/celulares/api/referencias/crear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ marca, nombre, categoria })
+            });
+            const data = await resp.json();
+
+            if (data.success) {
+                // Cerrar modal
+                const modalEl = document.getElementById('modalNuevaReferencia');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+
+                // Recargar el desplegable de referencias seleccionando la nueva
+                await actualizarModelosCelular(marca, nombre);
+
+                // Asegurar que quede seleccionada
+                const sel = document.getElementById('celular_modelo');
+                sel.value = nombre;
+            } else {
+                alert(data.message || 'Error al guardar la referencia.');
+            }
+        } catch (e) {
+            alert('Error de conexión al guardar la referencia: ' + e);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> Guardar y Seleccionar';
+        }
+    }
+
+    // Permitir enviar con Enter dentro de los inputs del modal
+    document.getElementById('modal_ref_nombre').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            guardarNuevaReferenciaModal();
+        }
+    });
+
+    document.getElementById('modal_marca_nombre').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            guardarNuevaMarcaModal();
+        }
+    });
 
     // Inicializar catálogo al cargar
     document.addEventListener('DOMContentLoaded', function() {
@@ -277,8 +538,11 @@
         if (e.key === 'Enter') {
             const activeEl = document.activeElement;
             if (activeEl && activeEl.tagName === 'INPUT' && activeEl.type !== 'submit' && activeEl.type !== 'button') {
-                e.preventDefault();
-                return false;
+                // Si está dentro de un modal, no interferir
+                if (!activeEl.closest('.modal')) {
+                    e.preventDefault();
+                    return false;
+                }
             }
         }
     });
